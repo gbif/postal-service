@@ -1,0 +1,5 @@
+org.gbif.common.messaging
+org.gbif.common.messaging.api
+org.gbif.common.messaging.api.messages
+org.gbif.common.messaging.config
+org.gbif.common.messaging.guice
