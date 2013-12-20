@@ -1,7 +1,7 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.occurrence.Occurrence;
-import org.gbif.api.model.occurrence.OccurrencePersistenceStatus;
+import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.common.messaging.api.Util;
 
@@ -21,25 +21,33 @@ public class OccurrenceMutatedMessageTest {
   public void testSerDe() throws IOException {
     OccurrenceMutatedMessage message =
       new OccurrenceMutatedMessage(UUID.randomUUID(), OccurrencePersistenceStatus.UPDATED, 1,
-        Occurrence.builder().protocol(EndpointType.BIOCASE).key(1).datasetKey(UUID.randomUUID()).build(),
-        new Occurrence(), null, null, null);
+      build(EndpointType.BIOCASE, 1, UUID.randomUUID()),
+      new Occurrence(), null, null, null);
     Util.testSerDe(message, OccurrenceMutatedMessage.class);
   }
 
   @Test
   public void testBuilders() throws IOException {
     OccurrenceMutatedMessage msg = OccurrenceMutatedMessage.buildNewMessage(UUID.randomUUID(),
-      Occurrence.builder().protocol(EndpointType.BIOCASE).key(1).datasetKey(UUID.randomUUID()).build(), 1);
+      build(EndpointType.BIOCASE, 1, UUID.randomUUID()), 1);
     Util.testSerDe(msg, OccurrenceMutatedMessage.class);
 
     msg = OccurrenceMutatedMessage.buildUpdateMessage(UUID.randomUUID(),
-      Occurrence.builder().protocol(EndpointType.BIOCASE).key(1).datasetKey(UUID.randomUUID()).build(),
-      Occurrence.builder().protocol(EndpointType.BIOCASE).key(1).datasetKey(UUID.randomUUID()).build(), 1);
+                                                      build(EndpointType.BIOCASE, 1, UUID.randomUUID()),
+                                                      build(EndpointType.BIOCASE, 1, UUID.randomUUID()), 1);
     Util.testSerDe(msg, OccurrenceMutatedMessage.class);
 
     msg = OccurrenceMutatedMessage.buildDeleteMessage(UUID.randomUUID(),
-      Occurrence.builder().protocol(EndpointType.BIOCASE).key(1).datasetKey(UUID.randomUUID()).build(),
+      build(EndpointType.BIOCASE, 1, UUID.randomUUID()),
       OccurrenceDeletionReason.OCCURRENCE_MANUAL, null, null);
     Util.testSerDe(msg, OccurrenceMutatedMessage.class);
+  }
+
+  private Occurrence build(EndpointType prot, int key, UUID dkey) {
+    Occurrence o = new Occurrence();
+    o.setKey(key);
+    o.setProtocol(prot);
+    o.setDatasetKey(dkey);
+    return o;
   }
 }
