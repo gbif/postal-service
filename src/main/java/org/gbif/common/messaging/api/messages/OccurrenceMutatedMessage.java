@@ -1,7 +1,7 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.occurrence.Occurrence;
-import org.gbif.api.model.occurrence.OccurrencePersistenceStatus;
+import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
 
 import java.util.UUID;
 import javax.annotation.Nullable;

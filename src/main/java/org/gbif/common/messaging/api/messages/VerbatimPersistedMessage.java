@@ -1,6 +1,6 @@
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.occurrence.OccurrencePersistenceStatus;
+import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
 
 import java.util.UUID;
 
@@ -10,6 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+
 
 /**
  * The message sent whenever a "verbatim" occurrence is persisted. A verbatim occurrence is the result of parsing
