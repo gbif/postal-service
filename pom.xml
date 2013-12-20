@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.gbif</groupId>
+    <artifactId>motherpom</artifactId>
+    <version>13</version>
+  </parent>
+
+  <groupId>org.gbif.common</groupId>
+  <artifactId>gbif-postal-service</artifactId>
+  <version>0.10-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>GBIF Postal service</name>
+  <url>http://github.org/gbif/postal-service</url>
+
+  <scm>
+    <connection>scm:git:git@github.com:gbif/postal-service.git</connection>
+    <url>https://github.com/gbif/postal-service</url>
+    <developerConnection>scm:git:git@github.com:gbif/postal-service.git</developerConnection>
+  </scm>
+
+  <url>http://sites.gbif.org/common-resources/gbif-postal-service</url>
+
+  <properties>
+    <amqp-client.version>3.1.4</amqp-client.version>
+    <assertj.version>1.3.0</assertj.version>
+    <assertj-guava.version>1.0.0</assertj-guava.version>
+    <gbif-api.version>0.12-SNAPSHOT</gbif-api.version>
+    <gbif-common-service.version>0.8</gbif-common-service.version>
+    <guice.version>3.0</guice.version>
+    <guava.version>14.0.1</guava.version>
+    <jackson.version>1.9.12</jackson.version>
+    <jackson-datatype-guava.version>1.9.2</jackson-datatype-guava.version>
+    <jcommander.version>1.30-gbif-20121018</jcommander.version>
+    <jsr305.version>2.0.1</jsr305.version>
+    <junit.version>4.11</junit.version>
+    <logback.version>1.0.13</logback.version>
+    <mockito.version>1.9.5</mockito.version>
+    <slf4j.version>1.7.5</slf4j.version>
+    <validation-api.version>1.1.0.Final</validation-api.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>gbif-all</id>
+      <url>http://repository.gbif.org/content/groups/gbif</url>
+    </repository>
+    <repository>
+      <!-- for JCommander -->
+      <id>gbif-thirdparty</id>
+      <url>http://repository.gbif.org/content/repositories/thirdparty</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson</groupId>
+      <artifactId>jackson-datatype-guava</artifactId>
+      <version>${jackson-datatype-guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>${jsr305.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>${guice.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rabbitmq</groupId>
+      <artifactId>amqp-client</artifactId>
+      <version>${amqp-client.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>${validation-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-guava</artifactId>
+      <version>${assertj-guava.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-api</artifactId>
+      <version>${gbif-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common-service</artifactId>
+      <version>${gbif-common-service.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>${jcommander.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>

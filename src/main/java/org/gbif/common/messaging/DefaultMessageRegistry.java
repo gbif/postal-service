@@ -1,0 +1,172 @@
+package org.gbif.common.messaging;
+
+import org.gbif.common.messaging.api.Message;
+import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.common.messaging.api.messages.CrawlErrorMessage;
+import org.gbif.common.messaging.api.messages.CrawlFinishedMessage;
+import org.gbif.common.messaging.api.messages.CrawlRequestMessage;
+import org.gbif.common.messaging.api.messages.CrawlResponseMessage;
+import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
+import org.gbif.common.messaging.api.messages.DeleteDataResourceOccurrencesMessage;
+import org.gbif.common.messaging.api.messages.DeleteDatasetOccurrencesMessage;
+import org.gbif.common.messaging.api.messages.DeleteOccurrenceMessage;
+import org.gbif.common.messaging.api.messages.DwcaDownloadFinishedMessage;
+import org.gbif.common.messaging.api.messages.DwcaMetasyncFinishedMessage;
+import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
+import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
+import org.gbif.common.messaging.api.messages.OccurrenceFragmentedMessage;
+import org.gbif.common.messaging.api.messages.OccurrenceMutatedMessage;
+import org.gbif.common.messaging.api.messages.RegistryChangeMessage;
+import org.gbif.common.messaging.api.messages.StartCrawlMessage;
+import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
+import org.gbif.common.messaging.api.messages.VerbatimPersistedMessage;
+
+import java.util.concurrent.ConcurrentMap;
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * A default implementation of the {@link MessageRegistry} interface where all the messages from this projects {@code
+ * org.gbif.common.messaging.api} package are already preregistered.
+ * <p/>
+ * This class is thread-safe.
+ */
+@ThreadSafe
+public class DefaultMessageRegistry implements MessageRegistry {
+
+  private final Object lock = new Object();
+
+  /* These are the default messages which are the seed for any new instance */
+  private static final ImmutableMap<Class<? extends Message>, String> MESSAGE_TO_EXCHANGE_MAPPING;
+  private static final ImmutableMap<Class<? extends Message>, String> MESSAGE_TO_ROUTING_KEY_MAPPING;
+
+  @GuardedBy("lock")
+  private final ConcurrentMap<Class<? extends Message>, String> exchangeMapping = Maps.newConcurrentMap();
+  @GuardedBy("lock")
+  private final ConcurrentMap<Class<? extends Message>, String> routingKeyMapping = Maps.newConcurrentMap();
+
+  static {
+    MESSAGE_TO_EXCHANGE_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
+      .put(CrawlErrorMessage.class, "crawler")
+      .put(CrawlFinishedMessage.class, "crawler")
+      .put(CrawlStartedMessage.class, "crawler")
+      .put(CrawlRequestMessage.class, "crawler")
+      .put(CrawlResponseMessage.class, "crawler")
+      .put(OccurrenceFragmentedMessage.class, "crawler")
+      .put(DwcaDownloadFinishedMessage.class, "crawler")
+      .put(DwcaMetasyncFinishedMessage.class, "crawler")
+      .put(DwcaValidationFinishedMessage.class, "crawler")
+      .put(FragmentPersistedMessage.class, "occurrence")
+      .put(VerbatimPersistedMessage.class, "occurrence")
+      .put(OccurrenceMutatedMessage.class, "occurrence")
+      .put(DeleteOccurrenceMessage.class, "occurrence")
+      .put(DeleteDataResourceOccurrencesMessage.class, "occurrence")
+      .put(DeleteDatasetOccurrencesMessage.class, "occurrence")
+      .put(RegistryChangeMessage.class, "registry")
+      .put(StartCrawlMessage.class, "registry")
+      .put(StartMetasyncMessage.class, "registry")
+      .build();
+
+    MESSAGE_TO_ROUTING_KEY_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
+      .put(CrawlErrorMessage.class, "crawl.error")
+      .put(CrawlFinishedMessage.class, "crawl.finished")
+      .put(CrawlStartedMessage.class, "crawl.started")
+      .put(CrawlRequestMessage.class, "crawl.request")
+      .put(CrawlResponseMessage.class, "crawl.response")
+      .put(DwcaDownloadFinishedMessage.class, DwcaDownloadFinishedMessage.ROUTING_KEY)
+      .put(DwcaMetasyncFinishedMessage.class, DwcaMetasyncFinishedMessage.ROUTING_KEY)
+      .put(DwcaValidationFinishedMessage.class, DwcaValidationFinishedMessage.ROUTING_KEY)
+      .put(OccurrenceFragmentedMessage.class, "crawler.fragment.new")
+      .put(FragmentPersistedMessage.class, "occurrence.fragment.persisted")
+      .put(VerbatimPersistedMessage.class, "occurrence.verbatim.persisted")
+      .put(OccurrenceMutatedMessage.class, "occurrence.interpreted.mutated")
+      .put(DeleteOccurrenceMessage.class, "occurrence.delete.occurrence")
+      .put(DeleteDataResourceOccurrencesMessage.class, "occurrence.delete.dataresource")
+      .put(DeleteDatasetOccurrencesMessage.class, "occurrence.delete.dataset")
+      .put(RegistryChangeMessage.class, "registry.change.#")
+      .put(StartCrawlMessage.class, "crawl.start")
+      .put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY)
+      .build();
+  }
+
+  public DefaultMessageRegistry() {
+    exchangeMapping.putAll(MESSAGE_TO_EXCHANGE_MAPPING);
+    routingKeyMapping.putAll(MESSAGE_TO_ROUTING_KEY_MAPPING);
+  }
+
+  @Override
+  public Optional<String> getExchange(Class<? extends Message> message) {
+    checkNotNull(message, "message can't be null");
+
+    return Optional.fromNullable(exchangeMapping.get(message));
+  }
+
+  @Override
+  public Optional<String> getGenericRoutingKey(Class<? extends Message> message) {
+    checkNotNull(message, "message can't be null");
+
+    return Optional.fromNullable(routingKeyMapping.get(message));
+  }
+
+  @Override
+  public ImmutableSet<Class<? extends Message>> getRegisteredMessages() {
+    synchronized (lock) {
+      return ImmutableSet.copyOf(exchangeMapping.keySet());
+    }
+  }
+
+  /**
+   * Used to register a new message or change information about an existing one. No special care is taken to protect
+   * the default set of messages.
+   *
+   * @param message    to register
+   * @param exchange   it uses
+   * @param routingKey it uses
+   */
+  @Override
+  public void register(Class<? extends Message> message, String exchange, String routingKey) {
+    checkNotNull(message, "message can't be null");
+    checkNotNull(exchange, "exchange can't be null");
+    checkNotNull(routingKey, "routingKey can't be null");
+
+    synchronized (lock) {
+      exchangeMapping.put(message, exchange);
+      routingKeyMapping.put(message, routingKey);
+    }
+  }
+
+  /**
+   * Deletes information about a message from the registry. No special care is taken to protect the default set of
+   * messages.
+   *
+   * @param message to unregister
+   */
+  @Override
+  public void unregister(Class<? extends Message> message) {
+    checkNotNull(message, "message can't be null");
+
+    synchronized (lock) {
+      exchangeMapping.remove(message);
+      routingKeyMapping.remove(message);
+    }
+  }
+
+  /**
+   * Deletes information about all message from the registry. No special care is taken to protect the default set of
+   * messages.
+   */
+  @Override
+  public void clear() {
+    synchronized (lock) {
+      exchangeMapping.clear();
+      routingKeyMapping.clear();
+    }
+  }
+}
