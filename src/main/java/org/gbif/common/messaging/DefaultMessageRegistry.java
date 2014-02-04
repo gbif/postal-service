@@ -14,8 +14,12 @@ import org.gbif.common.messaging.api.messages.DwcaDownloadFinishedMessage;
 import org.gbif.common.messaging.api.messages.DwcaMetasyncFinishedMessage;
 import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
 import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
+import org.gbif.common.messaging.api.messages.InterpretDatasetMessage;
+import org.gbif.common.messaging.api.messages.InterpretVerbatimMessage;
 import org.gbif.common.messaging.api.messages.OccurrenceFragmentedMessage;
 import org.gbif.common.messaging.api.messages.OccurrenceMutatedMessage;
+import org.gbif.common.messaging.api.messages.ParseDatasetMessage;
+import org.gbif.common.messaging.api.messages.ParseFragmentMessage;
 import org.gbif.common.messaging.api.messages.RegistryChangeMessage;
 import org.gbif.common.messaging.api.messages.StartCrawlMessage;
 import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
@@ -69,6 +73,10 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(DeleteOccurrenceMessage.class, "occurrence")
       .put(DeleteDataResourceOccurrencesMessage.class, "occurrence")
       .put(DeleteDatasetOccurrencesMessage.class, "occurrence")
+      .put(ParseFragmentMessage.class, "occurrence")
+      .put(ParseDatasetMessage.class, "occurrence")
+      .put(InterpretVerbatimMessage.class, "occurrence")
+      .put(InterpretDatasetMessage.class, "occurrence")
       .put(RegistryChangeMessage.class, "registry")
       .put(StartCrawlMessage.class, "registry")
       .put(StartMetasyncMessage.class, "registry")
@@ -90,6 +98,10 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(DeleteOccurrenceMessage.class, "occurrence.delete.occurrence")
       .put(DeleteDataResourceOccurrencesMessage.class, "occurrence.delete.dataresource")
       .put(DeleteDatasetOccurrencesMessage.class, "occurrence.delete.dataset")
+      .put(ParseFragmentMessage.class, "occurrence.parse.occurrence")
+      .put(ParseDatasetMessage.class, "occurrence.parse.dataset")
+      .put(InterpretVerbatimMessage.class, "occurrence.interpret.occurrence")
+      .put(InterpretDatasetMessage.class, "occurrence.interpret.dataset")
       .put(RegistryChangeMessage.class, "registry.change.#")
       .put(StartCrawlMessage.class, "crawl.start")
       .put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY)
