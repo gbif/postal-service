@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,8 @@ public class MessageListener {
     checkNotNull(connectionParameters, "connectionParameters can't be null");
     this.mapper = checkNotNull(mapper, "mapper can't be null");
     this.registry = checkNotNull(registry, "registry can't be null");
+
+    this.mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     connectionFactory = connectionParameters.getConnectionFactory();
     // This ensures that the connection is valid, otherwise it'd throw an exception now
