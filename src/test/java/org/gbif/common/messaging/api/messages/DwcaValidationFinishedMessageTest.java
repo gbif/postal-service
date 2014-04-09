@@ -22,10 +22,8 @@ public class DwcaValidationFinishedMessageTest {
   public void testSerDe() throws IOException, URISyntaxException {
     UUID uuid = UUID.randomUUID();
     DwcaValidationFinishedMessage message = new DwcaValidationFinishedMessage(uuid,
-                                                                              DatasetType.OCCURRENCE,
-                                                                              new URI("http://google.de"),
-                                                                              1,
-                                                                new DwcaValidationReport(uuid, 1, 1, 1, 1, 1, true));
+                            DatasetType.OCCURRENCE, new URI("http://google.de"), 1,
+                            new DwcaValidationReport(uuid, 1, 1, 1, 1, 1, true));
     Util.testSerDe(message, DwcaValidationFinishedMessage.class);
   }
 }
