@@ -1,13 +1,19 @@
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.model.common.MediaObject;
 import org.gbif.api.model.occurrence.Occurrence;
-import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.api.vocabulary.MediaType;
+import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
 import org.gbif.common.messaging.api.Util;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
+import com.beust.jcommander.internal.Lists;
 import org.junit.Test;
 
 public class OccurrenceMutatedMessageTest {
@@ -18,11 +24,19 @@ public class OccurrenceMutatedMessageTest {
   }
 
   @Test
-  public void testSerDe() throws IOException {
+  public void testSerDe() throws IOException, URISyntaxException {
+    Occurrence occ = new Occurrence();
+    List<MediaObject> media = Lists.newArrayList();
+    MediaObject medium = new MediaObject();
+    medium.setType(MediaType.StillImage);
+    medium.setIdentifier(new URI("http://www.example.com"));
+    media.add(medium);
+    occ.setMedia(media);
+
     OccurrenceMutatedMessage message =
       new OccurrenceMutatedMessage(UUID.randomUUID(), OccurrencePersistenceStatus.UPDATED, 1,
       build(EndpointType.BIOCASE, 1, UUID.randomUUID()),
-      new Occurrence(), null, null, null);
+      occ, null, null, null);
     Util.testSerDe(message, OccurrenceMutatedMessage.class);
   }
 
