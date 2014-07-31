@@ -63,11 +63,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson</groupId>
-      <artifactId>jackson-datatype-guava</artifactId>
-      <version>${jackson-datatype-guava.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>${jsr305.version}</version>
@@ -109,6 +104,11 @@
       <artifactId>assertj-guava</artifactId>
       <version>${assertj-guava.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson</groupId>
+      <artifactId>jackson-datatype-guava</artifactId>
+      <version>${jackson-datatype-guava.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>

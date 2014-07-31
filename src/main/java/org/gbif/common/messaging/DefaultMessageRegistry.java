@@ -2,6 +2,8 @@ package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.common.messaging.api.messages.ChecklistNormalizedMessage;
+import org.gbif.common.messaging.api.messages.ChecklistSyncedMessage;
 import org.gbif.common.messaging.api.messages.CrawlErrorMessage;
 import org.gbif.common.messaging.api.messages.CrawlFinishedMessage;
 import org.gbif.common.messaging.api.messages.CrawlRequestMessage;
@@ -80,6 +82,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(RegistryChangeMessage.class, "registry")
       .put(StartCrawlMessage.class, "registry")
       .put(StartMetasyncMessage.class, "registry")
+      .put(ChecklistNormalizedMessage.class, "checklist")
+      .put(ChecklistSyncedMessage.class, "checklist")
       .build();
 
     MESSAGE_TO_ROUTING_KEY_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
@@ -105,6 +109,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(RegistryChangeMessage.class, "registry.change.#")
       .put(StartCrawlMessage.class, "crawl.start")
       .put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY)
+      .put(ChecklistNormalizedMessage.class, ChecklistNormalizedMessage.ROUTING_KEY)
+      .put(ChecklistSyncedMessage.class, ChecklistSyncedMessage.ROUTING_KEY)
       .build();
   }
 

@@ -65,6 +65,7 @@ public class DefaultMessagePublisher implements MessagePublisher {
     this.registry = checkNotNull(registry, "registry can't be null");
 
     mapper.registerModule(new GuavaModule());
+    LOG.info("Connecting to AMQP broker {}", connectionParameters);
     connection = connectionParameters.getConnectionFactory().newConnection();
     declareAllExchanges(registry, connection);
   }

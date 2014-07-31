@@ -69,4 +69,8 @@ public class ConnectionParameters {
     return connectionFactory;
   }
 
+  @Override
+  public String toString() {
+    return String.format("%s:%s@%s:%s %s", username, password, host, port, virtualHost);
+  }
 }

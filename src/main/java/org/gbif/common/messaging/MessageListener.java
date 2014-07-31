@@ -62,6 +62,7 @@ public class MessageListener {
 
     this.mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+    LOG.info("Connecting to AMQP broker {}", connectionParameters);
     connectionFactory = connectionParameters.getConnectionFactory();
     // This ensures that the connection is valid, otherwise it'd throw an exception now
     Connection connection = connectionFactory.newConnection();
