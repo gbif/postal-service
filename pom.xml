@@ -25,21 +25,20 @@
 
   <properties>
     <amqp-client.version>3.1.4</amqp-client.version>
-    <!-- assertj 1.5 uses guava 15 -->
-    <assertj.version>1.5.0</assertj.version>
-    <assertj-guava.version>1.1.0</assertj-guava.version>
+    <assertj.version>1.6.1</assertj.version>
+    <assertj-guava.version>1.2.0</assertj-guava.version>
     <gbif-api.version>0.16-SNAPSHOT</gbif-api.version>
-    <gbif-common-service.version>0.10</gbif-common-service.version>
+    <gbif-common-service.version>0.11-SNAPSHOT</gbif-common-service.version>
     <guice.version>3.0</guice.version>
-    <guava.version>15.0</guava.version>
+    <guava.version>17.0</guava.version>
     <jackson.version>1.9.12</jackson.version>
     <jackson-datatype-guava.version>1.9.2</jackson-datatype-guava.version>
     <jcommander.version>1.35</jcommander.version>
-    <jsr305.version>2.0.1</jsr305.version>
+    <jsr305.version>3.0.0</jsr305.version>
     <junit.version>4.11</junit.version>
-    <logback.version>1.0.13</logback.version>
+    <logback.version>1.1.2</logback.version>
     <mockito.version>1.9.5</mockito.version>
-    <slf4j.version>1.7.5</slf4j.version>
+    <slf4j.version>1.7.7</slf4j.version>
     <validation-api.version>1.1.0.Final</validation-api.version>
   </properties>
 
