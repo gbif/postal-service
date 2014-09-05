@@ -23,7 +23,7 @@ public class DwcaValidationFinishedMessageTest {
     UUID uuid = UUID.randomUUID();
     DwcaValidationFinishedMessage message = new DwcaValidationFinishedMessage(uuid,
                             DatasetType.OCCURRENCE, new URI("http://google.de"), 1,
-                            new DwcaValidationReport(uuid, 1, 1, 1, 1, 1, true));
+      OccurrenceFragmentedMessageTest.report(uuid));
     Util.testSerDe(message, DwcaValidationFinishedMessage.class);
   }
 }

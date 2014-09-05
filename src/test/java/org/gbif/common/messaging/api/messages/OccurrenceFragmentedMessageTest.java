@@ -23,13 +23,17 @@ public class OccurrenceFragmentedMessageTest {
     Util.testDefaultMessageRegistry(OccurrenceFragmentedMessage.class);
   }
 
+  public static DwcaValidationReport report(UUID uuid) {
+    return new DwcaValidationReport(uuid, "fake issue");
+  }
+
   @Test
   public void testSerDe() throws IOException {
     String test = "<foobar>deie&{  }ierndÄÖU</foobar>";
     UUID uuid = UUID.randomUUID();
     OccurrenceFragmentedMessage message =
       new OccurrenceFragmentedMessage(uuid, 1, test.getBytes(Charsets.UTF_8),
-        OccurrenceSchemaType.ABCD_1_2, EndpointType.BIOCASE, new DwcaValidationReport(uuid, 1, 1, 1, 1, 1, true));
+        OccurrenceSchemaType.ABCD_1_2, EndpointType.BIOCASE, report(uuid));
     Util.testSerDe(message, OccurrenceFragmentedMessage.class);
   }
 
@@ -39,10 +43,10 @@ public class OccurrenceFragmentedMessageTest {
     String fragment = "<xml><inner>some fake xml asdf</inner></xml>";
     OccurrenceFragmentedMessage message1 =
       new OccurrenceFragmentedMessage(datasetKey, 1, fragment.getBytes(Charsets.UTF_8), OccurrenceSchemaType.ABCD_2_0_6,
-        EndpointType.BIOCASE, new DwcaValidationReport(datasetKey, 1, 1, 1, 1, 1, true));
+        EndpointType.BIOCASE, report(datasetKey));
     OccurrenceFragmentedMessage message2 =
       new OccurrenceFragmentedMessage(datasetKey, 1, fragment.getBytes(Charsets.UTF_8), OccurrenceSchemaType.ABCD_2_0_6,
-        EndpointType.BIOCASE, new DwcaValidationReport(datasetKey, 1, 1, 1, 1, 1, true));
+        EndpointType.BIOCASE, report(datasetKey));
     assertTrue(message1.equals(message2));
     assertEquals(message1.hashCode(), message2.hashCode());
   }
@@ -54,10 +58,10 @@ public class OccurrenceFragmentedMessageTest {
     byte[] raw2 = "<xml><inner>fake 2</inner></xml>".getBytes(Charsets.UTF_8);
     OccurrenceFragmentedMessage message1 =
       new OccurrenceFragmentedMessage(datasetKey, 1, raw1, OccurrenceSchemaType.ABCD_2_0_6, EndpointType.BIOCASE,
-        new DwcaValidationReport(datasetKey, 1, 1, 1, 1, 1, true));
+        report(datasetKey));
     OccurrenceFragmentedMessage message2 =
       new OccurrenceFragmentedMessage(datasetKey, 1, raw2, OccurrenceSchemaType.ABCD_2_0_6, EndpointType.BIOCASE,
-        new DwcaValidationReport(datasetKey, 1, 1, 1, 1, 1, true));
+        report(datasetKey));
     assertFalse(message1.equals(message2));
     assertNotEquals(message1.hashCode(), message2.hashCode());
   }

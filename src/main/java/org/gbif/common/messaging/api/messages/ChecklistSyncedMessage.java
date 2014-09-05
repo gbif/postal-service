@@ -6,6 +6,7 @@ import com.google.common.base.Objects;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -15,11 +16,17 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
   public static final String ROUTING_KEY = "checklist.imported";
 
   private final UUID datasetUuid;
+  private final int recordsSynced;
+  private final int recordsDeleted;
 
   @JsonCreator
-  public ChecklistSyncedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid
-  ) {
+  public ChecklistSyncedMessage(@JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("recordsSynced") int recordsSynced,
+    @JsonProperty("recordsDeleted") int recordsDeleted) {
+    checkArgument(recordsSynced >= 0);
+    this.recordsSynced = recordsSynced;
+    checkArgument(recordsDeleted >= 0);
+    this.recordsDeleted = recordsDeleted;
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
   }
 
@@ -33,9 +40,17 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
     return datasetUuid;
   }
 
+  public int getRecordsSynced() {
+    return recordsSynced;
+  }
+
+  public int getRecordsDeleted() {
+    return recordsDeleted;
+  }
+
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid);
+    return Objects.hashCode(datasetUuid, recordsSynced, recordsDeleted);
   }
 
   @Override
@@ -47,6 +62,8 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
       return false;
     }
     final ChecklistSyncedMessage other = (ChecklistSyncedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid);
+    return Objects.equal(this.datasetUuid, other.datasetUuid)
+      && Objects.equal(this.recordsSynced, other.recordsSynced)
+      && Objects.equal(this.recordsDeleted, other.recordsDeleted);
   }
 }
