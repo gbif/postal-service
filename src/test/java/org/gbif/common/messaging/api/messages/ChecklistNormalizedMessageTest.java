@@ -25,7 +25,7 @@ public class ChecklistNormalizedMessageTest {
   public void testSerDe() throws IOException, URISyntaxException {
     UUID uuid = UUID.randomUUID();
     NormalizerStats stats =
-      new NormalizerStats(2, 7, 20, Maps.<Origin, Integer>newHashMap(), Maps.<Rank, Integer>newHashMap(),
+      new NormalizerStats(2, 7, 20, 0, Maps.<Origin, Integer>newHashMap(), Maps.<Rank, Integer>newHashMap(),
         Lists.<String>newArrayList());
     ChecklistNormalizedMessage message = new ChecklistNormalizedMessage(uuid, stats);
     Util.testSerDe(message, ChecklistNormalizedMessage.class);
