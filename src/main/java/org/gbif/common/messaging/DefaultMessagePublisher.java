@@ -15,6 +15,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,9 @@ public class DefaultMessagePublisher implements MessagePublisher {
     this.mapper = checkNotNull(mapper, "mapper can't be null");
     this.registry = checkNotNull(registry, "registry can't be null");
 
-    mapper.registerModule(new GuavaModule());
+    this.mapper.registerModule(new GuavaModule());
+    this.mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+
     LOG.info("Connecting to AMQP broker {}", connectionParameters);
     connection = connectionParameters.getConnectionFactory().newConnection();
     declareAllExchanges(registry, connection);
