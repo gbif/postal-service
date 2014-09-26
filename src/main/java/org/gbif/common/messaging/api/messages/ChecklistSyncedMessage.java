@@ -1,5 +1,6 @@
 package org.gbif.common.messaging.api.messages;
 
+import java.util.Date;
 import java.util.UUID;
 
 import com.google.common.base.Objects;
@@ -16,13 +17,16 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
   public static final String ROUTING_KEY = "checklist.imported";
 
   private final UUID datasetUuid;
+  private final Date crawlFinished;
   private final int recordsSynced;
   private final int recordsDeleted;
 
   @JsonCreator
   public ChecklistSyncedMessage(@JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("crawlFinished") Date crawlFinished,
     @JsonProperty("recordsSynced") int recordsSynced,
     @JsonProperty("recordsDeleted") int recordsDeleted) {
+    this.crawlFinished = checkNotNull(crawlFinished, "crawlFinished date missing");
     checkArgument(recordsSynced >= 0);
     this.recordsSynced = recordsSynced;
     checkArgument(recordsDeleted >= 0);
@@ -40,6 +44,10 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
     return datasetUuid;
   }
 
+  public Date getCrawlFinished() {
+    return crawlFinished;
+  }
+
   public int getRecordsSynced() {
     return recordsSynced;
   }
@@ -50,7 +58,7 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, recordsSynced, recordsDeleted);
+    return Objects.hashCode(datasetUuid, crawlFinished, recordsSynced, recordsDeleted);
   }
 
   @Override
@@ -63,6 +71,7 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
     }
     final ChecklistSyncedMessage other = (ChecklistSyncedMessage) obj;
     return Objects.equal(this.datasetUuid, other.datasetUuid)
+      && Objects.equal(this.crawlFinished, other.crawlFinished)
       && Objects.equal(this.recordsSynced, other.recordsSynced)
       && Objects.equal(this.recordsDeleted, other.recordsDeleted);
   }
