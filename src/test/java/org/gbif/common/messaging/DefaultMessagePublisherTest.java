@@ -61,30 +61,31 @@ public class DefaultMessagePublisherTest {
   public void testSend1() throws IOException {
     publisher.send(message);
 
-    verify(channel).basicPublish(eq(DEFAULT_EXCHANGE),
-                                 eq("foobar"),
-                                 eq(MessageProperties.TEXT_PLAIN),
-                                 any(byte[].class));
+    verify(channel)
+      .basicPublish(eq(DEFAULT_EXCHANGE), eq("foobar"), eq(MessageProperties.TEXT_PLAIN), any(byte[].class));
   }
 
   @Test
   public void testSend2() throws IOException {
     publisher.send(message, TEST_EXCHANGE);
 
-    verify(channel).basicPublish(eq(TEST_EXCHANGE),
-                                 eq("foobar"),
-                                 eq(MessageProperties.TEXT_PLAIN),
-                                 any(byte[].class));
+    verify(channel).basicPublish(eq(TEST_EXCHANGE), eq("foobar"), eq(MessageProperties.TEXT_PLAIN), any(byte[].class));
   }
 
   @Test
   public void testSend3() throws IOException {
     publisher.send(message, TEST_EXCHANGE, TEST_ROUTINGKEY);
 
-    verify(channel).basicPublish(eq(TEST_EXCHANGE),
-                                 eq(TEST_ROUTINGKEY),
-                                 eq(MessageProperties.TEXT_PLAIN),
-                                 any(byte[].class));
+    verify(channel)
+      .basicPublish(eq(TEST_EXCHANGE), eq(TEST_ROUTINGKEY), eq(MessageProperties.TEXT_PLAIN), any(byte[].class));
+  }
+
+  @Test
+  public void testPersistentSend1() throws IOException {
+    publisher.send(message, TEST_EXCHANGE, TEST_ROUTINGKEY, true);
+
+    verify(channel).basicPublish(eq(TEST_EXCHANGE), eq(TEST_ROUTINGKEY), eq(MessageProperties.PERSISTENT_TEXT_PLAIN),
+      any(byte[].class));
   }
 
   @Test
@@ -99,25 +100,19 @@ public class DefaultMessagePublisherTest {
       // Expected
     }
 
-    verify(channel, times(3)).basicPublish(eq(DEFAULT_EXCHANGE),
-                                           eq("foobar"),
-                                           eq(MessageProperties.TEXT_PLAIN),
-                                           any(byte[].class));
+    verify(channel, times(3))
+      .basicPublish(eq(DEFAULT_EXCHANGE), eq("foobar"), eq(MessageProperties.TEXT_PLAIN), any(byte[].class));
 
   }
 
   @Test
   public void testSuccessfulRetries() throws IOException {
-    doThrow(new IOException()).doThrow(new IOException())
-      .doNothing()
-      .when(channel)
+    doThrow(new IOException()).doThrow(new IOException()).doNothing().when(channel)
       .basicPublish(anyString(), anyString(), any(AMQP.BasicProperties.class), any(byte[].class));
 
     publisher.send(message);
 
-    verify(channel, times(3)).basicPublish(eq(DEFAULT_EXCHANGE),
-                                           eq("foobar"),
-                                           eq(MessageProperties.TEXT_PLAIN),
-                                           any(byte[].class));
+    verify(channel, times(3))
+      .basicPublish(eq(DEFAULT_EXCHANGE), eq("foobar"), eq(MessageProperties.TEXT_PLAIN), any(byte[].class));
   }
 }

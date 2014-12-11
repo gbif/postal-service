@@ -94,21 +94,29 @@ public class DefaultMessagePublisher implements MessagePublisher {
 
   @Override
   public void send(Object message, String exchange, String routingKey) throws IOException {
+    send(message, exchange, routingKey, false);
+  }
+
+  @Override
+  public void send(Object message, String exchange, String routingKey, boolean persistent) throws IOException {
     checkNotNull(message, "message can't be null");
     checkNotNull(exchange, "exchange can't be null");
     checkNotNull(routingKey, "routingKey can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
-    LOG.debug("Sending message of type [{}] to exchange [{}] using routing key [{}]",
-              message.getClass().getSimpleName(),
-              exchange,
-              routingKey);
+    LOG
+      .debug("Sending message of type [{}] to exchange [{}] using routing key [{}]", message.getClass().getSimpleName(),
+        exchange, routingKey);
 
     for (int attempt = 1; attempt <= NUMBER_OF_RETRIES; attempt++) {
       Channel channel = provideChannel();
 
       try {
-        channel.basicPublish(exchange, routingKey, MessageProperties.TEXT_PLAIN, data);
+        if (persistent) {
+          channel.basicPublish(exchange, routingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, data);
+        } else {
+          channel.basicPublish(exchange, routingKey, MessageProperties.TEXT_PLAIN, data);
+        }
         // We're not releasing this in a finally block because we assume the channel is "bad" if an exception occurred
         releaseChannel(channel);
         return;
@@ -120,7 +128,6 @@ public class DefaultMessagePublisher implements MessagePublisher {
         LOG.debug("Failed sending message, retrying");
       }
     }
-
   }
 
   /**

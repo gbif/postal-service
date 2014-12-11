@@ -38,6 +38,11 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
   }
 
   @Override
+  public void send(Object message, String exchange, String routingKey, boolean persistent) throws IOException {
+    delegate().send(message, exchange, routingKey, persistent);
+  }
+
+  @Override
   protected MessagePublisher delegate() {
     return delegate;
   }
