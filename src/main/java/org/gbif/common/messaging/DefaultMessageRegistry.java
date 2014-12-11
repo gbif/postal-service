@@ -3,6 +3,7 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
 import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
+import org.gbif.common.messaging.api.messages.ChangeDoiMessage;
 import org.gbif.common.messaging.api.messages.ChecklistAnalyzedMessage;
 import org.gbif.common.messaging.api.messages.ChecklistNormalizedMessage;
 import org.gbif.common.messaging.api.messages.ChecklistSyncedMessage;
@@ -84,6 +85,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(RegistryChangeMessage.class, "registry")
       .put(StartCrawlMessage.class, "registry")
       .put(StartMetasyncMessage.class, "registry")
+      .put(ChangeDoiMessage.class, "registry")
       .put(ChecklistNormalizedMessage.class, "checklist")
       .put(ChecklistSyncedMessage.class, "checklist")
       .put(ChecklistAnalyzedMessage.class, "checklist")
@@ -117,6 +119,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ChecklistSyncedMessage.class, ChecklistSyncedMessage.ROUTING_KEY)
       .put(ChecklistAnalyzedMessage.class, ChecklistAnalyzedMessage.ROUTING_KEY)
       .put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY)
+      .put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY)
       .build();
   }
 
