@@ -82,6 +82,14 @@ public class DefaultMessagePublisherTest {
 
   @Test
   public void testPersistentSend1() throws IOException {
+    publisher.send(message, true);
+
+    verify(channel)
+      .basicPublish(eq(DEFAULT_EXCHANGE), eq("foobar"), eq(MessageProperties.PERSISTENT_TEXT_PLAIN), any(byte[].class));
+  }
+
+  @Test
+  public void testPersistentSend2() throws IOException {
     publisher.send(message, TEST_EXCHANGE, TEST_ROUTINGKEY, true);
 
     verify(channel).basicPublish(eq(TEST_EXCHANGE), eq(TEST_ROUTINGKEY), eq(MessageProperties.PERSISTENT_TEXT_PLAIN),

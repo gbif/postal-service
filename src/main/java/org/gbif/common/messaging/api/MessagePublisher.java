@@ -12,6 +12,15 @@ public interface MessagePublisher {
   void send(Message message) throws IOException;
 
   /**
+   * Sends an optionally persistent message to the default exchange for this message and uses the routing key
+   * calculated from the message.
+   *
+   * @param message to send
+   * @param persistent whether the message should be persisted by the broker
+   */
+  void send(Message message, boolean persistent) throws IOException;
+
+  /**
    * Sends a message to the given exchange using the routing key calculated from the message.
    *
    * @param message  to send

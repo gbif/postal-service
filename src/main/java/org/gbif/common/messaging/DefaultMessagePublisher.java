@@ -75,12 +75,18 @@ public class DefaultMessagePublisher implements MessagePublisher {
 
   @Override
   public void send(Message message) throws IOException {
+    send(message, false);
+  }
+
+  @Override
+  public void send(Message message, boolean persistent) throws IOException {
     checkNotNull(message, "message can't be null");
 
     Optional<String> exchange = registry.getExchange(message.getClass());
     checkArgument(exchange.isPresent(), "No exchange found for Message");
+    String routingKey = message.getRoutingKey();
 
-    send(message, exchange.get());
+    send(message, exchange.get(), routingKey, persistent);
   }
 
   @Override
