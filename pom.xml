@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>16</version>
+    <version>19</version>
   </parent>
 
   <groupId>org.gbif.common</groupId>
@@ -28,7 +28,7 @@
     <assertj.version>1.6.1</assertj.version>
     <assertj-guava.version>1.2.0</assertj-guava.version>
     <commons-io.version>2.4</commons-io.version>
-    <gbif-api.version>0.17-SNAPSHOT</gbif-api.version>
+    <gbif-api.version>0.17</gbif-api.version>
     <gbif-common.version>0.17</gbif-common.version>
     <gbif-common-service.version>0.11</gbif-common-service.version>
     <guice.version>3.0</guice.version>
