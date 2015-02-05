@@ -101,11 +101,14 @@ class MessageConsumer<T> extends DefaultConsumer {
       callback.handleMessage(object);
 
     } catch (Exception e) {
-      LOG.warn("Error handling message, will be acknowledged anyway and not retried", e);
+      LOG.warn("Error handling message [{}] of type [{}]. Reject and send a nack",
+        envelope.getDeliveryTag(),
+        object.getClass().getSimpleName(),
+        e);
       try {
         getChannel().basicNack(envelope.getDeliveryTag(), false, false);
       } catch (IOException e1) {
-        LOG.warn("Failure acknowledging message [{}] of type [{}]",
+        LOG.warn("Failed to nack message [{}] of type [{}]",
           envelope.getDeliveryTag(),
           object.getClass().getSimpleName(),
           e1);
