@@ -20,10 +20,11 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class MessageListener {
+public class MessageListener implements AutoCloseable {
 
   private static final Logger LOG = LoggerFactory.getLogger(MessageListener.class);
-  private int prefetchCount = 50;
+  private static final int DEFAULT_PREFETCH_COUNT = 50;
+  private final int prefetchCount;
   private final ConnectionFactory connectionFactory;
   private final MessageRegistry registry;
   private final ObjectMapper mapper;
@@ -32,7 +33,7 @@ public class MessageListener {
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link DefaultMessageRegistry}.
    */
   public MessageListener(ConnectionParameters connectionParameters) throws IOException {
-    this(connectionParameters, new DefaultMessageRegistry(), new ObjectMapper());
+    this(connectionParameters, new DefaultMessageRegistry(), new ObjectMapper(), DEFAULT_PREFETCH_COUNT);
   }
 
   /**
@@ -46,19 +47,25 @@ public class MessageListener {
    * http://www.rabbitmq.com/blog/2012/05/11/some-queuing-theory-throughput-latency-and-bandwidth/</a>
    */
   public MessageListener(ConnectionParameters connectionParameters, int prefetchCount) throws IOException {
-    this(connectionParameters, new DefaultMessageRegistry(), new ObjectMapper());
-    checkArgument(prefetchCount >= 1, "prefetchCount needs to be greater than or equal to 1");
-    this.prefetchCount = prefetchCount;
+    this(connectionParameters, new DefaultMessageRegistry(), new ObjectMapper(), prefetchCount);
   }
 
   /**
    * Builds a new MessagingService with the provided components.
    */
-  public MessageListener(ConnectionParameters connectionParameters, MessageRegistry registry, ObjectMapper mapper)
+  public MessageListener(ConnectionParameters connectionParameters, MessageRegistry registry, ObjectMapper mapper) throws IOException {
+    this(connectionParameters, registry, mapper, DEFAULT_PREFETCH_COUNT);
+  }
+  /**
+   * Builds a new MessagingService with the provided components.
+   */
+  public MessageListener(ConnectionParameters connectionParameters, MessageRegistry registry, ObjectMapper mapper, int prefetchCount)
     throws IOException {
     checkNotNull(connectionParameters, "connectionParameters can't be null");
     this.mapper = checkNotNull(mapper, "mapper can't be null");
     this.registry = checkNotNull(registry, "registry can't be null");
+    checkArgument(prefetchCount >= 1, "prefetchCount needs to be greater than or equal to 1");
+    this.prefetchCount = prefetchCount;
 
     this.mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 

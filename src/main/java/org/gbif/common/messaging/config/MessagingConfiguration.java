@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.validation.constraints.NotNull;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.rabbitmq.client.AMQP;
 
 /**
@@ -41,7 +41,7 @@ public class MessagingConfiguration {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
       .add("host", host)
       .add("virtualHost", virtualHost)
       .add("port", port)
