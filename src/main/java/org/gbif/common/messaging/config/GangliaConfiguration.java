@@ -3,7 +3,7 @@ package org.gbif.common.messaging.config;
 import javax.validation.constraints.NotNull;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ public class GangliaConfiguration {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
+    return Objects.toStringHelper(this)
       .add("host", host)
       .add("port", port)
       .add("name", name)
