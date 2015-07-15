@@ -1,7 +1,5 @@
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.crawler.NormalizerStats;
-
 import java.util.UUID;
 
 import com.google.common.base.Objects;
@@ -17,15 +15,10 @@ public class ChecklistNormalizedMessage implements DatasetBasedMessage {
   public static final String ROUTING_KEY = "checklist.normalized";
 
   private final UUID datasetUuid;
-  private final NormalizerStats stats;
 
   @JsonCreator
-  public ChecklistNormalizedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("stats") NormalizerStats stats
-  ) {
+  public ChecklistNormalizedMessage(@JsonProperty("datasetUuid") UUID datasetUuid) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.stats = checkNotNull(stats, "stats can't be null");
   }
 
   @Override
@@ -38,13 +31,9 @@ public class ChecklistNormalizedMessage implements DatasetBasedMessage {
     return datasetUuid;
   }
 
-  public NormalizerStats getStats() {
-    return stats;
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, stats);
+    return Objects.hashCode(datasetUuid);
   }
 
   @Override
@@ -56,6 +45,6 @@ public class ChecklistNormalizedMessage implements DatasetBasedMessage {
       return false;
     }
     final ChecklistNormalizedMessage other = (ChecklistNormalizedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid) && Objects.equal(this.stats, other.stats);
+    return Objects.equal(this.datasetUuid, other.datasetUuid);
   }
 }
