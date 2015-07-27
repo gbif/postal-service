@@ -2,7 +2,9 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.api.Message;
 
+import com.google.common.base.Objects;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The message sent whenever the GBIF backbone has been altered.
@@ -10,9 +12,11 @@ import org.codehaus.jackson.annotate.JsonCreator;
 public class BackboneChangedMessage implements Message {
   public static final String ROUTING_KEY = "backbone.changed";
 
-  @JsonCreator
-  public BackboneChangedMessage() {
+  private final Integer firstNewUsageKey;
 
+  @JsonCreator
+  public BackboneChangedMessage(@JsonProperty("firstNewUsageKey") Integer firstNewUsageKey) {
+      this.firstNewUsageKey = firstNewUsageKey;
   }
 
   @Override
@@ -20,10 +24,16 @@ public class BackboneChangedMessage implements Message {
     return ROUTING_KEY;
   }
 
-  @Override
+  /**
+   * @return the first and lowest newly created nub usage key. Null if none was created and it had been all updates
+   */
+  public Integer getFirstNewUsageKey() {
+    return firstNewUsageKey;
+  }
+
+    @Override
   public int hashCode() {
-    // THERE ARE NO PROPERTIES ON THIS CLASS
-    return 32131278;
+    return Objects.hashCode(firstNewUsageKey);
   }
 
   @Override
@@ -35,6 +45,7 @@ public class BackboneChangedMessage implements Message {
       return false;
     }
     // THERE ARE NO PROPERTIES ON THIS CLASS
-    return true;
+    final BackboneChangedMessage other = (BackboneChangedMessage) obj;
+    return Objects.equal(this.firstNewUsageKey, other.firstNewUsageKey);
   }
 }
