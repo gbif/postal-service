@@ -15,7 +15,7 @@ public class BackboneChangedMessageTest {
 
   @Test
   public void testSerDe() throws IOException, URISyntaxException {
-    BackboneChangedMessage message = new BackboneChangedMessage(52341544);
+    BackboneChangedMessage message = new BackboneChangedMessage();
     Util.testSerDe(message, BackboneChangedMessage.class);
   }
 }
