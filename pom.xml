@@ -31,14 +31,14 @@
     <assertj.version>1.6.1</assertj.version>
     <assertj-guava.version>1.2.0</assertj-guava.version>
     <commons-io.version>2.4</commons-io.version>
-    <gbif-api.version>0.27</gbif-api.version>
+    <gbif-api.version>0.28-SNAPSHOT</gbif-api.version>
     <gbif-common.version>0.18</gbif-common.version>
     <gbif-common-service.version>0.14</gbif-common-service.version>
     <guice.version>3.0</guice.version>
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.12</jackson.version>
     <jackson-datatype-guava.version>1.9.2</jackson-datatype-guava.version>
-    <jcommander.version>1.35</jcommander.version>
+    <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.0</jsr305.version>
     <junit.version>4.11</junit.version>
     <logback.version>1.1.2</logback.version>

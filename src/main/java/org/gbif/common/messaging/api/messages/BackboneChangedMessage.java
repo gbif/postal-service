@@ -1,8 +1,13 @@
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.model.checklistbank.DatasetMetrics;
 import org.gbif.common.messaging.api.Message;
 
+import java.util.Objects;
+
+import com.google.common.base.Preconditions;
 import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The message sent whenever the GBIF backbone has been altered.
@@ -10,9 +15,11 @@ import org.codehaus.jackson.annotate.JsonCreator;
 public class BackboneChangedMessage implements Message {
   public static final String ROUTING_KEY = "backbone.changed";
 
-  @JsonCreator
-  public BackboneChangedMessage() {
+  private final DatasetMetrics metrics;
 
+  @JsonCreator
+  public BackboneChangedMessage(@JsonProperty("metrics") DatasetMetrics metrics) {
+    this.metrics = Preconditions.checkNotNull(metrics);
   }
 
   @Override
@@ -20,10 +27,13 @@ public class BackboneChangedMessage implements Message {
     return ROUTING_KEY;
   }
 
+  public DatasetMetrics getMetrics() {
+    return metrics;
+  }
+
   @Override
   public int hashCode() {
-    // THERE ARE NO PROPERTIES ON THIS CLASS
-    return 32131278;
+    return metrics.hashCode();
   }
 
   @Override
@@ -34,7 +44,7 @@ public class BackboneChangedMessage implements Message {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    // THERE ARE NO PROPERTIES ON THIS CLASS
-    return true;
+    final BackboneChangedMessage other = (BackboneChangedMessage) obj;
+    return Objects.equals(this.metrics, other.metrics);
   }
 }
