@@ -3,6 +3,7 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageCallback;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.utils.concurrent.NamedThreadFactory;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -142,7 +143,7 @@ public class MessageListener implements AutoCloseable {
     checkNotNull(callback, "callback can't be empty");
     checkArgument(numberOfThreads >= 1, "numberOfThreads needs to be greater than or equal to 1");
 
-    Connection connection = connectionFactory.newConnection(Executors.newFixedThreadPool(numberOfThreads));
+    Connection connection = connectionFactory.newConnection(Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue)));
     Channel channel = connection.createChannel();
     channel.exchangeDeclare(exchange, "topic", true);
     channel.queueDeclare(queue, true, false, false, null);
