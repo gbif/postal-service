@@ -31,9 +31,9 @@
     <assertj.version>1.6.1</assertj.version>
     <assertj-guava.version>1.2.0</assertj-guava.version>
     <commons-io.version>2.4</commons-io.version>
-    <gbif-api.version>0.29</gbif-api.version>
-    <gbif-common.version>0.19</gbif-common.version>
-    <gbif-common-service.version>0.14</gbif-common-service.version>
+    <gbif-api.version>0.34</gbif-api.version>
+    <gbif-common.version>0.23</gbif-common.version>
+    <gbif-common-service.version>0.15-SNAPSHOT</gbif-common-service.version>
     <guice.version>3.0</guice.version>
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.12</jackson.version>
