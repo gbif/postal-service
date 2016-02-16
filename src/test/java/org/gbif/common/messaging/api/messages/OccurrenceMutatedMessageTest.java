@@ -57,7 +57,7 @@ public class OccurrenceMutatedMessageTest {
     Util.testSerDe(msg, OccurrenceMutatedMessage.class);
   }
 
-  private Occurrence build(EndpointType prot, int key, UUID dkey) {
+  private static Occurrence build(EndpointType prot, int key, UUID dkey) {
     Occurrence o = new Occurrence();
     o.setKey(key);
     o.setProtocol(prot);

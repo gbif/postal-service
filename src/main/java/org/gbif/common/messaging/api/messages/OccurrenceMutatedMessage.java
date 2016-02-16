@@ -6,6 +6,7 @@ import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
 import java.util.UUID;
 import javax.annotation.Nullable;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -157,7 +158,7 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("datasetUuid", datasetUuid).add("crawlAttempt", crawlAttempt)
+    return MoreObjects.toStringHelper(this).add("datasetUuid", datasetUuid).add("crawlAttempt", crawlAttempt)
       .add("status", status).add("oldOccurrence", oldOccurrence).add("newOccurrence", newOccurrence)
       .add("deletionReason", deletionReason).add("crawlAttemptLastSeen", crawlAttemptLastSeen)
       .add("latestCrawlAttemptForDataset", latestCrawlAttemptForDataset).toString();
