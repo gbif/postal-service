@@ -21,6 +21,7 @@ import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
 import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
 import org.gbif.common.messaging.api.messages.InterpretDatasetMessage;
 import org.gbif.common.messaging.api.messages.InterpretVerbatimMessage;
+import org.gbif.common.messaging.api.messages.MatchDatasetMessage;
 import org.gbif.common.messaging.api.messages.OccurrenceFragmentedMessage;
 import org.gbif.common.messaging.api.messages.OccurrenceMutatedMessage;
 import org.gbif.common.messaging.api.messages.ParseDatasetMessage;
@@ -120,6 +121,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ChecklistAnalyzedMessage.class, ChecklistAnalyzedMessage.ROUTING_KEY)
       .put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY)
       .put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY)
+      .put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY)
+
       .build();
   }
 
