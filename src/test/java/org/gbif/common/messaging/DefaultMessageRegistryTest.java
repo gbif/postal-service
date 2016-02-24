@@ -2,15 +2,18 @@ package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
 import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Before;
 import org.junit.Test;
+import org.reflections.Reflections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.guava.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class DefaultMessageRegistryTest {
 
@@ -21,6 +24,24 @@ public class DefaultMessageRegistryTest {
     registry = new DefaultMessageRegistry();
   }
 
+
+  @Test
+  public void testGetMessageRegistration() {
+    Reflections reflections = new Reflections(BackboneChangedMessage.class.getPackage().getName());
+    for (Class<? extends Message> msgClass : reflections.getSubTypesOf(Message.class)) {
+      if (msgClass.isInterface()) {
+        continue;
+      }
+      System.out.println(msgClass);
+
+      Optional<String> exchange = registry.getExchange(msgClass);
+      assertTrue("exchange missing for " + msgClass, exchange.isPresent());
+
+      Optional<String> routing = registry.getGenericRoutingKey(msgClass);
+      assertTrue("routing missing for " + msgClass, routing.isPresent());
+    }
+  }
+
   @Test
   public void testGetExchange() {
     Optional<String> exchange = registry.getExchange(CrawlStartedMessage.class);
@@ -29,8 +50,8 @@ public class DefaultMessageRegistryTest {
 
   @Test
   public void testGetRoutingKey() {
-    Optional<String> exchange = registry.getGenericRoutingKey(CrawlStartedMessage.class);
-    assertThat(exchange).contains("crawl.started");
+    Optional<String> routing = registry.getGenericRoutingKey(CrawlStartedMessage.class);
+    assertThat(routing).contains("crawl.started");
   }
 
   @Test

@@ -91,6 +91,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ChecklistSyncedMessage.class, "checklist")
       .put(ChecklistAnalyzedMessage.class, "checklist")
       .put(BackboneChangedMessage.class, "checklist")
+      .put(MatchDatasetMessage.class, "checklist")
       .build();
 
     MESSAGE_TO_ROUTING_KEY_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
