@@ -14,11 +14,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class MatchDatasetMessage implements DatasetBasedMessage {
   public static final String ROUTING_KEY = "dataset.match";
 
-  private final UUID datasetKey;
+  private final UUID datasetUuid;
 
   @JsonCreator
-  public MatchDatasetMessage(@JsonProperty("datasetKey") UUID datasetKey) {
-    this.datasetKey = checkNotNull(datasetKey, "datasetKey can't be null");
+  public MatchDatasetMessage(@JsonProperty("datasetUuid") UUID datasetUuid) {
+    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
   }
 
   @Override
@@ -28,12 +28,12 @@ public class MatchDatasetMessage implements DatasetBasedMessage {
 
   @Override
   public UUID getDatasetUuid() {
-    return datasetKey;
+    return datasetUuid;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetKey);
+    return Objects.hashCode(datasetUuid);
   }
 
   @Override
@@ -45,6 +45,6 @@ public class MatchDatasetMessage implements DatasetBasedMessage {
       return false;
     }
     final MatchDatasetMessage other = (MatchDatasetMessage) obj;
-    return Objects.equal(this.datasetKey, other.datasetKey);
+    return Objects.equal(this.datasetUuid, other.datasetUuid);
   }
 }
