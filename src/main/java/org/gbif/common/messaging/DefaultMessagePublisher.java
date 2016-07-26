@@ -4,6 +4,7 @@ import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.MessageRegistry;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.concurrent.ThreadSafe;
@@ -26,13 +27,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * This class can be used to publish messages easily.
  */
 @ThreadSafe
-public class DefaultMessagePublisher implements MessagePublisher {
+public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultMessagePublisher.class);
   private static final int NUMBER_OF_RETRIES = 3;
   private final Connection connection;
   private final MessageRegistry registry;
   private final ObjectMapper mapper;
+
   /**
    * The pool of channels available for use. Clients will reuse available channels, but when the pool is exhausted,
    * new channels are created. This is unbounded in size and dependent on consumer load (e.g. concurrent threads).
@@ -189,9 +191,25 @@ public class DefaultMessagePublisher implements MessagePublisher {
   }
 
   /**
-   * Does nothing.
+   * Close connections, which waits for queued batches of messages to be delivered.
    */
   @Override
   public void close() {
+    // connection.close() is sufficient for queued messages to be delivered, but this would
+    // better log any failures.
+    for (Channel c : channelPool) {
+      try {
+        c.waitForConfirmsOrDie();
+      } catch (IOException | InterruptedException e) {
+        LOG.warn("Exception waiting for confirms", e);
+      }
+    }
+
+    try {
+      LOG.info("Closing connection to AMQP broker {}", connection);
+      connection.close();
+    } catch (IOException e) {
+      LOG.error("Exception closing connection to AMQP broker", e);
+    }
   }
 }
