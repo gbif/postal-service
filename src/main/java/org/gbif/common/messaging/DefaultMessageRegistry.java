@@ -18,6 +18,7 @@ import org.gbif.common.messaging.api.messages.DeleteOccurrenceMessage;
 import org.gbif.common.messaging.api.messages.DwcaDownloadFinishedMessage;
 import org.gbif.common.messaging.api.messages.DwcaMetasyncFinishedMessage;
 import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
+import org.gbif.common.messaging.api.messages.ExtendedRecordAvailableMessage;
 import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
 import org.gbif.common.messaging.api.messages.InterpretDatasetMessage;
 import org.gbif.common.messaging.api.messages.InterpretVerbatimMessage;
@@ -73,6 +74,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(DwcaDownloadFinishedMessage.class, "crawler")
       .put(DwcaMetasyncFinishedMessage.class, "crawler")
       .put(DwcaValidationFinishedMessage.class, "crawler")
+      .put(ExtendedRecordAvailableMessage.class, "crawler")
       .put(FragmentPersistedMessage.class, "occurrence")
       .put(VerbatimPersistedMessage.class, "occurrence")
       .put(OccurrenceMutatedMessage.class, "occurrence")
@@ -123,7 +125,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY)
       .put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY)
       .put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY)
-
+      .put(ExtendedRecordAvailableMessage.class,ExtendedRecordAvailableMessage.ROUTING_KEY)
       .build();
   }
 
