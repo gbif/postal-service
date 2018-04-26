@@ -16,18 +16,21 @@ public class ExtendedRecordAvailableMessage implements DatasetBasedMessage{
   public static final String ROUTING_KEY = "crawl.conversion.finished";
 
   private final UUID datasetUuid;
+  private final int attempt;
   private final URI inputFile;
   private final String[] interpretTypes;
 
   @JsonCreator
   public ExtendedRecordAvailableMessage(
     @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") int attempt,
     @JsonProperty("inputFile") URI inputFile,
     @JsonProperty("interpretTypes") String[] interpretTypes
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.inputFile = checkNotNull(inputFile, "inputFile can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
+    this.attempt = attempt;
   }
 
   /**
@@ -36,6 +39,14 @@ public class ExtendedRecordAvailableMessage implements DatasetBasedMessage{
    */
   public UUID getDatasetUuid() {
     return datasetUuid;
+  }
+
+  /**
+   *
+   * @return attempt for the converted dataset
+   */
+  public int getAttempt() {
+    return attempt;
   }
 
   /**
@@ -58,15 +69,16 @@ public class ExtendedRecordAvailableMessage implements DatasetBasedMessage{
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ExtendedRecordAvailableMessage that = (ExtendedRecordAvailableMessage) o;
-    return Objects.equals(datasetUuid, that.datasetUuid) && Objects.equals(inputFile, that.inputFile) && Arrays.equals(
-      interpretTypes,
-      that.interpretTypes);
+    return attempt == that.attempt
+           && Objects.equals(datasetUuid, that.datasetUuid)
+           && Objects.equals(inputFile,
+                             that.inputFile)
+           && Arrays.equals(interpretTypes, that.interpretTypes);
   }
 
   @Override
   public int hashCode() {
-
-    int result = Objects.hash(datasetUuid, inputFile);
+    int result = Objects.hash(datasetUuid, attempt, inputFile);
     result = 31 * result + Arrays.hashCode(interpretTypes);
     return result;
   }
