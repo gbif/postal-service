@@ -28,7 +28,7 @@ public class GdprNotificationMessage implements Message {
   @JsonCreator
   public GdprNotificationMessage(
     @JsonProperty("email") String email,
-    @JsonProperty("context") Map<EntityType, List<UUID>> context,
+    @Nullable @JsonProperty("context") Map<EntityType, List<UUID>> context,
     @Nullable @JsonProperty("version") String version
   ) {
     this.email = checkNotNull(email, "email cannot be null");
