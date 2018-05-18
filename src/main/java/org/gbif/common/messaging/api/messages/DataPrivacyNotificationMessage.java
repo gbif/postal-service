@@ -15,18 +15,18 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Message to be sent when an email has to be notified about GDPR.
+ * Message to be sent when an email has to be notified about data privacy regulations.
  */
-public class GdprNotificationMessage implements Message {
+public class DataPrivacyNotificationMessage implements Message {
 
-  public static final String ROUTING_KEY = "gdpr.notification";
+  public static final String ROUTING_KEY = "dataPrivacy.notification";
 
   private final String email;
   private Map<EntityType, List<UUID>> context;
   private String version;
 
   @JsonCreator
-  public GdprNotificationMessage(
+  public DataPrivacyNotificationMessage(
     @JsonProperty("email") String email,
     @Nullable @JsonProperty("context") Map<EntityType, List<UUID>> context,
     @Nullable @JsonProperty("version") String version
@@ -57,7 +57,7 @@ public class GdprNotificationMessage implements Message {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    GdprNotificationMessage that = (GdprNotificationMessage) o;
+    DataPrivacyNotificationMessage that = (DataPrivacyNotificationMessage) o;
     return Objects.equals(email, that.email) && Objects.equals(context, that.context) && Objects.equals(version,
                                                                                                         that.version);
   }

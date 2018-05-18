@@ -20,7 +20,7 @@ import org.gbif.common.messaging.api.messages.DwcaMetasyncFinishedMessage;
 import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
 import org.gbif.common.messaging.api.messages.ExtendedRecordAvailableMessage;
 import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
-import org.gbif.common.messaging.api.messages.GdprNotificationMessage;
+import org.gbif.common.messaging.api.messages.DataPrivacyNotificationMessage;
 import org.gbif.common.messaging.api.messages.InterpretDatasetMessage;
 import org.gbif.common.messaging.api.messages.InterpretVerbatimMessage;
 import org.gbif.common.messaging.api.messages.MatchDatasetMessage;
@@ -95,7 +95,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ChecklistAnalyzedMessage.class, "checklist")
       .put(BackboneChangedMessage.class, "checklist")
       .put(MatchDatasetMessage.class, "checklist")
-      .put(GdprNotificationMessage.class, "gdpr")
+      .put(DataPrivacyNotificationMessage.class, "dataPrivacy")
       .build();
 
     MESSAGE_TO_ROUTING_KEY_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
@@ -128,7 +128,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY)
       .put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY)
       .put(ExtendedRecordAvailableMessage.class,ExtendedRecordAvailableMessage.ROUTING_KEY)
-      .put(GdprNotificationMessage.class, GdprNotificationMessage.ROUTING_KEY)
+      .put(DataPrivacyNotificationMessage.class, DataPrivacyNotificationMessage.ROUTING_KEY)
       .build();
   }
 
