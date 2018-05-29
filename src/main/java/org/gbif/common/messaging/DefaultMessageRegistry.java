@@ -2,35 +2,7 @@ package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
-import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
-import org.gbif.common.messaging.api.messages.ChangeDoiMessage;
-import org.gbif.common.messaging.api.messages.ChecklistAnalyzedMessage;
-import org.gbif.common.messaging.api.messages.ChecklistNormalizedMessage;
-import org.gbif.common.messaging.api.messages.ChecklistSyncedMessage;
-import org.gbif.common.messaging.api.messages.CrawlErrorMessage;
-import org.gbif.common.messaging.api.messages.CrawlFinishedMessage;
-import org.gbif.common.messaging.api.messages.CrawlRequestMessage;
-import org.gbif.common.messaging.api.messages.CrawlResponseMessage;
-import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
-import org.gbif.common.messaging.api.messages.DeleteDataResourceOccurrencesMessage;
-import org.gbif.common.messaging.api.messages.DeleteDatasetOccurrencesMessage;
-import org.gbif.common.messaging.api.messages.DeleteOccurrenceMessage;
-import org.gbif.common.messaging.api.messages.DwcaDownloadFinishedMessage;
-import org.gbif.common.messaging.api.messages.DwcaMetasyncFinishedMessage;
-import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
-import org.gbif.common.messaging.api.messages.ExtendedRecordAvailableMessage;
-import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
-import org.gbif.common.messaging.api.messages.InterpretDatasetMessage;
-import org.gbif.common.messaging.api.messages.InterpretVerbatimMessage;
-import org.gbif.common.messaging.api.messages.MatchDatasetMessage;
-import org.gbif.common.messaging.api.messages.OccurrenceFragmentedMessage;
-import org.gbif.common.messaging.api.messages.OccurrenceMutatedMessage;
-import org.gbif.common.messaging.api.messages.ParseDatasetMessage;
-import org.gbif.common.messaging.api.messages.ParseFragmentMessage;
-import org.gbif.common.messaging.api.messages.RegistryChangeMessage;
-import org.gbif.common.messaging.api.messages.StartCrawlMessage;
-import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
-import org.gbif.common.messaging.api.messages.VerbatimPersistedMessage;
+import org.gbif.common.messaging.api.messages.*;
 
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.concurrent.GuardedBy;
@@ -65,6 +37,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
 
   static {
     MESSAGE_TO_EXCHANGE_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
+      .put(AbcdaDownloadFinishedMessage.class, "crawler")
       .put(CrawlErrorMessage.class, "crawler")
       .put(CrawlFinishedMessage.class, "crawler")
       .put(CrawlStartedMessage.class, "crawler")
@@ -97,6 +70,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .build();
 
     MESSAGE_TO_ROUTING_KEY_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
+      .put(AbcdaDownloadFinishedMessage.class, AbcdaDownloadFinishedMessage.ROUTING_KEY)
       .put(CrawlErrorMessage.class, "crawl.error")
       .put(CrawlFinishedMessage.class, "crawl.finished")
       .put(CrawlStartedMessage.class, "crawl.started")
