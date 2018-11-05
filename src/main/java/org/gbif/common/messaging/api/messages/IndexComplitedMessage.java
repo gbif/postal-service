@@ -7,18 +7,18 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * This message instructs the dataset mutator service to send InterpretDatasetMessage for each occurrence in the
+ * This message instructs the dataset mutator service to send IndexDatasetMessage for each occurrence in the
  * dataset.
  */
-public class IndexDatasetMessage implements DatasetBasedMessage {
+public class IndexComplitedMessage implements DatasetBasedMessage {
 
-  public static final String ROUTING_KEY = "occurrence.index.dataset";
+  public static final String ROUTING_KEY = "occurrence.index.complited";
 
   private final UUID datasetUuid;
   private final int attempt;
 
   @JsonCreator
-  public IndexDatasetMessage(@JsonProperty("datasetUuid") UUID datasetUuid, @JsonProperty("attempt") int attempt) {
+  public IndexComplitedMessage(@JsonProperty("datasetUuid") UUID datasetUuid, @JsonProperty("attempt") int attempt) {
     this.datasetUuid = datasetUuid;
     this.attempt = attempt;
   }
@@ -50,7 +50,7 @@ public class IndexDatasetMessage implements DatasetBasedMessage {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    IndexDatasetMessage that = (IndexDatasetMessage) o;
+    IndexComplitedMessage that = (IndexComplitedMessage) o;
     return attempt == that.attempt && Objects.equals(datasetUuid, that.datasetUuid);
   }
 }

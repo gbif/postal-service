@@ -59,6 +59,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(InterpretVerbatimMessage.class, "occurrence")
       .put(InterpretDatasetMessage.class, "occurrence")
       .put(IndexDatasetMessage.class, "occurrence")
+      .put(IndexComplitedMessage.class, "occurrence")
       .put(RegistryChangeMessage.class, "registry")
       .put(StartCrawlMessage.class, "registry")
       .put(StartMetasyncMessage.class, "registry")
@@ -91,7 +92,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ParseDatasetMessage.class, "occurrence.parse.dataset")
       .put(InterpretVerbatimMessage.class, "occurrence.interpret.occurrence")
       .put(InterpretDatasetMessage.class, "occurrence.interpret.dataset")
-      .put(IndexDatasetMessage.class, "occurrence.index.dataset")
+      .put(IndexDatasetMessage.class, IndexDatasetMessage.ROUTING_KEY)
+      .put(IndexComplitedMessage.class, IndexComplitedMessage.ROUTING_KEY)
       .put(RegistryChangeMessage.class, "registry.change.#")
       .put(StartCrawlMessage.class, "crawl.start")
       .put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY)
@@ -101,7 +103,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY)
       .put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY)
       .put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY)
-      .put(ExtendedRecordAvailableMessage.class,ExtendedRecordAvailableMessage.ROUTING_KEY)
+      .put(ExtendedRecordAvailableMessage.class, ExtendedRecordAvailableMessage.ROUTING_KEY)
       .build();
   }
 
