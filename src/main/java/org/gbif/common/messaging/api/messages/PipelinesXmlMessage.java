@@ -2,9 +2,11 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.FinishReason;
 
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
-import com.google.common.base.Objects;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -14,32 +16,36 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * We send this every time we finish a crawl.
  */
-public class CrawlFinishedMessage implements DatasetBasedMessage {
+public class PipelinesXmlMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "crawl.finished";
+  public static final String ROUTING_KEY = CrawlFinishedMessage.ROUTING_KEY;
 
   private final UUID datasetUuid;
   private final int attempt;
   private final int totalRecordCount;
   private final FinishReason reason;
+  private final Set<String> pipelineSteps;
 
   @JsonCreator
-  public CrawlFinishedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("totalRecordCount") int totalRecordCount,
-    @JsonProperty("reason") FinishReason reason
-  ) {
+  public PipelinesXmlMessage(@JsonProperty("datasetUuid") UUID datasetUuid, @JsonProperty("attempt") int attempt,
+    @JsonProperty("totalRecordCount") int totalRecordCount, @JsonProperty("reason") FinishReason reason,
+    @JsonProperty("pipelineSteps") Set<String> pipelineSteps) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     checkArgument(totalRecordCount >= 0, "totalRecordCount has to be greater than or equal to 0");
     this.totalRecordCount = totalRecordCount;
     this.reason = checkNotNull(reason, "reason can't be null");
+    this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
   }
 
   public int getAttempt() {
     return attempt;
+  }
+
+  @Override
+  public Set<String> getPipelineSteps() {
+    return pipelineSteps;
   }
 
   @Override
@@ -61,34 +67,26 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
+  public boolean equals(Object o) {
+    if (this == o) {
       return true;
     }
-    if (!(obj instanceof CrawlFinishedMessage)) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
-    final CrawlFinishedMessage other = (CrawlFinishedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-           && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.totalRecordCount, other.totalRecordCount)
-           && Objects.equal(this.reason, other.reason);
+    PipelinesXmlMessage that = (PipelinesXmlMessage) o;
+    return attempt == that.attempt && totalRecordCount == that.totalRecordCount && Objects.equals(datasetUuid,
+      that.datasetUuid) && reason == that.reason && Objects.equals(pipelineSteps, that.pipelineSteps);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, attempt, totalRecordCount, reason);
+    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, pipelineSteps);
   }
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
-      .add("datasetUuid", datasetUuid)
-      .add("attempt", attempt)
-      .add("totalRecordCount", totalRecordCount)
-      .add("reason", reason)
-      .toString();
+    return "PipelinesXmlMessage{" + "datasetUuid=" + datasetUuid + ", attempt=" + attempt + ", totalRecordCount="
+           + totalRecordCount + ", reason=" + reason + ", pipelineSteps=" + pipelineSteps + '}';
   }
-
 }

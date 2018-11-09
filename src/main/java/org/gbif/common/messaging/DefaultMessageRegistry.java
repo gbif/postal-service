@@ -47,7 +47,6 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(DwcaDownloadFinishedMessage.class, "crawler")
       .put(DwcaMetasyncFinishedMessage.class, "crawler")
       .put(DwcaValidationFinishedMessage.class, "crawler")
-      .put(ExtendedRecordAvailableMessage.class, "crawler")
       .put(FragmentPersistedMessage.class, "occurrence")
       .put(VerbatimPersistedMessage.class, "occurrence")
       .put(OccurrenceMutatedMessage.class, "occurrence")
@@ -58,8 +57,6 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ParseDatasetMessage.class, "occurrence")
       .put(InterpretVerbatimMessage.class, "occurrence")
       .put(InterpretDatasetMessage.class, "occurrence")
-      .put(IndexDatasetMessage.class, "occurrence")
-      .put(IndexComplitedMessage.class, "occurrence")
       .put(RegistryChangeMessage.class, "registry")
       .put(StartCrawlMessage.class, "registry")
       .put(StartMetasyncMessage.class, "registry")
@@ -69,12 +66,19 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ChecklistAnalyzedMessage.class, "checklist")
       .put(BackboneChangedMessage.class, "checklist")
       .put(MatchDatasetMessage.class, "checklist")
+
+      .put(PipelinesXmlMessage.class, "crawler")
+      .put(PipelinesDwcaMessage.class, "crawler")
+      .put(PipelinesVerbatimMessage.class, "crawler")
+      .put(PipelinesInterpretedMessage.class, "occurrence")
+      .put(PipelinesIndexedMessage.class, "occurrence")
+
       .build();
 
     MESSAGE_TO_ROUTING_KEY_MAPPING = ImmutableMap.<Class<? extends Message>, String>builder()
       .put(AbcdaDownloadFinishedMessage.class, AbcdaDownloadFinishedMessage.ROUTING_KEY)
       .put(CrawlErrorMessage.class, "crawl.error")
-      .put(CrawlFinishedMessage.class, "crawl.finished")
+      .put(CrawlFinishedMessage.class, CrawlFinishedMessage.ROUTING_KEY)
       .put(CrawlStartedMessage.class, "crawl.started")
       .put(CrawlRequestMessage.class, "crawl.request")
       .put(CrawlResponseMessage.class, "crawl.response")
@@ -92,8 +96,6 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(ParseDatasetMessage.class, "occurrence.parse.dataset")
       .put(InterpretVerbatimMessage.class, "occurrence.interpret.occurrence")
       .put(InterpretDatasetMessage.class, "occurrence.interpret.dataset")
-      .put(IndexDatasetMessage.class, IndexDatasetMessage.ROUTING_KEY)
-      .put(IndexComplitedMessage.class, IndexComplitedMessage.ROUTING_KEY)
       .put(RegistryChangeMessage.class, "registry.change.#")
       .put(StartCrawlMessage.class, "crawl.start")
       .put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY)
@@ -103,7 +105,13 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY)
       .put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY)
       .put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY)
-      .put(ExtendedRecordAvailableMessage.class, ExtendedRecordAvailableMessage.ROUTING_KEY)
+
+      .put(PipelinesDwcaMessage.class, PipelinesDwcaMessage.ROUTING_KEY)
+      .put(PipelinesXmlMessage.class, PipelinesXmlMessage.ROUTING_KEY)
+      .put(PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY)
+      .put(PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY)
+      .put(PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY)
+
       .build();
   }
 
