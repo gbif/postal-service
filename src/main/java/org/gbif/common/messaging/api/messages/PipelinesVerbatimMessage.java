@@ -1,6 +1,5 @@
 package org.gbif.common.messaging.api.messages;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -21,16 +20,14 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
   private final UUID datasetUuid;
   private final int attempt;
-  private final URI inputFile;
   private final Set<String> interpretTypes;
   private final Set<String> pipelineSteps;
 
   @JsonCreator
   public PipelinesVerbatimMessage(@JsonProperty("datasetUuid") UUID datasetUuid, @JsonProperty("attempt") int attempt,
-    @JsonProperty("inputFile") URI inputFile, @JsonProperty("interpretTypes") Set<String> interpretTypes,
+    @JsonProperty("interpretTypes") Set<String> interpretTypes,
     @JsonProperty("pipelineSteps") Set<String> pipelineSteps) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.inputFile = checkNotNull(inputFile, "inputFile can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -58,13 +55,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   }
 
   /**
-   * @return path of final dataset in avro format
-   */
-  public URI getInputFile() {
-    return inputFile;
-  }
-
-  /**
    * @return types of interpretation - ALL, LOCATION, BASE or etc.
    */
   public Set<String> getInterpretTypes() {
@@ -85,19 +75,18 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesVerbatimMessage that = (PipelinesVerbatimMessage) o;
-    return attempt == that.attempt && Objects.equals(datasetUuid, that.datasetUuid) && Objects.equals(inputFile,
-      that.inputFile) && Objects.equals(interpretTypes, that.interpretTypes) && Objects.equals(pipelineSteps,
-      that.pipelineSteps);
+    return attempt == that.attempt && Objects.equals(datasetUuid, that.datasetUuid) && Objects.equals(interpretTypes,
+      that.interpretTypes) && Objects.equals(pipelineSteps, that.pipelineSteps);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, inputFile, interpretTypes, pipelineSteps);
+    return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps);
   }
 
   @Override
   public String toString() {
-    return "PipelinesVerbatimMessage{" + "datasetUuid=" + datasetUuid + ", attempt=" + attempt + ", inputFile="
-           + inputFile + ", interpretTypes=" + interpretTypes + ", pipelineSteps=" + pipelineSteps + '}';
+    return "PipelinesVerbatimMessage{" + "datasetUuid=" + datasetUuid + ", attempt=" + attempt + ", interpretTypes="
+           + interpretTypes + ", pipelineSteps=" + pipelineSteps + '}';
   }
 }
