@@ -1,5 +1,6 @@
 package org.gbif.common.messaging.api.messages;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.UUID;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -19,17 +21,25 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.indexing.complited";
 
-  private final UUID datasetUuid;
-  private final int attempt;
-  private final Set<String> pipelineSteps;
+  private UUID datasetUuid;
+  private int attempt;
+  private Set<String> pipelineSteps;
+  private String runner;
+
+  public PipelinesIndexedMessage() {
+  }
 
   @JsonCreator
-  public PipelinesIndexedMessage(@JsonProperty("datasetUuid") UUID datasetUuid, @JsonProperty("attempt") int attempt,
-    @JsonProperty("pipelineSteps") Set<String> pipelineSteps) {
+  public PipelinesIndexedMessage(
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("runner") String runner) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
+    this.runner = runner;
   }
 
   @Override
@@ -52,6 +62,30 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     return ROUTING_KEY;
   }
 
+  public String getRunner() {
+    return runner;
+  }
+
+  public PipelinesIndexedMessage setDatasetUuid(UUID datasetUuid) {
+    this.datasetUuid = datasetUuid;
+    return this;
+  }
+
+  public PipelinesIndexedMessage setAttempt(int attempt) {
+    this.attempt = attempt;
+    return this;
+  }
+
+  public PipelinesIndexedMessage setPipelineSteps(Set<String> pipelineSteps) {
+    this.pipelineSteps = pipelineSteps;
+    return this;
+  }
+
+  public PipelinesIndexedMessage setRunner(String runner) {
+    this.runner = runner;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -61,18 +95,25 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesIndexedMessage that = (PipelinesIndexedMessage) o;
-    return attempt == that.attempt && Objects.equals(datasetUuid, that.datasetUuid) && Objects.equals(pipelineSteps,
-      that.pipelineSteps);
+    return attempt == that.attempt &&
+        Objects.equals(datasetUuid, that.datasetUuid) &&
+        Objects.equals(pipelineSteps, that.pipelineSteps) &&
+        Objects.equals(runner, that.runner);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner);
   }
 
   @Override
   public String toString() {
-    return "PipelinesIndexedMessage{" + "datasetUuid=" + datasetUuid + ", attempt=" + attempt + ", pipelineSteps="
-           + pipelineSteps + '}';
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.writeValueAsString(this);
+    } catch (IOException e) {
+      // NOP
+    }
+    return "";
   }
 }

@@ -1,16 +1,18 @@
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.crawler.DwcaValidationReport;
-import org.gbif.api.vocabulary.DatasetType;
-
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.gbif.api.model.crawler.DwcaValidationReport;
+import org.gbif.api.vocabulary.DatasetType;
+
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -23,18 +25,24 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = DwcaValidationFinishedMessage.ROUTING_KEY;
 
-  private final UUID datasetUuid;
-  private final DatasetType datasetType;
-  private final URI source;
-  private final int attempt;
-  private final DwcaValidationReport validationReport;
-  private final Set<String> pipelineSteps;
+  private UUID datasetUuid;
+  private DatasetType datasetType;
+  private URI source;
+  private int attempt;
+  private DwcaValidationReport validationReport;
+  private Set<String> pipelineSteps;
+
+  public PipelinesDwcaMessage() {
+  }
 
   @JsonCreator
-  public PipelinesDwcaMessage(@JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("datasetType") DatasetType datasetType, @JsonProperty("source") URI source,
-    @JsonProperty("attempt") int attempt, @JsonProperty("validationReport") DwcaValidationReport validationReport,
-    @JsonProperty("pipelineSteps") Set<String> pipelineSteps) {
+  public PipelinesDwcaMessage(
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("datasetType") DatasetType datasetType,
+      @JsonProperty("source") URI source,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("validationReport") DwcaValidationReport validationReport,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -98,8 +106,38 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     }
     PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
     return attempt == that.attempt && Objects.equals(datasetUuid, that.datasetUuid) && datasetType == that.datasetType
-           && Objects.equals(source, that.source) && Objects.equals(validationReport, that.validationReport)
-           && Objects.equals(pipelineSteps, that.pipelineSteps);
+        && Objects.equals(source, that.source) && Objects.equals(validationReport, that.validationReport)
+        && Objects.equals(pipelineSteps, that.pipelineSteps);
+  }
+
+  public PipelinesDwcaMessage setDatasetUuid(UUID datasetUuid) {
+    this.datasetUuid = datasetUuid;
+    return this;
+  }
+
+  public PipelinesDwcaMessage setDatasetType(DatasetType datasetType) {
+    this.datasetType = datasetType;
+    return this;
+  }
+
+  public PipelinesDwcaMessage setSource(URI source) {
+    this.source = source;
+    return this;
+  }
+
+  public PipelinesDwcaMessage setAttempt(int attempt) {
+    this.attempt = attempt;
+    return this;
+  }
+
+  public PipelinesDwcaMessage setValidationReport(DwcaValidationReport validationReport) {
+    this.validationReport = validationReport;
+    return this;
+  }
+
+  public PipelinesDwcaMessage setPipelineSteps(Set<String> pipelineSteps) {
+    this.pipelineSteps = pipelineSteps;
+    return this;
   }
 
   @Override
@@ -109,8 +147,12 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   @Override
   public String toString() {
-    return "PipelinesDwcaMessage{" + "datasetUuid=" + datasetUuid + ", datasetType=" + datasetType + ", source="
-           + source + ", attempt=" + attempt + ", validationReport=" + validationReport + ", pipelineSteps="
-           + pipelineSteps + '}';
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.writeValueAsString(this);
+    } catch (IOException e) {
+      // NOP
+    }
+    return "";
   }
 }
