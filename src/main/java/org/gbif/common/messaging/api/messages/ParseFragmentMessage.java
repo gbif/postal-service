@@ -13,15 +13,15 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class ParseFragmentMessage implements Message {
 
-  private final int occurrenceKey;
+  private final long occurrenceKey;
 
   @JsonCreator
-  public ParseFragmentMessage(@JsonProperty("occurrenceKey") int occurrenceKey) {
+  public ParseFragmentMessage(@JsonProperty("occurrenceKey") long occurrenceKey) {
     checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
     this.occurrenceKey = occurrenceKey;
   }
 
-  public int getOccurrenceKey() {
+  public long getOccurrenceKey() {
     return occurrenceKey;
   }
 

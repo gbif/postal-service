@@ -35,7 +35,7 @@ public class OccurrenceMutatedMessageTest {
 
     OccurrenceMutatedMessage message =
       new OccurrenceMutatedMessage(UUID.randomUUID(), OccurrencePersistenceStatus.UPDATED, 1,
-      build(EndpointType.BIOCASE, 1, UUID.randomUUID()),
+      build(EndpointType.BIOCASE, 1L, UUID.randomUUID()),
       occ, null, null, null);
     Util.testSerDe(message, OccurrenceMutatedMessage.class);
   }
@@ -43,21 +43,21 @@ public class OccurrenceMutatedMessageTest {
   @Test
   public void testBuilders() throws IOException {
     OccurrenceMutatedMessage msg = OccurrenceMutatedMessage.buildNewMessage(UUID.randomUUID(),
-      build(EndpointType.BIOCASE, 1, UUID.randomUUID()), 1);
+      build(EndpointType.BIOCASE, 1L, UUID.randomUUID()), 1);
     Util.testSerDe(msg, OccurrenceMutatedMessage.class);
 
     msg = OccurrenceMutatedMessage.buildUpdateMessage(UUID.randomUUID(),
-                                                      build(EndpointType.BIOCASE, 1, UUID.randomUUID()),
-                                                      build(EndpointType.BIOCASE, 1, UUID.randomUUID()), 1);
+                                                      build(EndpointType.BIOCASE, 1L, UUID.randomUUID()),
+                                                      build(EndpointType.BIOCASE, 1L, UUID.randomUUID()), 1);
     Util.testSerDe(msg, OccurrenceMutatedMessage.class);
 
     msg = OccurrenceMutatedMessage.buildDeleteMessage(UUID.randomUUID(),
-      build(EndpointType.BIOCASE, 1, UUID.randomUUID()),
+      build(EndpointType.BIOCASE, 1L, UUID.randomUUID()),
       OccurrenceDeletionReason.OCCURRENCE_MANUAL, null, null);
     Util.testSerDe(msg, OccurrenceMutatedMessage.class);
   }
 
-  private static Occurrence build(EndpointType prot, int key, UUID dkey) {
+  private static Occurrence build(EndpointType prot, long key, UUID dkey) {
     Occurrence o = new Occurrence();
     o.setKey(key);
     o.setProtocol(prot);

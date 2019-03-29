@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class DeleteOccurrenceMessage implements Message {
 
-  private final int occurrenceKey;
+  private final long occurrenceKey;
   private final OccurrenceDeletionReason deletionReason;
 
   // only used when deletionReason is NOT_SEEN_IN_LAST_CRAWL
@@ -27,7 +27,7 @@ public class DeleteOccurrenceMessage implements Message {
 
   @JsonCreator
   public DeleteOccurrenceMessage(
-    @JsonProperty("occurrenceKey") int occurrenceKey,
+    @JsonProperty("occurrenceKey") long occurrenceKey,
     @JsonProperty("deletionReason") OccurrenceDeletionReason deletionReason,
     @Nullable @JsonProperty("crawlAttemptLastSeen") Integer crawlAttemptLastSeen,
     @Nullable @JsonProperty("latestCrawlAttemptForDataset") Integer latestCrawlAttemptForDataset) {
@@ -50,7 +50,7 @@ public class DeleteOccurrenceMessage implements Message {
     return "occurrence.delete.occurrence";
   }
 
-  public int getOccurrenceKey() {
+  public long getOccurrenceKey() {
     return occurrenceKey;
   }
 

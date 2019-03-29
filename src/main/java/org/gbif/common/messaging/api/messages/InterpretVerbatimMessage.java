@@ -13,15 +13,15 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class InterpretVerbatimMessage implements Message {
 
-  private final int occurrenceKey;
+  private final long occurrenceKey;
 
   @JsonCreator
-  public InterpretVerbatimMessage(@JsonProperty("occurrenceKey") int occurrenceKey) {
+  public InterpretVerbatimMessage(@JsonProperty("occurrenceKey") long occurrenceKey) {
     checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
     this.occurrenceKey = occurrenceKey;
   }
 
-  public int getOccurrenceKey() {
+  public long getOccurrenceKey() {
     return occurrenceKey;
   }
 

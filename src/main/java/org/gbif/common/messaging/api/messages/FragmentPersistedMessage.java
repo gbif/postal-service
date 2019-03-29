@@ -23,14 +23,14 @@ public class FragmentPersistedMessage implements DatasetBasedMessage {
 
   private final OccurrencePersistenceStatus status;
 
-  private final int occurrenceKey;
+  private final long occurrenceKey;
 
   @JsonCreator
   public FragmentPersistedMessage(
     @JsonProperty("datasetUuid") UUID datasetUuid,
     @JsonProperty("attempt") int attempt,
     @JsonProperty("status") OccurrencePersistenceStatus status,
-    @JsonProperty("occurrenceKey") int occurrenceKey
+    @JsonProperty("occurrenceKey") long occurrenceKey
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt must be greater than 0");
@@ -57,7 +57,7 @@ public class FragmentPersistedMessage implements DatasetBasedMessage {
     return status;
   }
 
-  public int getOccurrenceKey() {
+  public long getOccurrenceKey() {
     return occurrenceKey;
   }
 
