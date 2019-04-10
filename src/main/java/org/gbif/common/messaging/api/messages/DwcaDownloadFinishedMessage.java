@@ -1,5 +1,7 @@
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.EndpointType;
+
 import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
@@ -26,6 +28,7 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
   private final int attempt;
   private final Optional<Date> lastModified;
   private final boolean modified;
+  private final EndpointType endpointType;
 
   @JsonCreator
   public DwcaDownloadFinishedMessage(
@@ -33,7 +36,8 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
     @JsonProperty("source") URI source,
     @JsonProperty("attempt") int attempt,
     @Nullable @JsonProperty("lastModified") Date lastModified,
-    @JsonProperty("modified") boolean modified
+    @JsonProperty("modified") boolean modified,
+    @JsonProperty("endpointType") EndpointType endpointType
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -41,6 +45,7 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
     this.attempt = attempt;
     this.lastModified = Optional.fromNullable(lastModified);
     this.modified = modified;
+    this.endpointType = endpointType;
   }
 
   /**
@@ -77,6 +82,10 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
     return modified;
   }
 
+  public EndpointType getEndpointType() {
+    return endpointType;
+  }
+
   @Override
   public String getRoutingKey() {
     return ROUTING_KEY;
@@ -96,12 +105,13 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
            && Objects.equal(this.source, other.source)
            && Objects.equal(this.attempt, other.attempt)
            && Objects.equal(this.lastModified, other.lastModified)
-           && Objects.equal(this.modified, other.modified);
+           && Objects.equal(this.modified, other.modified)
+           && Objects.equal(this.endpointType, other.endpointType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, source, attempt, lastModified, modified);
+    return Objects.hashCode(datasetUuid, source, attempt, lastModified, modified, endpointType);
   }
 
   @Override
@@ -112,6 +122,7 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
       .add("attempt", attempt)
       .add("lastModified", lastModified)
       .add("modified", modified)
+      .add("endpointType", endpointType)
       .toString();
   }
 

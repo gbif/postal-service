@@ -1,6 +1,7 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.FinishReason;
+import org.gbif.api.vocabulary.EndpointType;
 
 import java.util.UUID;
 
@@ -22,13 +23,15 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
   private final int attempt;
   private final int totalRecordCount;
   private final FinishReason reason;
+  private final EndpointType endpointType;
 
   @JsonCreator
   public CrawlFinishedMessage(
     @JsonProperty("datasetUuid") UUID datasetUuid,
     @JsonProperty("attempt") int attempt,
     @JsonProperty("totalRecordCount") int totalRecordCount,
-    @JsonProperty("reason") FinishReason reason
+    @JsonProperty("reason") FinishReason reason,
+    @JsonProperty("endpointType") EndpointType endpointType
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -36,6 +39,7 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
     checkArgument(totalRecordCount >= 0, "totalRecordCount has to be greater than or equal to 0");
     this.totalRecordCount = totalRecordCount;
     this.reason = checkNotNull(reason, "reason can't be null");
+    this.endpointType = endpointType;
   }
 
   public int getAttempt() {
@@ -53,6 +57,10 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
 
   public int getTotalRecordCount() {
     return totalRecordCount;
+  }
+
+  public EndpointType getEndpointType() {
+    return endpointType;
   }
 
   @Override
@@ -73,12 +81,13 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
     return Objects.equal(this.datasetUuid, other.datasetUuid)
            && Objects.equal(this.attempt, other.attempt)
            && Objects.equal(this.totalRecordCount, other.totalRecordCount)
-           && Objects.equal(this.reason, other.reason);
+           && Objects.equal(this.reason, other.reason)
+           && Objects.equal(this.endpointType, other.endpointType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, attempt, totalRecordCount, reason);
+    return Objects.hashCode(datasetUuid, attempt, totalRecordCount, reason, endpointType);
   }
 
   @Override
@@ -88,6 +97,7 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
       .add("attempt", attempt)
       .add("totalRecordCount", totalRecordCount)
       .add("reason", reason)
+      .add("endpointType", endpointType)
       .toString();
   }
 

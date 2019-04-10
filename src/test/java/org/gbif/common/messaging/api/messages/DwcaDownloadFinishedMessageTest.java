@@ -1,5 +1,6 @@
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.common.messaging.api.Util;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class DwcaDownloadFinishedMessageTest {
   @Test
   public void testSerDe() throws IOException, URISyntaxException {
     DwcaDownloadFinishedMessage message =
-      new DwcaDownloadFinishedMessage(UUID.randomUUID(), new URI("http://google.de"), 1, null, true);
+      new DwcaDownloadFinishedMessage(UUID.randomUUID(), new URI("http://google.de"), 1, null, true, EndpointType.DWC_ARCHIVE);
     Util.testSerDe(message, DwcaDownloadFinishedMessage.class);
   }
 }

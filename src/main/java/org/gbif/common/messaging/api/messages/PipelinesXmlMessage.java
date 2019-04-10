@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.gbif.api.model.crawler.FinishReason;
+import org.gbif.api.vocabulary.EndpointType;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -27,6 +28,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   private int totalRecordCount;
   private FinishReason reason;
   private Set<String> pipelineSteps;
+  private EndpointType endpointType;
 
   public PipelinesXmlMessage() {
   }
@@ -37,7 +39,8 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("totalRecordCount") int totalRecordCount,
       @JsonProperty("reason") FinishReason reason,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps) {
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -45,6 +48,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.totalRecordCount = totalRecordCount;
     this.reason = checkNotNull(reason, "reason can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
+    this.endpointType = endpointType;
   }
 
   public int getAttempt() {
@@ -67,6 +71,10 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
 
   public int getTotalRecordCount() {
     return totalRecordCount;
+  }
+
+  public EndpointType getEndpointType() {
+    return endpointType;
   }
 
   @Override
@@ -99,6 +107,11 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesXmlMessage setEndpointType(EndpointType endpointType) {
+    this.endpointType = endpointType;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -108,13 +121,17 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesXmlMessage that = (PipelinesXmlMessage) o;
-    return attempt == that.attempt && totalRecordCount == that.totalRecordCount && Objects.equals(datasetUuid,
-        that.datasetUuid) && reason == that.reason && Objects.equals(pipelineSteps, that.pipelineSteps);
+    return attempt == that.attempt
+        && totalRecordCount == that.totalRecordCount
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && reason == that.reason
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(endpointType, that.endpointType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, pipelineSteps);
+    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, pipelineSteps, endpointType);
   }
 
   @Override
