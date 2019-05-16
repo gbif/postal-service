@@ -2,6 +2,7 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.EndpointType;
 
 import java.net.URI;
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
   private final URI source;
   private final int attempt;
   private final DwcaValidationReport validationReport;
+  private final EndpointType endpointType;
 
   @JsonCreator
   public DwcaValidationFinishedMessage(
@@ -33,7 +35,8 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     @JsonProperty("datasetType") DatasetType datasetType,
     @JsonProperty("source") URI source,
     @JsonProperty("attempt") int attempt,
-    @JsonProperty("validationReport") DwcaValidationReport validationReport
+    @JsonProperty("validationReport") DwcaValidationReport validationReport,
+    @JsonProperty("endpointType") EndpointType endpointType
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
@@ -41,6 +44,7 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
+    this.endpointType = endpointType;
   }
 
   /**
@@ -76,6 +80,10 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     return validationReport;
   }
 
+  public EndpointType getEndpointType() {
+    return endpointType;
+  }
+
   @Override
   public String getRoutingKey() {
     return ROUTING_KEY;
@@ -83,7 +91,7 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, datasetType, source, attempt, validationReport);
+    return Objects.hashCode(datasetUuid, datasetType, source, attempt, validationReport, endpointType);
   }
 
   @Override
@@ -99,7 +107,8 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
            && Objects.equal(this.datasetType, other.datasetType)
            && Objects.equal(this.source, other.source)
            && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.validationReport, other.validationReport);
+           && Objects.equal(this.validationReport, other.validationReport)
+           && Objects.equal(this.endpointType, other.endpointType);
   }
 
   @Override
@@ -110,6 +119,7 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
       .add("source", source)
       .add("attempt", attempt)
       .add("validationReport", validationReport)
+      .add("endpointType", endpointType)
       .toString();
   }
 }

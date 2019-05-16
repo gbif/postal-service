@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.EndpointType;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -31,6 +32,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private int attempt;
   private DwcaValidationReport validationReport;
   private Set<String> pipelineSteps;
+  private EndpointType endpointType;
 
   public PipelinesDwcaMessage() {
   }
@@ -42,7 +44,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
       @JsonProperty("source") URI source,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("validationReport") DwcaValidationReport validationReport,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps) {
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -50,6 +53,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.attempt = attempt;
     this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
+    this.endpointType = endpointType;
   }
 
   /**
@@ -84,6 +88,10 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return pipelineSteps;
   }
 
+  public EndpointType getEndpointType() {
+    return endpointType;
+  }
+
   /**
    * @return the validationReport for this archive
    */
@@ -105,9 +113,13 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
-    return attempt == that.attempt && Objects.equals(datasetUuid, that.datasetUuid) && datasetType == that.datasetType
-        && Objects.equals(source, that.source) && Objects.equals(validationReport, that.validationReport)
-        && Objects.equals(pipelineSteps, that.pipelineSteps);
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && datasetType == that.datasetType
+        && Objects.equals(source, that.source)
+        && Objects.equals(validationReport, that.validationReport)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(endpointType, that.endpointType);
   }
 
   public PipelinesDwcaMessage setDatasetUuid(UUID datasetUuid) {
@@ -140,9 +152,14 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesDwcaMessage setEndpointType(EndpointType endpointType) {
+    this.endpointType = endpointType;
+    return this;
+  }
+
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, pipelineSteps);
+    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, pipelineSteps, endpointType);
   }
 
   @Override

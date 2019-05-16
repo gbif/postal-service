@@ -1,5 +1,7 @@
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.EndpointType;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
@@ -26,6 +28,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private Set<String> interpretTypes;
   private Set<String> pipelineSteps;
   private String runner;
+  private EndpointType endpointType;
 
   public PipelinesVerbatimMessage() {
   }
@@ -36,13 +39,15 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner) {
+      @JsonProperty("runner") String runner,
+      @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
+    this.endpointType = endpointType;
   }
 
   /**
@@ -81,6 +86,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return runner;
   }
 
+  public EndpointType getEndpointType() {
+    return endpointType;
+  }
+
   public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -106,6 +115,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesVerbatimMessage setEndpointType(EndpointType endpointType) {
+    this.endpointType = endpointType;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -119,12 +133,13 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         Objects.equals(datasetUuid, that.datasetUuid) &&
         Objects.equals(interpretTypes, that.interpretTypes) &&
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(runner, that.runner);
+        Objects.equals(runner, that.runner) &&
+        Objects.equals(endpointType, that.endpointType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps, runner);
+    return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps, runner, endpointType);
   }
 
   @Override
