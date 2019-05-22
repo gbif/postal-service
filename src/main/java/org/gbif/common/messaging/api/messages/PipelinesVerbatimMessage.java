@@ -29,6 +29,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private String runner;
   private EndpointType endpointType;
+  private ValidationResult validationResult;
 
   public PipelinesVerbatimMessage() {
   }
@@ -40,7 +41,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("validationResult") ValidationResult validationResult) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -48,6 +50,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.endpointType = endpointType;
+    this.validationResult = validationResult;
   }
 
   /**
@@ -90,6 +93,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return endpointType;
   }
 
+  public ValidationResult getValidationResult() {
+    return validationResult;
+  }
+
   public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -120,6 +127,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesVerbatimMessage setValidationResult(ValidationResult validationResult) {
+    this.validationResult = validationResult;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -134,12 +146,13 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         Objects.equals(interpretTypes, that.interpretTypes) &&
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
         Objects.equals(runner, that.runner) &&
-        Objects.equals(endpointType, that.endpointType);
+        Objects.equals(endpointType, that.endpointType) &&
+        Objects.equals(validationResult, that.validationResult);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps, runner, endpointType);
+    return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps, runner, endpointType, validationResult);
   }
 
   @Override
@@ -151,5 +164,23 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       // NOP
     }
     return "";
+  }
+
+  public static class ValidationResult {
+    private final boolean tripletValid;
+    private final boolean occurrenceIdValid;
+
+    public ValidationResult(boolean tripletValid, boolean occurrenceIdValid) {
+      this.tripletValid = tripletValid;
+      this.occurrenceIdValid = occurrenceIdValid;
+    }
+
+    public boolean isTripletValid() {
+      return tripletValid;
+    }
+
+    public boolean isOccurrenceIdValid() {
+      return occurrenceIdValid;
+    }
   }
 }
