@@ -1,12 +1,12 @@
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.vocabulary.EndpointType;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+
+import org.gbif.api.vocabulary.EndpointType;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -167,12 +167,28 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   }
 
   public static class ValidationResult {
-    private final boolean tripletValid;
-    private final boolean occurrenceIdValid;
 
-    public ValidationResult(boolean tripletValid, boolean occurrenceIdValid) {
+    private boolean tripletValid;
+    private boolean occurrenceIdValid;
+
+    public ValidationResult() {
+    }
+
+    @JsonCreator
+    public ValidationResult(@JsonProperty("tripletValid") boolean tripletValid,
+        @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid) {
       this.tripletValid = tripletValid;
       this.occurrenceIdValid = occurrenceIdValid;
+    }
+
+    public ValidationResult setTripletValid(boolean tripletValid) {
+      this.tripletValid = tripletValid;
+      return this;
+    }
+
+    public ValidationResult setOccurrenceIdValid(boolean occurrenceIdValid) {
+      this.occurrenceIdValid = occurrenceIdValid;
+      return this;
     }
 
     public boolean isTripletValid() {
