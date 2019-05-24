@@ -170,15 +170,20 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
     private boolean tripletValid;
     private boolean occurrenceIdValid;
+    private Boolean useExtendedRecordId;
 
     public ValidationResult() {
     }
 
     @JsonCreator
-    public ValidationResult(@JsonProperty("tripletValid") boolean tripletValid,
-        @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid) {
+    public ValidationResult(
+        @JsonProperty("tripletValid") boolean tripletValid,
+        @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
+        @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId
+    ) {
       this.tripletValid = tripletValid;
       this.occurrenceIdValid = occurrenceIdValid;
+      this.useExtendedRecordId = useExtendedRecordId;
     }
 
     public ValidationResult setTripletValid(boolean tripletValid) {
@@ -191,12 +196,21 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return this;
     }
 
+    public ValidationResult setUseExtendedRecordId(Boolean useExtendedRecordId) {
+      this.useExtendedRecordId = useExtendedRecordId;
+      return this;
+    }
+
     public boolean isTripletValid() {
       return tripletValid;
     }
 
     public boolean isOccurrenceIdValid() {
       return occurrenceIdValid;
+    }
+
+    public Boolean isUseExtendedRecordId() {
+      return useExtendedRecordId;
     }
   }
 }
