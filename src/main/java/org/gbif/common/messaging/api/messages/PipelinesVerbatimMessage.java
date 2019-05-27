@@ -47,7 +47,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("validationResult") ValidationResult validationResult) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
