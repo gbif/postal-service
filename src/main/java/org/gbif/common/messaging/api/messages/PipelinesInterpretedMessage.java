@@ -25,6 +25,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
+  private Integer numberOfRecords;
 
   public PipelinesInterpretedMessage() {
   }
@@ -34,12 +35,14 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("numberOfRecords") Integer numberOfRecords,
       @JsonProperty("runner") String runner) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
+    this.numberOfRecords = numberOfRecords;
   }
 
   @Override
@@ -66,6 +69,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return runner;
   }
 
+  public Integer getNumberOfRecords() {
+    return numberOfRecords;
+  }
+
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -86,6 +93,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setNumberOfRecords(Integer numberOfRecords) {
+    this.numberOfRecords = numberOfRecords;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -98,12 +110,13 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return attempt == that.attempt &&
         Objects.equals(datasetUuid, that.datasetUuid) &&
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
+        Objects.equals(numberOfRecords, that.numberOfRecords) &&
         Objects.equals(runner, that.runner);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, numberOfRecords, runner);
   }
 
   @Override
