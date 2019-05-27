@@ -49,7 +49,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
