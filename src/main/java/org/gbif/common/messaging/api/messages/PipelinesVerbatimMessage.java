@@ -29,6 +29,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private String runner;
   private EndpointType endpointType;
+  private String extraPath;
   private ValidationResult validationResult;
 
   public PipelinesVerbatimMessage() {
@@ -42,6 +43,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
       @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("extraPath") String extraPath,
       @JsonProperty("validationResult") ValidationResult validationResult) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
@@ -50,6 +52,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.endpointType = endpointType;
+    this.extraPath = extraPath;
     this.validationResult = validationResult;
   }
 
@@ -93,6 +96,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return endpointType;
   }
 
+  public String getExtraPath() {
+    return extraPath;
+  }
+
   public ValidationResult getValidationResult() {
     return validationResult;
   }
@@ -127,6 +134,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesVerbatimMessage setExtraPath(String extraPath) {
+    this.extraPath = extraPath;
+    return this;
+  }
+
   public PipelinesVerbatimMessage setValidationResult(ValidationResult validationResult) {
     this.validationResult = validationResult;
     return this;
@@ -147,12 +159,14 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
         Objects.equals(runner, that.runner) &&
         Objects.equals(endpointType, that.endpointType) &&
+        Objects.equals(extraPath, that.extraPath) &&
         Objects.equals(validationResult, that.validationResult);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps, runner, endpointType, validationResult);
+    return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps, runner, endpointType, extraPath,
+        validationResult);
   }
 
   @Override
