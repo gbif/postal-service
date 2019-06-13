@@ -1,14 +1,17 @@
 package org.gbif.common.messaging.api.messages;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
+
+import org.gbif.api.vocabulary.EndpointType;
+
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
+import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -26,6 +29,7 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
   private final int attempt;
   private final Optional<Date> lastModified;
   private final boolean modified;
+  private final EndpointType endpointType;
 
   @JsonCreator
   public AbcdaDownloadFinishedMessage(
@@ -33,7 +37,8 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
     @JsonProperty("source") URI source,
     @JsonProperty("attempt") int attempt,
     @Nullable @JsonProperty("lastModified") Date lastModified,
-    @JsonProperty("modified") boolean modified
+    @JsonProperty("modified") boolean modified,
+    @JsonProperty("endpointType") EndpointType endpointType
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -41,6 +46,7 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
     this.attempt = attempt;
     this.lastModified = Optional.fromNullable(lastModified);
     this.modified = modified;
+    this.endpointType = endpointType;
   }
 
   /**
@@ -60,6 +66,10 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
 
   public int getAttempt() {
     return attempt;
+  }
+
+  public EndpointType getEndpointType() {
+    return endpointType;
   }
 
   /**
@@ -93,10 +103,11 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
 
     AbcdaDownloadFinishedMessage other = (AbcdaDownloadFinishedMessage) obj;
     return Objects.equal(this.datasetUuid, other.datasetUuid)
-           && Objects.equal(this.source, other.source)
-           && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.lastModified, other.lastModified)
-           && Objects.equal(this.modified, other.modified);
+        && Objects.equal(this.source, other.source)
+        && Objects.equal(this.attempt, other.attempt)
+        && Objects.equal(this.lastModified, other.lastModified)
+        && Objects.equal(this.endpointType, other.endpointType)
+        && Objects.equal(this.modified, other.modified);
   }
 
   @Override
@@ -107,12 +118,13 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-      .add("datasetUuid", datasetUuid)
-      .add("source", source)
-      .add("attempt", attempt)
-      .add("lastModified", lastModified)
-      .add("modified", modified)
-      .toString();
+        .add("datasetUuid", datasetUuid)
+        .add("source", source)
+        .add("attempt", attempt)
+        .add("lastModified", lastModified)
+        .add("modified", modified)
+        .add("endpointType", endpointType)
+        .toString();
   }
 
 }
