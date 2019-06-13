@@ -13,7 +13,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PipelinesBalancerMessage implements Message {
 
-
   public static final String ROUTING_KEY = "occurrence.pipelines.balancer";
 
   private String messageClass;

@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "crawl.pipelines.verbatim.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished";
 
   private UUID datasetUuid;
   private int attempt;

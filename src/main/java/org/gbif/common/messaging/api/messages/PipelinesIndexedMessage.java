@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PipelinesIndexedMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.indexing.complited";
+  public static final String ROUTING_KEY = "occurrence.pipelines.indexing.finished";
 
   private UUID datasetUuid;
   private int attempt;
