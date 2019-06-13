@@ -185,7 +185,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     private boolean tripletValid;
     private boolean occurrenceIdValid;
     private Boolean useExtendedRecordId;
-    private Integer numberOfRecords;
+    private Long numberOfRecords;
 
     public ValidationResult() {
     }
@@ -195,7 +195,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         @JsonProperty("tripletValid") boolean tripletValid,
         @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
         @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId,
-        @JsonProperty("numberOfRecords") Integer numberOfRecords
+        @JsonProperty("numberOfRecords") Long numberOfRecords
     ) {
       this.tripletValid = tripletValid;
       this.occurrenceIdValid = occurrenceIdValid;
@@ -218,7 +218,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return this;
     }
 
-    public ValidationResult setNumberOfRecords(Integer numberOfRecords) {
+    public ValidationResult setNumberOfRecords(Long numberOfRecords) {
       this.numberOfRecords = numberOfRecords;
       return this;
     }
@@ -235,7 +235,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return useExtendedRecordId;
     }
 
-    public Integer getNumberOfRecords() {
+    public Long getNumberOfRecords() {
       return numberOfRecords;
     }
   }

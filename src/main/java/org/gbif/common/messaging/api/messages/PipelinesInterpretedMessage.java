@@ -25,7 +25,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
-  private Integer numberOfRecords;
+  private Long numberOfRecords;
 
   public PipelinesInterpretedMessage() {
   }
@@ -35,7 +35,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("numberOfRecords") Integer numberOfRecords,
+      @JsonProperty("numberOfRecords") Long numberOfRecords,
       @JsonProperty("runner") String runner) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
@@ -69,7 +69,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return runner;
   }
 
-  public Integer getNumberOfRecords() {
+  public Long getNumberOfRecords() {
     return numberOfRecords;
   }
 
@@ -93,7 +93,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesInterpretedMessage setNumberOfRecords(Integer numberOfRecords) {
+  public PipelinesInterpretedMessage setNumberOfRecords(Long numberOfRecords) {
     this.numberOfRecords = numberOfRecords;
     return this;
   }

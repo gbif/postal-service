@@ -69,7 +69,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
 
       .put(PipelinesXmlMessage.class, "crawler")
       .put(PipelinesDwcaMessage.class, "crawler")
-      .put(PipelinesVerbatimMessage.class, "crawler")
+      .put(PipelinesAbcdMessage.class, "crawler")
+      .put(PipelinesVerbatimMessage.class, "occurrence")
       .put(PipelinesInterpretedMessage.class, "occurrence")
       .put(PipelinesIndexedMessage.class, "occurrence")
       .put(PipelinesBalancerMessage.class, "occurrence")
@@ -109,6 +110,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
 
       .put(PipelinesDwcaMessage.class, PipelinesDwcaMessage.ROUTING_KEY)
       .put(PipelinesXmlMessage.class, PipelinesXmlMessage.ROUTING_KEY)
+      .put(PipelinesAbcdMessage.class, PipelinesAbcdMessage.ROUTING_KEY)
       .put(PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY)
       .put(PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY)
       .put(PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY)
