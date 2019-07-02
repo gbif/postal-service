@@ -51,7 +51,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
   }
 
-  public int getAttempt() {
+  public Integer getAttempt() {
     return attempt;
   }
 

@@ -26,6 +26,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private String runner;
   private Long numberOfRecords;
+  private boolean repeatAttempt;
 
   public PipelinesInterpretedMessage() {
   }
@@ -36,13 +37,24 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("numberOfRecords") Long numberOfRecords,
-      @JsonProperty("runner") String runner) {
+      @JsonProperty("runner") String runner,
+      @JsonProperty("repeatAttempt") boolean repeatAttempt) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.numberOfRecords = numberOfRecords;
+    this.repeatAttempt = repeatAttempt;
+  }
+
+  public PipelinesInterpretedMessage(
+      UUID datasetUuid,
+      int attempt,
+      Set<String> pipelineSteps,
+      Long numberOfRecords,
+      boolean repeatAttempt) {
+    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt);
   }
 
   @Override
@@ -51,7 +63,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   }
 
   @Override
-  public int getAttempt() {
+  public Integer getAttempt() {
     return attempt;
   }
 
@@ -71,6 +83,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
 
   public Long getNumberOfRecords() {
     return numberOfRecords;
+  }
+
+  public boolean isRepeatAttempt() {
+    return repeatAttempt;
   }
 
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
@@ -98,6 +114,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setRepeatAttempt(boolean repeatAttempt) {
+    this.repeatAttempt = repeatAttempt;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -108,15 +129,16 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     }
     PipelinesInterpretedMessage that = (PipelinesInterpretedMessage) o;
     return attempt == that.attempt &&
+        repeatAttempt == that.repeatAttempt &&
         Objects.equals(datasetUuid, that.datasetUuid) &&
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(numberOfRecords, that.numberOfRecords) &&
-        Objects.equals(runner, that.runner);
+        Objects.equals(runner, that.runner) &&
+        Objects.equals(numberOfRecords, that.numberOfRecords);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, numberOfRecords, runner);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, numberOfRecords, repeatAttempt);
   }
 
   @Override

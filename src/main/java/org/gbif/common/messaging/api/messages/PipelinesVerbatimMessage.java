@@ -24,7 +24,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished";
 
   private UUID datasetUuid;
-  private int attempt;
+  private Integer attempt;
   private Set<String> interpretTypes;
   private Set<String> pipelineSteps;
   private String runner;
@@ -38,7 +38,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   @JsonCreator
   public PipelinesVerbatimMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
+      @JsonProperty("attempt") Integer attempt,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
@@ -47,13 +47,40 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("validationResult") ValidationResult validationResult) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
-    checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.endpointType = endpointType;
     this.extraPath = extraPath;
     this.validationResult = validationResult;
+  }
+
+  public PipelinesVerbatimMessage(
+      UUID datasetUuid,
+      Integer attempt,
+      Set<String> interpretTypes,
+      Set<String> pipelineSteps,
+      EndpointType endpointType,
+      ValidationResult validationResult) {
+    this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null, validationResult);
+  }
+
+  public PipelinesVerbatimMessage(
+      UUID datasetUuid,
+      Integer attempt,
+      Set<String> interpretTypes,
+      Set<String> pipelineSteps,
+      EndpointType endpointType) {
+    this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null,
+        new ValidationResult(true, true, null, null));
+  }
+
+  public PipelinesVerbatimMessage(
+      UUID datasetUuid,
+      Set<String> interpretTypes,
+      Set<String> pipelineSteps,
+      EndpointType endpointType) {
+    this(datasetUuid, null, interpretTypes, pipelineSteps, endpointType);
   }
 
   /**
@@ -67,7 +94,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
    * @return attempt for the converted dataset
    */
   @Override
-  public int getAttempt() {
+  public Integer getAttempt() {
     return attempt;
   }
 
@@ -109,7 +136,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesVerbatimMessage setAttempt(int attempt) {
+  public PipelinesVerbatimMessage setAttempt(Integer attempt) {
     this.attempt = attempt;
     return this;
   }

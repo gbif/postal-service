@@ -70,7 +70,7 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
     return source;
   }
 
-  public int getAttempt() {
+  public Integer getAttempt() {
     return attempt;
   }
 

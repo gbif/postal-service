@@ -4,7 +4,7 @@ import java.util.Set;
 
 public interface PipelineBasedMessage extends DatasetBasedMessage {
 
-  int getAttempt();
+  Integer getAttempt();
 
   Set<String> getPipelineSteps();
 

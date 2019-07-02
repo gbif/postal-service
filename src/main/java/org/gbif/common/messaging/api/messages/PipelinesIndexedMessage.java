@@ -42,13 +42,20 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     this.runner = runner;
   }
 
+  public PipelinesIndexedMessage(
+      UUID datasetUuid,
+      int attempt,
+      Set<String> pipelineSteps) {
+    this(datasetUuid, attempt, pipelineSteps, null);
+  }
+
   @Override
   public UUID getDatasetUuid() {
     return datasetUuid;
   }
 
   @Override
-  public int getAttempt() {
+  public Integer getAttempt() {
     return attempt;
   }
 

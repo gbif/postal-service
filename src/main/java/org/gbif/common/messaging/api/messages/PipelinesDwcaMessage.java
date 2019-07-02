@@ -79,7 +79,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   }
 
   @Override
-  public int getAttempt() {
+  public Integer getAttempt() {
     return attempt;
   }
 
