@@ -27,6 +27,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private String runner;
   private Long numberOfRecords;
   private boolean repeatAttempt;
+  private String resetPrefix;
 
   public PipelinesInterpretedMessage() {
   }
@@ -38,7 +39,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("numberOfRecords") Long numberOfRecords,
       @JsonProperty("runner") String runner,
-      @JsonProperty("repeatAttempt") boolean repeatAttempt) {
+      @JsonProperty("repeatAttempt") boolean repeatAttempt,
+      @JsonProperty("resetPrefix") String resetPrefix) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -46,6 +48,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.runner = runner;
     this.numberOfRecords = numberOfRecords;
     this.repeatAttempt = repeatAttempt;
+    this.resetPrefix = resetPrefix;
   }
 
   public PipelinesInterpretedMessage(
@@ -53,8 +56,9 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       int attempt,
       Set<String> pipelineSteps,
       Long numberOfRecords,
-      boolean repeatAttempt) {
-    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt);
+      boolean repeatAttempt,
+      String resetPrefix) {
+    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt, resetPrefix);
   }
 
   @Override
@@ -89,6 +93,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return repeatAttempt;
   }
 
+  public String getResetPrefix() {
+    return resetPrefix;
+  }
+
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -119,6 +127,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setResetPrefix(String resetPrefix) {
+    this.resetPrefix = resetPrefix;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -133,12 +146,13 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         Objects.equals(datasetUuid, that.datasetUuid) &&
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
         Objects.equals(runner, that.runner) &&
-        Objects.equals(numberOfRecords, that.numberOfRecords);
+        Objects.equals(numberOfRecords, that.numberOfRecords) &&
+        Objects.equals(resetPrefix, that.resetPrefix);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, numberOfRecords, repeatAttempt);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, numberOfRecords, repeatAttempt, resetPrefix);
   }
 
   @Override

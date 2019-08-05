@@ -12,7 +12,6 @@ import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -31,6 +30,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
   private String extraPath;
   private ValidationResult validationResult;
+  private String resetPrefix;
 
   public PipelinesVerbatimMessage() {
   }
@@ -44,7 +44,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("runner") String runner,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("extraPath") String extraPath,
-      @JsonProperty("validationResult") ValidationResult validationResult) {
+      @JsonProperty("validationResult") ValidationResult validationResult,
+      @JsonProperty("resetPrefix") String resetPrefix) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -53,6 +54,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.extraPath = extraPath;
     this.validationResult = validationResult;
+    this.resetPrefix = resetPrefix;
   }
 
   public PipelinesVerbatimMessage(
@@ -62,7 +64,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       Set<String> pipelineSteps,
       EndpointType endpointType,
       ValidationResult validationResult) {
-    this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null, validationResult);
+    this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null, validationResult, null);
   }
 
   public PipelinesVerbatimMessage(
@@ -72,7 +74,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       Set<String> pipelineSteps,
       EndpointType endpointType) {
     this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null,
-        new ValidationResult(true, true, null, null));
+        new ValidationResult(true, true, null, null), null);
   }
 
   public PipelinesVerbatimMessage(
@@ -131,6 +133,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return validationResult;
   }
 
+  public String getResetPrefix() {
+    return resetPrefix;
+  }
+
   public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -171,6 +177,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesVerbatimMessage setResetPrefix(String resetPrefix) {
+    this.resetPrefix = resetPrefix;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -180,20 +191,21 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesVerbatimMessage that = (PipelinesVerbatimMessage) o;
-    return attempt == that.attempt &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
+    return Objects.equals(datasetUuid, that.datasetUuid) &&
+        Objects.equals(attempt, that.attempt) &&
         Objects.equals(interpretTypes, that.interpretTypes) &&
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
         Objects.equals(runner, that.runner) &&
-        Objects.equals(endpointType, that.endpointType) &&
+        endpointType == that.endpointType &&
         Objects.equals(extraPath, that.extraPath) &&
-        Objects.equals(validationResult, that.validationResult);
+        Objects.equals(validationResult, that.validationResult) &&
+        Objects.equals(resetPrefix, that.resetPrefix);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(datasetUuid, attempt, interpretTypes, pipelineSteps, runner, endpointType, extraPath,
-        validationResult);
+        validationResult, resetPrefix);
   }
 
   @Override
