@@ -29,7 +29,8 @@ public class DwcaValidationFinishedMessageTest {
             new URI("http://google.de"),
             1,
             OccurrenceFragmentedMessageTest.report(uuid),
-            EndpointType.DWC_ARCHIVE);
+            EndpointType.DWC_ARCHIVE,
+            Platform.ALL);
     Util.testSerDe(message, DwcaValidationFinishedMessage.class);
   }
 }

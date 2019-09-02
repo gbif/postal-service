@@ -18,7 +18,9 @@ public class CrawlFinishedMessageTest {
 
   @Test
   public void testSerDe() throws IOException {
-    CrawlFinishedMessage message = new CrawlFinishedMessage(UUID.randomUUID(), 1, 1, FinishReason.NORMAL, EndpointType.DWC_ARCHIVE);
+    CrawlFinishedMessage message = new CrawlFinishedMessage(UUID.randomUUID(), 1, 1,
+                                                            FinishReason.NORMAL, EndpointType.DWC_ARCHIVE,
+                                                            Platform.ALL);
     Util.testSerDe(message, CrawlFinishedMessage.class);
   }
 

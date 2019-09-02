@@ -3,6 +3,7 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.FinishReason;
 import org.gbif.api.vocabulary.EndpointType;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.google.common.base.Objects;
@@ -24,6 +25,7 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
   private final int totalRecordCount;
   private final FinishReason reason;
   private final EndpointType endpointType;
+  private final Platform platform;
 
   @JsonCreator
   public CrawlFinishedMessage(
@@ -31,7 +33,8 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
     @JsonProperty("attempt") int attempt,
     @JsonProperty("totalRecordCount") int totalRecordCount,
     @JsonProperty("reason") FinishReason reason,
-    @JsonProperty("endpointType") EndpointType endpointType
+    @JsonProperty("endpointType") EndpointType endpointType,
+    @JsonProperty("platform") Platform platform
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -40,6 +43,7 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
     this.totalRecordCount = totalRecordCount;
     this.reason = checkNotNull(reason, "reason can't be null");
     this.endpointType = endpointType;
+    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
   public int getAttempt() {
@@ -63,6 +67,10 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
     return endpointType;
   }
 
+  public Platform getPlatform() {
+    return platform;
+  }
+
   @Override
   public String getRoutingKey() {
     return ROUTING_KEY;
@@ -82,12 +90,13 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
            && Objects.equal(this.attempt, other.attempt)
            && Objects.equal(this.totalRecordCount, other.totalRecordCount)
            && Objects.equal(this.reason, other.reason)
-           && Objects.equal(this.endpointType, other.endpointType);
+           && Objects.equal(this.endpointType, other.endpointType)
+           && Objects.equal(this.platform, other.platform);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, attempt, totalRecordCount, reason, endpointType);
+    return Objects.hashCode(datasetUuid, attempt, totalRecordCount, reason, endpointType, platform);
   }
 
   @Override
@@ -98,6 +107,7 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
       .add("totalRecordCount", totalRecordCount)
       .add("reason", reason)
       .add("endpointType", endpointType)
+      .add("platform", platform)
       .toString();
   }
 

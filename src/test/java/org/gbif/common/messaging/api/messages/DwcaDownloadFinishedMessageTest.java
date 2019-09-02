@@ -20,7 +20,7 @@ public class DwcaDownloadFinishedMessageTest {
   @Test
   public void testSerDe() throws IOException, URISyntaxException {
     DwcaDownloadFinishedMessage message =
-      new DwcaDownloadFinishedMessage(UUID.randomUUID(), new URI("http://google.de"), 1, null, true, EndpointType.DWC_ARCHIVE);
+      new DwcaDownloadFinishedMessage(UUID.randomUUID(), new URI("http://google.de"), 1, null, true, EndpointType.DWC_ARCHIVE, Platform.ALL);
     Util.testSerDe(message, DwcaDownloadFinishedMessage.class);
   }
 }

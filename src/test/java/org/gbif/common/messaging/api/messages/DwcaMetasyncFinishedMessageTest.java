@@ -22,8 +22,10 @@ public class DwcaMetasyncFinishedMessageTest {
   public void testSerDe() throws IOException, URISyntaxException {
     UUID uuid = UUID.randomUUID();
     DwcaMetasyncFinishedMessage message = new DwcaMetasyncFinishedMessage(uuid, DatasetType.OCCURRENCE,
-          new URI("http://google.de"), 1, Maps.<String, UUID>newHashMap(),
-      OccurrenceFragmentedMessageTest.report(uuid));
+                                                                          new URI("http://google.de"), 1,
+                                                                          Maps.<String, UUID>newHashMap(),
+                                                                          OccurrenceFragmentedMessageTest.report(uuid),
+                                                                          Platform.ALL);
 
     Util.testSerDe(message, DwcaMetasyncFinishedMessage.class);
   }

@@ -5,6 +5,7 @@ import org.gbif.api.vocabulary.DatasetType;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.google.common.base.Objects;
@@ -29,6 +30,7 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
   private final int attempt;
   private final Map<String, UUID> constituents;
   private final DwcaValidationReport validationReport;
+  private final Platform platform;
 
   @JsonCreator
   public DwcaMetasyncFinishedMessage(
@@ -37,7 +39,8 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
     @JsonProperty("source") URI source,
     @JsonProperty("attempt") int attempt,
     @JsonProperty("constituents") Map<String, UUID> constituents,
-    @JsonProperty("validationReport") DwcaValidationReport validationReport
+    @JsonProperty("validationReport") DwcaValidationReport validationReport,
+    @JsonProperty("platform") Platform platform
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
@@ -46,6 +49,7 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
     this.attempt = attempt;
     this.constituents = checkNotNull(constituents, "constituents can't be null");
     this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
+    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
   /**
@@ -90,6 +94,14 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
    */
   public DwcaValidationReport getValidationReport() {
     return validationReport;
+  }
+
+  /**
+   *
+   * @return the platform that must index the archive
+   */
+  public Platform getPlatform() {
+    return platform;
   }
 
   @Override

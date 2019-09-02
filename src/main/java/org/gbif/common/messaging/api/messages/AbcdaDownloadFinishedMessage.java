@@ -30,6 +30,7 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
   private final Optional<Date> lastModified;
   private final boolean modified;
   private final EndpointType endpointType;
+  private final Platform platform;
 
   @JsonCreator
   public AbcdaDownloadFinishedMessage(
@@ -38,7 +39,8 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
     @JsonProperty("attempt") int attempt,
     @Nullable @JsonProperty("lastModified") Date lastModified,
     @JsonProperty("modified") boolean modified,
-    @JsonProperty("endpointType") EndpointType endpointType
+    @JsonProperty("endpointType") EndpointType endpointType,
+    @JsonProperty("platform") Platform platform
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -47,6 +49,7 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
     this.lastModified = Optional.fromNullable(lastModified);
     this.modified = modified;
     this.endpointType = endpointType;
+    this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
   /**
@@ -85,6 +88,14 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
    */
   public boolean isModified() {
     return modified;
+  }
+
+  /**
+   *
+   * @return platform that must index the Abcd fragment
+   */
+  public Platform getPlatform() {
+    return platform;
   }
 
   @Override

@@ -21,7 +21,7 @@ public class CrawlResponseMessageTest {
   @Test
   public void testSerDe() throws IOException {
     CrawlResponseMessage message =
-      new CrawlResponseMessage(UUID.randomUUID(), 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status");
+      new CrawlResponseMessage(UUID.randomUUID(), 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status", Platform.ALL);
     Util.testSerDe(message, CrawlResponseMessage.class);
   }
 
@@ -29,10 +29,10 @@ public class CrawlResponseMessageTest {
   public void testHashCode() {
     UUID datasetKey = UUID.randomUUID();
     CrawlResponseMessage message1 =
-      new CrawlResponseMessage(datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status");
+      new CrawlResponseMessage(datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status", Platform.ALL);
     CrawlResponseMessage message2 =
-      new CrawlResponseMessage(datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status");
-    assertTrue(message1.equals(message2));
+      new CrawlResponseMessage(datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status", Platform.ALL);
+    assertEquals(message1, message2);
     assertEquals(message1.hashCode(), message2.hashCode());
   }
 }

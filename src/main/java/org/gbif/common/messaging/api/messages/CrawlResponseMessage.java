@@ -30,6 +30,8 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
 
   private final String status;
 
+  private final Platform platform;
+
   @JsonCreator
   public CrawlResponseMessage(
     @JsonProperty("datasetUuid") UUID datasetUuid,
@@ -38,7 +40,8 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
     @JsonProperty("response") byte[] response,
     @JsonProperty("duration") long duration,
     @JsonProperty("recordCount") Optional<Integer> recordCount,
-    @JsonProperty("status") String status
+    @JsonProperty("status") String status,
+    @JsonProperty("platform") Platform platform
   ) {
     this.datasetUuid = checkNotNull(datasetUuid);
 
@@ -58,6 +61,8 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
                   "recordCount has to be absent or greater than or equal to 0");
 
     this.status = checkNotNull(status, "status can't be null");
+
+    this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
 
   }
 
@@ -88,6 +93,10 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
 
   public String getStatus() {
     return status;
+  }
+
+  public Platform getPlatform() {
+    return platform;
   }
 
   @Override

@@ -22,6 +22,8 @@ public class StartCrawlMessage implements DatasetBasedMessage {
 
   private final Optional<Integer> priority;
 
+  private final Platform platform;
+
   /**
    * Creates a message without an explicit priority. The crawler coordinator is free to choose a default priority in
    * this case.
@@ -29,19 +31,22 @@ public class StartCrawlMessage implements DatasetBasedMessage {
    * @param datasetUuid to crawl
    */
   public StartCrawlMessage(UUID datasetUuid) {
-    this(datasetUuid, Optional.<Integer>absent());
+    this(datasetUuid, Optional.<Integer>absent(), Platform.ALL);
   }
 
   @JsonCreator
   public StartCrawlMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid, @JsonProperty("priority") Optional<Integer> priority
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("priority") Optional<Integer> priority,
+    @JsonProperty("platform") Platform platform
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.priority = checkNotNull(priority, "priority can't be null");
+    this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
   public StartCrawlMessage(UUID datasetUuid, int priority) {
-    this(datasetUuid, Optional.of(priority));
+    this(datasetUuid, Optional.of(priority), Platform.ALL);
   }
 
   /**
@@ -51,7 +56,7 @@ public class StartCrawlMessage implements DatasetBasedMessage {
    * @param priority    to crawl at, if none is provided a default is used
    */
   public StartCrawlMessage(UUID datasetUuid, @Nullable Priority priority) {
-    this(datasetUuid, Optional.fromNullable(priority == null ? null : priority.getPriority()));
+    this(datasetUuid, Optional.fromNullable(priority == null ? null : priority.getPriority()), Platform.ALL);
   }
 
   @Override
@@ -61,6 +66,10 @@ public class StartCrawlMessage implements DatasetBasedMessage {
 
   public Optional<Integer> getPriority() {
     return priority;
+  }
+
+  public Platform getPlatform() {
+    return platform;
   }
 
   @Override

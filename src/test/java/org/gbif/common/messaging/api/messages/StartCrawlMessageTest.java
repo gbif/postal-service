@@ -24,7 +24,7 @@ public class StartCrawlMessageTest {
     message = new StartCrawlMessage(uuid, 5);
     assertThat(message.getPriority()).contains(5);
 
-    message = new StartCrawlMessage(uuid, Optional.of(10));
+    message = new StartCrawlMessage(uuid, Optional.of(10), Platform.ALL);
     assertThat(message.getPriority()).contains(10);
   }
 
@@ -35,7 +35,7 @@ public class StartCrawlMessageTest {
 
   @Test
   public void testSerDe() throws IOException {
-    StartCrawlMessage message = new StartCrawlMessage(UUID.randomUUID(), Optional.of(5));
+    StartCrawlMessage message = new StartCrawlMessage(UUID.randomUUID(), Optional.of(5),  Platform.ALL);
     Util.testSerDe(message, StartCrawlMessage.class);
   }
 
