@@ -3,6 +3,7 @@ package org.gbif.common.messaging.api.messages;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   private FinishReason reason;
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
+  private Platform platform;
 
   public PipelinesXmlMessage() {
   }
@@ -40,7 +42,8 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
       @JsonProperty("totalRecordCount") int totalRecordCount,
       @JsonProperty("reason") FinishReason reason,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -49,6 +52,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.reason = checkNotNull(reason, "reason can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
+    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
   public Integer getAttempt() {
@@ -75,6 +79,10 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
 
   public EndpointType getEndpointType() {
     return endpointType;
+  }
+
+  public Platform getPlatform() {
+    return platform;
   }
 
   @Override

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +34,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private DwcaValidationReport validationReport;
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
+  private Platform platform;
+
 
   public PipelinesDwcaMessage() {
   }
@@ -45,7 +48,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("validationReport") DwcaValidationReport validationReport,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -54,6 +58,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
+    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
   /**
@@ -90,6 +95,10 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   public EndpointType getEndpointType() {
     return endpointType;
+  }
+
+  public Platform getPlatform() {
+    return platform;
   }
 
   /**
