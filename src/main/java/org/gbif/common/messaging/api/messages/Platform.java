@@ -10,7 +10,7 @@ public enum Platform {
   ALL;
 
   /**
-   * Valdiates if a platforms is equivalent to another, i.e: are the same enum or else is {@link Platform#ALL}
+   * Validates if a platforms is equivalent to another, i.e: are the same enum or else is {@link Platform#ALL}
    */
   public boolean equivalent(Platform platform) {
     return this == platform || Platform.ALL == this;
