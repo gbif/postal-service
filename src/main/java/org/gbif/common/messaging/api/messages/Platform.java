@@ -1,5 +1,7 @@
 package org.gbif.common.messaging.api.messages;
 
+import java.util.Optional;
+
 /**
  * Enumerate the indexing platforms.
  * This is later used to decide what platform processes a message.
@@ -14,5 +16,9 @@ public enum Platform {
    */
   public boolean equivalent(Platform platform) {
     return this == platform || Platform.ALL == this;
+  }
+
+  public static Optional<Platform> parse(String platform) {
+    return Optional.ofNullable(platform).map(s ->  Platform.valueOf(s.trim().toUpperCase()));
   }
 }
