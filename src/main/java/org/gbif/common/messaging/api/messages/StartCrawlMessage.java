@@ -1,12 +1,12 @@
 package org.gbif.common.messaging.api.messages;
 
-import java.util.UUID;
-import javax.annotation.Nullable;
-
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -20,7 +20,7 @@ public class StartCrawlMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;
 
-  private final Optional<Integer> priority;
+  private final Integer priority;
 
   private final Platform platform;
 
@@ -31,22 +31,22 @@ public class StartCrawlMessage implements DatasetBasedMessage {
    * @param datasetUuid to crawl
    */
   public StartCrawlMessage(UUID datasetUuid) {
-    this(datasetUuid, Optional.<Integer>absent(), Platform.ALL);
+    this(datasetUuid, null, Platform.ALL);
   }
 
   @JsonCreator
   public StartCrawlMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("priority") Optional<Integer> priority,
-    @JsonProperty("platform") Platform platform
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("priority") Integer priority,
+      @JsonProperty("platform") Platform platform
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.priority = checkNotNull(priority, "priority can't be null");
+    this.priority = priority;
     this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
   public StartCrawlMessage(UUID datasetUuid, int priority) {
-    this(datasetUuid, Optional.of(priority), Platform.ALL);
+    this(datasetUuid, priority, Platform.ALL);
   }
 
   /**
@@ -56,7 +56,7 @@ public class StartCrawlMessage implements DatasetBasedMessage {
    * @param priority    to crawl at, if none is provided a default is used
    */
   public StartCrawlMessage(UUID datasetUuid, @Nullable Priority priority) {
-    this(datasetUuid, Optional.fromNullable(priority == null ? null : priority.getPriority()), Platform.ALL);
+    this(datasetUuid, priority != null ? priority.getPriority() : null, Platform.ALL);
   }
 
   @Override
@@ -64,7 +64,8 @@ public class StartCrawlMessage implements DatasetBasedMessage {
     return datasetUuid;
   }
 
-  public Optional<Integer> getPriority() {
+  @Nullable
+  public Integer getPriority() {
     return priority;
   }
 
@@ -97,7 +98,7 @@ public class StartCrawlMessage implements DatasetBasedMessage {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("datasetUuid", datasetUuid).add("priority", priority).toString();
+    return MoreObjects.toStringHelper(this).add("datasetUuid", datasetUuid).add("priority", priority).toString();
   }
 
   /**
@@ -119,7 +120,5 @@ public class StartCrawlMessage implements DatasetBasedMessage {
     public int getPriority() {
       return priority;
     }
-
   }
-
 }
