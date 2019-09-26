@@ -19,14 +19,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ChangeDoiMessage implements Message {
   public static final String ROUTING_KEY = "doi.change";
 
+  public static final String DOI_FIELD = "doi";
+  public static final String DOI_STATUS_FIELD = "status";
+  public static final String METADATA_FIELD = "metadata";
+  public static final String TARGET_FIELD = "target";
+
   private final DOI doi;
   private final DoiStatus status;
   private final String metadata;
   private final URI target;
 
   @JsonCreator
-  public ChangeDoiMessage(@JsonProperty("status") DoiStatus status, @JsonProperty("doi") DOI doi,
-    @JsonProperty("metadata") String metadata, @JsonProperty("target") URI target) {
+  public ChangeDoiMessage(
+      @JsonProperty("status") DoiStatus status,
+      @JsonProperty("doi") DOI doi,
+      @JsonProperty("metadata") String metadata,
+      @JsonProperty("target") URI target) {
     this.status = checkNotNull(status, "status can't be null");
     this.doi = checkNotNull(doi, "doi can't be null");
     if (status != DoiStatus.DELETED) {
@@ -81,6 +89,6 @@ public class ChangeDoiMessage implements Message {
     }
     final ChangeDoiMessage other = (ChangeDoiMessage) obj;
     return Objects.equals(this.doi, other.doi) && Objects.equals(this.status, other.status) && Objects
-      .equals(this.metadata, other.metadata) && Objects.equals(this.target, other.target);
+        .equals(this.metadata, other.metadata) && Objects.equals(this.target, other.target);
   }
 }
