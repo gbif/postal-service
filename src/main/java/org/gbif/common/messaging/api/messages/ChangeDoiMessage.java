@@ -30,11 +30,12 @@ public class ChangeDoiMessage implements Message {
   private final URI target;
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public ChangeDoiMessage(
-      @JsonProperty("status") DoiStatus status,
-      @JsonProperty("doi") DOI doi,
-      @JsonProperty("metadata") String metadata,
-      @JsonProperty("target") URI target) {
+      @com.fasterxml.jackson.annotation.JsonProperty("status") @JsonProperty("status") DoiStatus status,
+      @com.fasterxml.jackson.annotation.JsonProperty("doi") @JsonProperty("doi") DOI doi,
+      @com.fasterxml.jackson.annotation.JsonProperty("metadata") @JsonProperty("metadata") String metadata,
+      @com.fasterxml.jackson.annotation.JsonProperty("target") @JsonProperty("target") URI target) {
     this.status = checkNotNull(status, "status can't be null");
     this.doi = checkNotNull(doi, "doi can't be null");
     if (status != DoiStatus.DELETED) {
