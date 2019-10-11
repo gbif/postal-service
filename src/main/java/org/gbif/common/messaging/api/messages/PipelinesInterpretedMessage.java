@@ -28,6 +28,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private Long numberOfRecords;
   private boolean repeatAttempt;
   private String resetPrefix;
+  private String onlyForStep;
 
   public PipelinesInterpretedMessage() {
   }
@@ -40,7 +41,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("numberOfRecords") Long numberOfRecords,
       @JsonProperty("runner") String runner,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
-      @JsonProperty("resetPrefix") String resetPrefix) {
+      @JsonProperty("resetPrefix") String resetPrefix,
+      @JsonProperty("onlyForStep") String onlyForStep) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -49,6 +51,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.numberOfRecords = numberOfRecords;
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
+    this.onlyForStep = onlyForStep;
   }
 
   public PipelinesInterpretedMessage(
@@ -58,7 +61,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       Long numberOfRecords,
       boolean repeatAttempt,
       String resetPrefix) {
-    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt, resetPrefix);
+    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt, resetPrefix, null);
   }
 
   @Override
@@ -97,6 +100,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return resetPrefix;
   }
 
+  public String getOnlyForStep() {
+    return onlyForStep;
+  }
+
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -132,6 +139,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setOnlyForStep(String onlyForStep) {
+    this.onlyForStep = onlyForStep;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -147,12 +159,14 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
         Objects.equals(runner, that.runner) &&
         Objects.equals(numberOfRecords, that.numberOfRecords) &&
-        Objects.equals(resetPrefix, that.resetPrefix);
+        Objects.equals(resetPrefix, that.resetPrefix) &&
+        Objects.equals(onlyForStep, that.onlyForStep);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, numberOfRecords, repeatAttempt, resetPrefix);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, numberOfRecords, repeatAttempt, resetPrefix,
+        onlyForStep);
   }
 
   @Override
