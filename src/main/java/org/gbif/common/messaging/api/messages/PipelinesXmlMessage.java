@@ -36,14 +36,15 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   }
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesXmlMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("totalRecordCount") int totalRecordCount,
-      @JsonProperty("reason") FinishReason reason,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("platform") Platform platform) {
+      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
+      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
+      @com.fasterxml.jackson.annotation.JsonProperty("totalRecordCount") @JsonProperty("totalRecordCount") int totalRecordCount,
+      @com.fasterxml.jackson.annotation.JsonProperty("reason") @JsonProperty("reason") FinishReason reason,
+      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @com.fasterxml.jackson.annotation.JsonProperty("endpointType") @JsonProperty("endpointType") EndpointType endpointType,
+      @com.fasterxml.jackson.annotation.JsonProperty("platform") @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;

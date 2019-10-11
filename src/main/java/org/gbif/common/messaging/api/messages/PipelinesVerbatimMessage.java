@@ -36,16 +36,17 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   }
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesVerbatimMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") Integer attempt,
-      @JsonProperty("interpretTypes") Set<String> interpretTypes,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner,
-      @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("extraPath") String extraPath,
-      @JsonProperty("validationResult") ValidationResult validationResult,
-      @JsonProperty("resetPrefix") String resetPrefix) {
+      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
+      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") Integer attempt,
+      @com.fasterxml.jackson.annotation.JsonProperty("interpretTypes") @JsonProperty("interpretTypes") Set<String> interpretTypes,
+      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @com.fasterxml.jackson.annotation.JsonProperty("runner") @JsonProperty("runner") String runner,
+      @com.fasterxml.jackson.annotation.JsonProperty("endpointType") @JsonProperty("endpointType") EndpointType endpointType,
+      @com.fasterxml.jackson.annotation.JsonProperty("extraPath") @JsonProperty("extraPath") String extraPath,
+      @com.fasterxml.jackson.annotation.JsonProperty("validationResult") @JsonProperty("validationResult") ValidationResult validationResult,
+      @com.fasterxml.jackson.annotation.JsonProperty("resetPrefix") @JsonProperty("resetPrefix") String resetPrefix) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;

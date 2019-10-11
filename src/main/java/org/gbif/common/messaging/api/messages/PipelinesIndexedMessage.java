@@ -30,11 +30,12 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   }
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesIndexedMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner) {
+      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
+      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
+      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @com.fasterxml.jackson.annotation.JsonProperty("runner") @JsonProperty("runner") String runner) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;

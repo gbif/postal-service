@@ -37,14 +37,15 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesAbcdMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("source") URI source,
-      @JsonProperty("attempt") int attempt,
-      @Nullable @JsonProperty("lastModified") Date lastModified,
-      @JsonProperty("modified") boolean modified,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
+      @com.fasterxml.jackson.annotation.JsonProperty("source") @JsonProperty("source") URI source,
+      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
+      @com.fasterxml.jackson.annotation.JsonProperty("lastModified") @Nullable @JsonProperty("lastModified") Date lastModified,
+      @com.fasterxml.jackson.annotation.JsonProperty("modified") @JsonProperty("modified") boolean modified,
+      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @com.fasterxml.jackson.annotation.JsonProperty("endpointType") @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");

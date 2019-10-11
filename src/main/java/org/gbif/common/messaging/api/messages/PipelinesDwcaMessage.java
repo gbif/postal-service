@@ -41,15 +41,16 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   }
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesDwcaMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("datasetType") DatasetType datasetType,
-      @JsonProperty("source") URI source,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("validationReport") DwcaValidationReport validationReport,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("platform") Platform platform) {
+      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
+      @com.fasterxml.jackson.annotation.JsonProperty("datasetType") @JsonProperty("datasetType") DatasetType datasetType,
+      @com.fasterxml.jackson.annotation.JsonProperty("source") @JsonProperty("source") URI source,
+      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
+      @com.fasterxml.jackson.annotation.JsonProperty("validationReport") @JsonProperty("validationReport") DwcaValidationReport validationReport,
+      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @com.fasterxml.jackson.annotation.JsonProperty("endpointType") @JsonProperty("endpointType") EndpointType endpointType,
+      @com.fasterxml.jackson.annotation.JsonProperty("platform") @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");

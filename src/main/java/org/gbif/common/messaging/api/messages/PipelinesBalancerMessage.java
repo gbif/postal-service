@@ -22,9 +22,10 @@ public class PipelinesBalancerMessage implements Message {
   }
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesBalancerMessage(
-      @JsonProperty("messageClass") String messageClass,
-      @JsonProperty("payload") String payload) {
+      @com.fasterxml.jackson.annotation.JsonProperty("messageClass") @JsonProperty("messageClass") String messageClass,
+      @com.fasterxml.jackson.annotation.JsonProperty("payload") @JsonProperty("payload") String payload) {
 
     this.messageClass = checkNotNull(messageClass, "messageClass can't be null");
     this.payload = payload;

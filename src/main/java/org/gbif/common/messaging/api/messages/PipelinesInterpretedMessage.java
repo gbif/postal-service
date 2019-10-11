@@ -34,15 +34,16 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   }
 
   @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesInterpretedMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("numberOfRecords") Long numberOfRecords,
-      @JsonProperty("runner") String runner,
-      @JsonProperty("repeatAttempt") boolean repeatAttempt,
-      @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("onlyForStep") String onlyForStep) {
+      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
+      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
+      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @com.fasterxml.jackson.annotation.JsonProperty("numberOfRecords") @JsonProperty("numberOfRecords") Long numberOfRecords,
+      @com.fasterxml.jackson.annotation.JsonProperty("runner") @JsonProperty("runner") String runner,
+      @com.fasterxml.jackson.annotation.JsonProperty("repeatAttempt") @JsonProperty("repeatAttempt") boolean repeatAttempt,
+      @com.fasterxml.jackson.annotation.JsonProperty("resetPrefix") @JsonProperty("resetPrefix") String resetPrefix,
+      @com.fasterxml.jackson.annotation.JsonProperty("onlyForStep") @JsonProperty("onlyForStep") String onlyForStep) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
