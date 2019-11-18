@@ -12,7 +12,6 @@ import java.util.UUID;
 import org.gbif.api.vocabulary.EndpointType;
 
 import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -32,7 +31,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   private UUID datasetUuid;
   private URI source;
   private int attempt;
-  @JsonProperty("lastModified")
   private Date lastModified;
   private boolean modified;
   private Set<String> pipelineSteps;
@@ -89,7 +87,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
    * @return the date the downloaded archive was last modified or null e.g. for failed downloads
    */
   @Nullable
-  @JsonIgnore
   public Optional<Date> getLastModified() {
     return Optional.ofNullable(lastModified);
   }
