@@ -3,20 +3,15 @@ package org.gbif.common.messaging.api.messages;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.gbif.api.vocabulary.EndpointType;
 
 import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,8 +27,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   private UUID datasetUuid;
   private URI source;
   private int attempt;
-  @JsonProperty("lastModified")
-  private Date lastModified;
   private boolean modified;
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
@@ -43,7 +36,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("source") URI source,
       @JsonProperty("attempt") int attempt,
-      @Nullable @JsonProperty("lastModified") Date lastModified,
       @JsonProperty("modified") boolean modified,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("endpointType") EndpointType endpointType) {
@@ -51,7 +43,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
     this.source = checkNotNull(source, "source can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.lastModified = lastModified;
     this.modified = modified;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
@@ -86,15 +77,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   }
 
   /**
-   * @return the date the downloaded archive was last modified or null e.g. for failed downloads
-   */
-  @Nullable
-  @JsonIgnore
-  public Optional<Date> getLastModified() {
-    return Optional.ofNullable(lastModified);
-  }
-
-  /**
    * @return true if the archive has changed since we last downloaded it or never been downloaded before
    */
   public boolean isModified() {
@@ -118,11 +100,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
 
   public PipelinesAbcdMessage setAttempt(int attempt) {
     this.attempt = attempt;
-    return this;
-  }
-
-  public PipelinesAbcdMessage setLastModified(Date lastModified) {
-    this.lastModified = lastModified;
     return this;
   }
 
@@ -154,14 +131,13 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
         modified == that.modified &&
         Objects.equals(datasetUuid, that.datasetUuid) &&
         Objects.equals(source, that.source) &&
-        Objects.equals(lastModified, that.lastModified) &&
         Objects.equals(pipelineSteps, that.pipelineSteps) &&
         endpointType == that.endpointType;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, source, attempt, lastModified, modified, pipelineSteps, endpointType);
+    return Objects.hash(datasetUuid, source, attempt, modified, pipelineSteps, endpointType);
   }
 
   @Override
