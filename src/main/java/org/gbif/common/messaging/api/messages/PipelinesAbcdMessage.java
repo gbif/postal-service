@@ -1,5 +1,12 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gbif.api.vocabulary.EndpointType;
+
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
@@ -8,15 +15,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import org.gbif.api.vocabulary.EndpointType;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
-
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -39,15 +37,14 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
 
   @JsonCreator
-  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesAbcdMessage(
-      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
-      @com.fasterxml.jackson.annotation.JsonProperty("source") @JsonProperty("source") URI source,
-      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
-      @com.fasterxml.jackson.annotation.JsonProperty("lastModified") @Nullable @JsonProperty("lastModified") Date lastModified,
-      @com.fasterxml.jackson.annotation.JsonProperty("modified") @JsonProperty("modified") boolean modified,
-      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @com.fasterxml.jackson.annotation.JsonProperty("endpointType") @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("source") URI source,
+      @JsonProperty("attempt") int attempt,
+      @Nullable @JsonProperty("lastModified") Date lastModified,
+      @JsonProperty("modified") boolean modified,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
