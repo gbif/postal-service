@@ -10,7 +10,7 @@
 
   <groupId>org.gbif.common</groupId>
   <artifactId>gbif-postal-service</artifactId>
-  <version>0.39.3-jackson2-SNAPSHOT</version>
+  <version>0.42-jackson2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>GBIF Postal service</name>
@@ -24,7 +24,6 @@
   </scm>
 
   <properties>
-
     <jdkLevel>1.8</jdkLevel>
 
     <amqp-client.version>3.1.4</amqp-client.version>
@@ -46,6 +45,19 @@
     <slf4j.version>1.7.22</slf4j.version>
     <reflections.version>0.9.10</reflections.version>
     <validation-api.version>1.1.0.Final</validation-api.version>
+
+    <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
+    <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
+
+    <!-- Sonar -->
+    <sonar.language>java</sonar.language>
+    <sonar.jacoco.reportPaths>${jacoco.output.file}</sonar.jacoco.reportPaths>
+    <sonar.projectName>GBIF Postal service</sonar.projectName>
+
+    <!-- JaCoCo -->
+    <coverage.dir>${project.build.directory}/coverage</coverage.dir>
+    <coverage.report.dir>${project.reporting.outputDirectory}/jacoco</coverage.report.dir>
+    <jacoco.output.file>${coverage.dir}/jacoco.exec</jacoco.output.file>
   </properties>
 
   <repositories>
@@ -183,7 +195,63 @@
       <version>${reflections.version}</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <argLine>${surefireArgLine}</argLine>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <configuration>
+          <append>true</append>
+        </configuration>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <destFile>${jacoco.output.file}</destFile>
+              <propertyName>surefireArgLine</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>report-coverage</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <dataFile>${jacoco.output.file}</dataFile>
+              <outputDirectory>${coverage.report.dir}</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>local-sonar</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

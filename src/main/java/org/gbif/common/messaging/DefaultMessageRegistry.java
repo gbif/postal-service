@@ -74,6 +74,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(PipelinesVerbatimMessage.class, "occurrence")
       .put(PipelinesInterpretedMessage.class, "occurrence")
       .put(PipelinesIndexedMessage.class, "occurrence")
+      .put(PipelinesHdfsViewBuiltMessage.class, "occurrence")
       .put(PipelinesBalancerMessage.class, "occurrence")
 
       .build();
@@ -116,6 +117,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
       .put(PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY)
       .put(PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY)
       .put(PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY)
+      .put(PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY)
       .put(PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY)
 
       .build();
