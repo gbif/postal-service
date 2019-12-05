@@ -35,7 +35,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
   private Platform platform;
-
+  private Long executionId;
 
   public PipelinesDwcaMessage() {
   }
@@ -49,7 +49,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
       @JsonProperty("validationReport") DwcaValidationReport validationReport,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("platform") Platform platform) {
+      @JsonProperty("platform") Platform platform,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -59,6 +60,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
     this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.executionId = executionId;
   }
 
   /**
@@ -91,6 +93,11 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   public EndpointType getEndpointType() {
@@ -164,6 +171,10 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   public PipelinesDwcaMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
+  }
+
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
   }
 
   @Override

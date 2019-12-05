@@ -31,6 +31,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private String extraPath;
   private ValidationResult validationResult;
   private String resetPrefix;
+  private Long executionId;
 
   public PipelinesVerbatimMessage() {
   }
@@ -45,7 +46,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("extraPath") String extraPath,
       @JsonProperty("validationResult") ValidationResult validationResult,
-      @JsonProperty("resetPrefix") String resetPrefix) {
+      @JsonProperty("resetPrefix") String resetPrefix,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -64,7 +66,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       Set<String> pipelineSteps,
       EndpointType endpointType,
       ValidationResult validationResult) {
-    this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null, validationResult, null);
+    this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null, validationResult, null, null);
   }
 
   public PipelinesVerbatimMessage(
@@ -74,7 +76,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       Set<String> pipelineSteps,
       EndpointType endpointType) {
     this(datasetUuid, attempt, interpretTypes, pipelineSteps, null, endpointType, null,
-        new ValidationResult(true, true, null, null), null);
+        new ValidationResult(true, true, null, null), null, null);
   }
 
   public PipelinesVerbatimMessage(
@@ -103,6 +105,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   /**
@@ -180,6 +187,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   public PipelinesVerbatimMessage setResetPrefix(String resetPrefix) {
     this.resetPrefix = resetPrefix;
     return this;
+  }
+
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
   }
 
   @Override

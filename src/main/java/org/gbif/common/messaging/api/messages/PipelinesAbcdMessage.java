@@ -30,6 +30,7 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   private boolean modified;
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
+  private Long executionId;
 
   @JsonCreator
   public PipelinesAbcdMessage(
@@ -38,7 +39,8 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("modified") boolean modified,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -46,6 +48,7 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
     this.modified = modified;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
+    this.executionId = executionId;
   }
 
   /**
@@ -70,6 +73,11 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   public EndpointType getEndpointType() {
@@ -116,6 +124,10 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   public PipelinesAbcdMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
+  }
+
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
   }
 
   @Override

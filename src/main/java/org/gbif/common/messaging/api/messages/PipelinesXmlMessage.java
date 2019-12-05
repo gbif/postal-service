@@ -31,6 +31,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
   private Platform platform;
+  private Long executionId;
 
   public PipelinesXmlMessage() {
   }
@@ -43,7 +44,8 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
       @JsonProperty("reason") FinishReason reason,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("platform") Platform platform) {
+      @JsonProperty("platform") Platform platform,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -53,6 +55,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
     this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.executionId = executionId;
   }
 
   public Integer getAttempt() {
@@ -62,6 +65,11 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   @Override
@@ -118,6 +126,10 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   public PipelinesXmlMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
+  }
+
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
   }
 
   @Override

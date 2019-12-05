@@ -24,6 +24,7 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
+  private Long executionId;
 
   public PipelinesHdfsViewBuiltMessage() {
   }
@@ -33,19 +34,21 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner) {
+      @JsonProperty("runner") String runner,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
+    this.executionId = executionId;
   }
 
   public PipelinesHdfsViewBuiltMessage(
       UUID datasetUuid,
       int attempt,
       Set<String> pipelineSteps) {
-    this(datasetUuid, attempt, pipelineSteps, null);
+    this(datasetUuid, attempt, pipelineSteps, null, null);
   }
 
   @Override
@@ -61,6 +64,11 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   @Override
@@ -90,6 +98,10 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
   public PipelinesHdfsViewBuiltMessage setRunner(String runner) {
     this.runner = runner;
     return this;
+  }
+
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
   }
 
   @Override

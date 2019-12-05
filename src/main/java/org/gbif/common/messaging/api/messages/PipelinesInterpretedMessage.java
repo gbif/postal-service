@@ -29,6 +29,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private boolean repeatAttempt;
   private String resetPrefix;
   private String onlyForStep;
+  private Long executionId;
 
   public PipelinesInterpretedMessage() {
   }
@@ -42,7 +43,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("runner") String runner,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
       @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("onlyForStep") String onlyForStep) {
+      @JsonProperty("onlyForStep") String onlyForStep,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -52,6 +54,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
     this.onlyForStep = onlyForStep;
+    this.executionId = executionId;
   }
 
   public PipelinesInterpretedMessage(
@@ -61,7 +64,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       Long numberOfRecords,
       boolean repeatAttempt,
       String resetPrefix) {
-    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt, resetPrefix, null);
+    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt, resetPrefix, null, null);
   }
 
   @Override
@@ -77,6 +80,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   @Override
@@ -142,6 +150,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   public PipelinesInterpretedMessage setOnlyForStep(String onlyForStep) {
     this.onlyForStep = onlyForStep;
     return this;
+  }
+
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
   }
 
   @Override

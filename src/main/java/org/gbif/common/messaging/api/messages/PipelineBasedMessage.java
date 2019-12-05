@@ -8,4 +8,6 @@ public interface PipelineBasedMessage extends DatasetBasedMessage {
 
   Set<String> getPipelineSteps();
 
+  Long getExecutionId();
+
 }
