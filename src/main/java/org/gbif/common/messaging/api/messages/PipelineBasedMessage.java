@@ -10,4 +10,6 @@ public interface PipelineBasedMessage extends DatasetBasedMessage {
 
   Long getExecutionId();
 
+  void setExecutionId(Long executionId);
+
 }

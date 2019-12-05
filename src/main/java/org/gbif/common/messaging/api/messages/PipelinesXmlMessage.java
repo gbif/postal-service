@@ -128,6 +128,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     return this;
   }
 
+  @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
   }
