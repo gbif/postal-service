@@ -14,8 +14,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * This message instructs the dataset mutator service to send InterpretDatasetMessage for each occurrence in the
- * dataset.
+ * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
+ * occurrence in the dataset.
  */
 public class PipelinesInterpretedMessage implements PipelineBasedMessage {
 
@@ -31,8 +31,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private String onlyForStep;
   private Long executionId;
 
-  public PipelinesInterpretedMessage() {
-  }
+  public PipelinesInterpretedMessage() {}
 
   @JsonCreator
   public PipelinesInterpretedMessage(
@@ -64,7 +63,16 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       Long numberOfRecords,
       boolean repeatAttempt,
       String resetPrefix) {
-    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt, resetPrefix, null, null);
+    this(
+        datasetUuid,
+        attempt,
+        pipelineSteps,
+        numberOfRecords,
+        null,
+        repeatAttempt,
+        resetPrefix,
+        null,
+        null);
   }
 
   @Override
@@ -166,20 +174,29 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesInterpretedMessage that = (PipelinesInterpretedMessage) o;
-    return attempt == that.attempt &&
-        repeatAttempt == that.repeatAttempt &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
-        Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(runner, that.runner) &&
-        Objects.equals(numberOfRecords, that.numberOfRecords) &&
-        Objects.equals(resetPrefix, that.resetPrefix) &&
-        Objects.equals(onlyForStep, that.onlyForStep);
+    return attempt == that.attempt
+        && repeatAttempt == that.repeatAttempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(numberOfRecords, that.numberOfRecords)
+        && Objects.equals(resetPrefix, that.resetPrefix)
+        && Objects.equals(onlyForStep, that.onlyForStep)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, numberOfRecords, repeatAttempt, resetPrefix,
-        onlyForStep);
+    return Objects.hash(
+        datasetUuid,
+        attempt,
+        pipelineSteps,
+        runner,
+        numberOfRecords,
+        repeatAttempt,
+        resetPrefix,
+        onlyForStep,
+        executionId);
   }
 
   @Override

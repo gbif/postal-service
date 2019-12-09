@@ -120,24 +120,6 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return ROUTING_KEY;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
-    return attempt == that.attempt
-        && Objects.equals(datasetUuid, that.datasetUuid)
-        && datasetType == that.datasetType
-        && Objects.equals(source, that.source)
-        && Objects.equals(validationReport, that.validationReport)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(endpointType, that.endpointType);
-  }
-
   public PipelinesDwcaMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -179,8 +161,27 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
+    return attempt == that.attempt
+           && Objects.equals(datasetUuid, that.datasetUuid)
+           && datasetType == that.datasetType
+           && Objects.equals(source, that.source)
+           && Objects.equals(validationReport, that.validationReport)
+           && Objects.equals(pipelineSteps, that.pipelineSteps)
+           && Objects.equals(endpointType, that.endpointType)
+           && Objects.equals(executionId, that.executionId);
+  }
+
+  @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, pipelineSteps, endpointType);
+    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, pipelineSteps, endpointType, executionId);
   }
 
   @Override

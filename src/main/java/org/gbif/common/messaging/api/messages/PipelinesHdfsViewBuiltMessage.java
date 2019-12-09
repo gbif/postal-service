@@ -13,9 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * This message indicates that the HDFS view of a dataset has finished.
- */
+/** This message indicates that the HDFS view of a dataset has finished. */
 public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.hdfsview.finished";
@@ -26,8 +24,7 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
   private String runner;
   private Long executionId;
 
-  public PipelinesHdfsViewBuiltMessage() {
-  }
+  public PipelinesHdfsViewBuiltMessage() {}
 
   @JsonCreator
   public PipelinesHdfsViewBuiltMessage(
@@ -44,10 +41,7 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
     this.executionId = executionId;
   }
 
-  public PipelinesHdfsViewBuiltMessage(
-      UUID datasetUuid,
-      int attempt,
-      Set<String> pipelineSteps) {
+  public PipelinesHdfsViewBuiltMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
     this(datasetUuid, attempt, pipelineSteps, null, null);
   }
 
@@ -114,15 +108,16 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesHdfsViewBuiltMessage that = (PipelinesHdfsViewBuiltMessage) o;
-    return attempt == that.attempt &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
-        Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(runner, that.runner);
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId);
   }
 
   @Override

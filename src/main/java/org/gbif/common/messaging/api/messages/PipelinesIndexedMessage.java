@@ -14,8 +14,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * This message instructs the dataset mutator service to send IndexDatasetMessage for each occurrence in the
- * dataset.
+ * This message instructs the dataset mutator service to send IndexDatasetMessage for each
+ * occurrence in the dataset.
  */
 public class PipelinesIndexedMessage implements PipelineBasedMessage {
 
@@ -27,8 +27,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   private String runner;
   private Long executionId;
 
-  public PipelinesIndexedMessage() {
-  }
+  public PipelinesIndexedMessage() {}
 
   @JsonCreator
   public PipelinesIndexedMessage(
@@ -45,10 +44,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     this.executionId = executionId;
   }
 
-  public PipelinesIndexedMessage(
-      UUID datasetUuid,
-      int attempt,
-      Set<String> pipelineSteps) {
+  public PipelinesIndexedMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
     this(datasetUuid, attempt, pipelineSteps, null, null);
   }
 
@@ -115,15 +111,16 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesIndexedMessage that = (PipelinesIndexedMessage) o;
-    return attempt == that.attempt &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
-        Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(runner, that.runner);
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId);
   }
 
   @Override

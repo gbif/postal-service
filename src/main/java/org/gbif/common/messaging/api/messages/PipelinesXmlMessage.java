@@ -147,12 +147,13 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
         && Objects.equals(datasetUuid, that.datasetUuid)
         && reason == that.reason
         && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(endpointType, that.endpointType);
+        && Objects.equals(endpointType, that.endpointType)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, pipelineSteps, endpointType);
+    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, pipelineSteps, endpointType, executionId);
   }
 
   @Override
