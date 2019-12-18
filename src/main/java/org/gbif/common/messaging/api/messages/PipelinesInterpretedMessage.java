@@ -1,21 +1,21 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * This message instructs the dataset mutator service to send InterpretDatasetMessage for each occurrence in the
- * dataset.
+ * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
+ * occurrence in the dataset.
  */
 public class PipelinesInterpretedMessage implements PipelineBasedMessage {
 
@@ -29,21 +29,22 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private boolean repeatAttempt;
   private String resetPrefix;
   private String onlyForStep;
+  private Long executionId;
 
   public PipelinesInterpretedMessage() {
   }
 
   @JsonCreator
-  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesInterpretedMessage(
-      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
-      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
-      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @com.fasterxml.jackson.annotation.JsonProperty("numberOfRecords") @JsonProperty("numberOfRecords") Long numberOfRecords,
-      @com.fasterxml.jackson.annotation.JsonProperty("runner") @JsonProperty("runner") String runner,
-      @com.fasterxml.jackson.annotation.JsonProperty("repeatAttempt") @JsonProperty("repeatAttempt") boolean repeatAttempt,
-      @com.fasterxml.jackson.annotation.JsonProperty("resetPrefix") @JsonProperty("resetPrefix") String resetPrefix,
-      @com.fasterxml.jackson.annotation.JsonProperty("onlyForStep") @JsonProperty("onlyForStep") String onlyForStep) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("numberOfRecords") Long numberOfRecords,
+      @JsonProperty("runner") String runner,
+      @JsonProperty("repeatAttempt") boolean repeatAttempt,
+      @JsonProperty("resetPrefix") String resetPrefix,
+      @JsonProperty("onlyForStep") String onlyForStep,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -53,6 +54,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
     this.onlyForStep = onlyForStep;
+    this.executionId = executionId;
   }
 
   public PipelinesInterpretedMessage(
@@ -62,7 +64,16 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       Long numberOfRecords,
       boolean repeatAttempt,
       String resetPrefix) {
-    this(datasetUuid, attempt, pipelineSteps, numberOfRecords, null, repeatAttempt, resetPrefix, null);
+    this(
+        datasetUuid,
+        attempt,
+        pipelineSteps,
+        numberOfRecords,
+        null,
+        repeatAttempt,
+        resetPrefix,
+        null,
+        null);
   }
 
   @Override
@@ -78,6 +89,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   @Override
@@ -146,6 +162,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   }
 
   @Override
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -154,20 +175,29 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesInterpretedMessage that = (PipelinesInterpretedMessage) o;
-    return attempt == that.attempt &&
-        repeatAttempt == that.repeatAttempt &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
-        Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(runner, that.runner) &&
-        Objects.equals(numberOfRecords, that.numberOfRecords) &&
-        Objects.equals(resetPrefix, that.resetPrefix) &&
-        Objects.equals(onlyForStep, that.onlyForStep);
+    return attempt == that.attempt
+        && repeatAttempt == that.repeatAttempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(numberOfRecords, that.numberOfRecords)
+        && Objects.equals(resetPrefix, that.resetPrefix)
+        && Objects.equals(onlyForStep, that.onlyForStep)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, numberOfRecords, repeatAttempt, resetPrefix,
-        onlyForStep);
+    return Objects.hash(
+        datasetUuid,
+        attempt,
+        pipelineSteps,
+        runner,
+        numberOfRecords,
+        repeatAttempt,
+        resetPrefix,
+        onlyForStep,
+        executionId);
   }
 
   @Override

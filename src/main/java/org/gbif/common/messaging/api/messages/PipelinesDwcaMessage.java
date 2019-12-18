@@ -1,5 +1,12 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gbif.api.model.crawler.DwcaValidationReport;
+import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.EndpointType;
+
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
@@ -7,14 +14,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import org.gbif.api.model.crawler.DwcaValidationReport;
-import org.gbif.api.vocabulary.DatasetType;
-import org.gbif.api.vocabulary.EndpointType;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -35,22 +34,22 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
   private Platform platform;
-
+  private Long executionId;
 
   public PipelinesDwcaMessage() {
   }
 
   @JsonCreator
-  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesDwcaMessage(
-      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
-      @com.fasterxml.jackson.annotation.JsonProperty("datasetType") @JsonProperty("datasetType") DatasetType datasetType,
-      @com.fasterxml.jackson.annotation.JsonProperty("source") @JsonProperty("source") URI source,
-      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
-      @com.fasterxml.jackson.annotation.JsonProperty("validationReport") @JsonProperty("validationReport") DwcaValidationReport validationReport,
-      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @com.fasterxml.jackson.annotation.JsonProperty("endpointType") @JsonProperty("endpointType") EndpointType endpointType,
-      @com.fasterxml.jackson.annotation.JsonProperty("platform") @JsonProperty("platform") Platform platform) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("datasetType") DatasetType datasetType,
+      @JsonProperty("source") URI source,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("validationReport") DwcaValidationReport validationReport,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -60,6 +59,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
     this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.executionId = executionId;
   }
 
   /**
@@ -94,6 +94,11 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return pipelineSteps;
   }
 
+  @Override
+  public Long getExecutionId() {
+    return executionId;
+  }
+
   public EndpointType getEndpointType() {
     return endpointType;
   }
@@ -112,24 +117,6 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     return ROUTING_KEY;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
-    return attempt == that.attempt
-        && Objects.equals(datasetUuid, that.datasetUuid)
-        && datasetType == that.datasetType
-        && Objects.equals(source, that.source)
-        && Objects.equals(validationReport, that.validationReport)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(endpointType, that.endpointType);
   }
 
   public PipelinesDwcaMessage setDatasetUuid(UUID datasetUuid) {
@@ -168,8 +155,32 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   }
 
   @Override
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
+    return attempt == that.attempt
+           && Objects.equals(datasetUuid, that.datasetUuid)
+           && datasetType == that.datasetType
+           && Objects.equals(source, that.source)
+           && Objects.equals(validationReport, that.validationReport)
+           && Objects.equals(pipelineSteps, that.pipelineSteps)
+           && Objects.equals(endpointType, that.endpointType)
+           && Objects.equals(executionId, that.executionId);
+  }
+
+  @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, pipelineSteps, endpointType);
+    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, pipelineSteps, endpointType, executionId);
   }
 
   @Override

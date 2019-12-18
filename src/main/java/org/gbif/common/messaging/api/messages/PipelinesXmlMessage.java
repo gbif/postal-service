@@ -7,12 +7,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gbif.api.model.crawler.FinishReason;
 import org.gbif.api.vocabulary.EndpointType;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,20 +30,21 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
   private Platform platform;
+  private Long executionId;
 
   public PipelinesXmlMessage() {
   }
 
   @JsonCreator
-  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesXmlMessage(
-      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
-      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
-      @com.fasterxml.jackson.annotation.JsonProperty("totalRecordCount") @JsonProperty("totalRecordCount") int totalRecordCount,
-      @com.fasterxml.jackson.annotation.JsonProperty("reason") @JsonProperty("reason") FinishReason reason,
-      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @com.fasterxml.jackson.annotation.JsonProperty("endpointType") @JsonProperty("endpointType") EndpointType endpointType,
-      @com.fasterxml.jackson.annotation.JsonProperty("platform") @JsonProperty("platform") Platform platform) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("totalRecordCount") int totalRecordCount,
+      @JsonProperty("reason") FinishReason reason,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -54,6 +54,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
     this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.executionId = executionId;
   }
 
   public Integer getAttempt() {
@@ -63,6 +64,11 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   @Override
@@ -122,6 +128,11 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   }
 
   @Override
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -135,12 +146,13 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
         && Objects.equals(datasetUuid, that.datasetUuid)
         && reason == that.reason
         && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(endpointType, that.endpointType);
+        && Objects.equals(endpointType, that.endpointType)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, pipelineSteps, endpointType);
+    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, pipelineSteps, endpointType, executionId);
   }
 
   @Override

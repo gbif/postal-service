@@ -1,21 +1,21 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * This message instructs the dataset mutator service to send IndexDatasetMessage for each occurrence in the
- * dataset.
+ * This message instructs the dataset mutator service to send IndexDatasetMessage for each
+ * occurrence in the dataset.
  */
 public class PipelinesIndexedMessage implements PipelineBasedMessage {
 
@@ -25,29 +25,28 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
+  private Long executionId;
 
   public PipelinesIndexedMessage() {
   }
 
   @JsonCreator
-  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesIndexedMessage(
-      @com.fasterxml.jackson.annotation.JsonProperty("datasetUuid") @JsonProperty("datasetUuid") UUID datasetUuid,
-      @com.fasterxml.jackson.annotation.JsonProperty("attempt") @JsonProperty("attempt") int attempt,
-      @com.fasterxml.jackson.annotation.JsonProperty("pipelineSteps") @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @com.fasterxml.jackson.annotation.JsonProperty("runner") @JsonProperty("runner") String runner) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("runner") String runner,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
+    this.executionId = executionId;
   }
 
-  public PipelinesIndexedMessage(
-      UUID datasetUuid,
-      int attempt,
-      Set<String> pipelineSteps) {
-    this(datasetUuid, attempt, pipelineSteps, null);
+  public PipelinesIndexedMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
+    this(datasetUuid, attempt, pipelineSteps, null, null);
   }
 
   @Override
@@ -63,6 +62,11 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   @Override
@@ -95,6 +99,11 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   }
 
   @Override
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -103,15 +112,16 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesIndexedMessage that = (PipelinesIndexedMessage) o;
-    return attempt == that.attempt &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
-        Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(runner, that.runner);
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId);
   }
 
   @Override

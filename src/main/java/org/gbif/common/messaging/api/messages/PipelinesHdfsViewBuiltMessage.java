@@ -13,9 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * This message indicates that the HDFS view of a dataset has finished.
- */
+/** This message indicates that the HDFS view of a dataset has finished. */
 public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.hdfsview.finished";
@@ -24,28 +22,27 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
+  private Long executionId;
 
-  public PipelinesHdfsViewBuiltMessage() {
-  }
+  public PipelinesHdfsViewBuiltMessage() {}
 
   @JsonCreator
   public PipelinesHdfsViewBuiltMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner) {
+      @JsonProperty("runner") String runner,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
+    this.executionId = executionId;
   }
 
-  public PipelinesHdfsViewBuiltMessage(
-      UUID datasetUuid,
-      int attempt,
-      Set<String> pipelineSteps) {
-    this(datasetUuid, attempt, pipelineSteps, null);
+  public PipelinesHdfsViewBuiltMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
+    this(datasetUuid, attempt, pipelineSteps, null, null);
   }
 
   @Override
@@ -61,6 +58,11 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
   @Override
   public Set<String> getPipelineSteps() {
     return pipelineSteps;
+  }
+
+  @Override
+  public Long getExecutionId() {
+    return executionId;
   }
 
   @Override
@@ -93,6 +95,11 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
   }
 
   @Override
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -101,15 +108,16 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesHdfsViewBuiltMessage that = (PipelinesHdfsViewBuiltMessage) o;
-    return attempt == that.attempt &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
-        Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        Objects.equals(runner, that.runner);
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId);
   }
 
   @Override
