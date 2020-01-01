@@ -1,5 +1,7 @@
 package org.gbif.common.messaging;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.MessageRegistry;
@@ -15,8 +17,6 @@ import com.google.common.collect.Queues;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     this.registry = checkNotNull(registry, "registry can't be null");
 
     this.mapper.registerModule(new GuavaModule());
-    this.mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+    this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     LOG.info("Connecting to AMQP broker {}", connectionParameters);
     connection = connectionParameters.getConnectionFactory().newConnection();

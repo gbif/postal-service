@@ -1,11 +1,10 @@
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.common.messaging.api.Message;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.Objects;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.gbif.common.messaging.api.Message;
 
 /**
  * This message will be sent every time an entity in the Registry changes (which includes deletions and additions).

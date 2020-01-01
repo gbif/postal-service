@@ -1,10 +1,10 @@
 package org.gbif.common.messaging.api.messages;
 
-import java.util.UUID;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

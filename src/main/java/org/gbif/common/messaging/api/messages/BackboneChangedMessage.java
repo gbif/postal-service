@@ -1,13 +1,13 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.gbif.api.model.checklistbank.DatasetMetrics;
 import org.gbif.common.messaging.api.Message;
 
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * The message sent whenever the GBIF backbone has been altered.

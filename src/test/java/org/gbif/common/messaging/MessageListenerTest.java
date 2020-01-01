@@ -1,5 +1,6 @@
 package org.gbif.common.messaging;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gbif.common.messaging.api.MessageRegistry;
 
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.util.concurrent.ExecutorService;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Consumer;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

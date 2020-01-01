@@ -1,22 +1,21 @@
 package org.gbif.common.messaging;
 
-import org.gbif.common.messaging.api.Message;
-import org.gbif.common.messaging.api.MessageCallback;
-import org.gbif.common.messaging.api.MessageRegistry;
-import org.gbif.utils.concurrent.NamedThreadFactory;
-
-import java.io.IOException;
-import java.util.concurrent.Executors;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.base.Optional;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.gbif.common.messaging.api.Message;
+import org.gbif.common.messaging.api.MessageCallback;
+import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.utils.concurrent.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.concurrent.Executors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -68,7 +67,7 @@ public class MessageListener implements AutoCloseable {
     checkArgument(prefetchCount >= 1, "prefetchCount needs to be greater than or equal to 1");
     this.prefetchCount = prefetchCount;
 
-    this.mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     LOG.info("Connecting to AMQP broker {}", connectionParameters);
     connectionFactory = connectionParameters.getConnectionFactory();

@@ -1,13 +1,12 @@
 package org.gbif.common.messaging.api.messages;
 
-import java.io.IOException;
-import java.util.Objects;
-
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gbif.common.messaging.api.Message;
 
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
+import java.io.IOException;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -22,11 +21,9 @@ public class PipelinesBalancerMessage implements Message {
   }
 
   @JsonCreator
-  @com.fasterxml.jackson.annotation.JsonCreator
   public PipelinesBalancerMessage(
-      @com.fasterxml.jackson.annotation.JsonProperty("messageClass") @JsonProperty("messageClass") String messageClass,
-      @com.fasterxml.jackson.annotation.JsonProperty("payload") @JsonProperty("payload") String payload) {
-
+      @JsonProperty("messageClass") String messageClass,
+      @JsonProperty("payload") String payload) {
     this.messageClass = checkNotNull(messageClass, "messageClass can't be null");
     this.payload = payload;
   }

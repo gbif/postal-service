@@ -1,17 +1,15 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
+import org.gbif.api.vocabulary.EndpointType;
+
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
-
-import org.gbif.api.vocabulary.EndpointType;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import javax.annotation.Nullable;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -34,13 +32,13 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public AbcdaDownloadFinishedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("source") URI source,
-    @JsonProperty("attempt") int attempt,
-    @Nullable @JsonProperty("lastModified") Date lastModified,
-    @JsonProperty("modified") boolean modified,
-    @JsonProperty("endpointType") EndpointType endpointType,
-    @JsonProperty("platform") Platform platform
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("source") URI source,
+      @JsonProperty("attempt") int attempt,
+      @Nullable @JsonProperty("lastModified") Date lastModified,
+      @JsonProperty("modified") boolean modified,
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform
   ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -91,7 +89,6 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
   }
 
   /**
-   *
    * @return platform that must index the Abcd fragment
    */
   public Platform getPlatform() {

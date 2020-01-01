@@ -1,13 +1,12 @@
 package org.gbif.common.messaging.api;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import org.gbif.common.messaging.DefaultMessageRegistry;
 
 import java.io.IOException;
-
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.guava.api.Assertions.assertThat;
@@ -20,8 +19,8 @@ public class Util {
 
   static {
     MAPPER.registerModule(new GuavaModule());
-    MAPPER.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    MAPPER.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+    MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
   }
 
   /**

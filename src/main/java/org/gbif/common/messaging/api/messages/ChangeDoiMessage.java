@@ -1,14 +1,13 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.gbif.api.model.common.DOI;
 import org.gbif.api.model.common.DoiStatus;
 import org.gbif.common.messaging.api.Message;
 
 import java.net.URI;
 import java.util.Objects;
-
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -30,12 +29,11 @@ public class ChangeDoiMessage implements Message {
   private final URI target;
 
   @JsonCreator
-  @com.fasterxml.jackson.annotation.JsonCreator
   public ChangeDoiMessage(
-      @com.fasterxml.jackson.annotation.JsonProperty("status") @JsonProperty("status") DoiStatus status,
-      @com.fasterxml.jackson.annotation.JsonProperty("doi") @JsonProperty("doi") DOI doi,
-      @com.fasterxml.jackson.annotation.JsonProperty("metadata") @JsonProperty("metadata") String metadata,
-      @com.fasterxml.jackson.annotation.JsonProperty("target") @JsonProperty("target") URI target) {
+      @JsonProperty("status") DoiStatus status,
+      @JsonProperty("doi") DOI doi,
+      @JsonProperty("metadata") String metadata,
+      @JsonProperty("target") URI target) {
     this.status = checkNotNull(status, "status can't be null");
     this.doi = checkNotNull(doi, "doi can't be null");
     if (status != DoiStatus.DELETED) {

@@ -1,6 +1,6 @@
 package org.gbif.common.messaging.api;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * By implementing this interface messages publishers and subscribers can use some convenience methods.

@@ -1,20 +1,18 @@
 package org.gbif.common.messaging;
 
-import org.gbif.common.messaging.api.MessageCallback;
-
-import java.io.IOException;
-
-import javax.annotation.concurrent.ThreadSafe;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.gbif.common.messaging.api.MessageCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.concurrent.ThreadSafe;
+import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -23,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * forwards it to a callback. All messages are automatically either being rejected or acked.
  * <p/>
  * This class is thread-safe but stateful.
- * 
+ *
  * @param <T> type of message to handle, we'll try to deserialize the received content in an instance of this type
  */
 @ThreadSafe
@@ -54,8 +52,8 @@ class MessageConsumer<T> extends DefaultConsumer {
    */
   @Override
   public void handleDelivery(
-    String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body
-    ) throws IOException {
+      String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body
+  ) throws IOException {
     LOG.debug("Handling delivery: [{}]", envelope.getDeliveryTag());
 
     T object = deserializeBody(envelope, body);
@@ -75,22 +73,22 @@ class MessageConsumer<T> extends DefaultConsumer {
       object = mapper.readValue(body, clazz);
     } catch (JsonMappingException e) {
       LOG.warn("Could not map message. Supposed to be of type [{}]. Routing key [{}], exchange [{}]",
-        clazz.getSimpleName(),
-        envelope.getRoutingKey(),
-        envelope.getExchange(),
-        e);
+          clazz.getSimpleName(),
+          envelope.getRoutingKey(),
+          envelope.getExchange(),
+          e);
     } catch (JsonParseException e) {
       LOG.warn("Could not parse body of message. Supposed to be of type [{}]. Routing key [{}], exchange [{}]",
-        clazz.getSimpleName(),
-        envelope.getRoutingKey(),
-        envelope.getExchange(),
-        e);
+          clazz.getSimpleName(),
+          envelope.getRoutingKey(),
+          envelope.getExchange(),
+          e);
     } catch (IOException e) {
       LOG.warn("Unable to read message over network. Supposed to be of type [{}]. Routing key [{}], exchange [{}]",
-        clazz.getSimpleName(),
-        envelope.getRoutingKey(),
-        envelope.getExchange(),
-        e);
+          clazz.getSimpleName(),
+          envelope.getRoutingKey(),
+          envelope.getExchange(),
+          e);
     }
     return object; // will be null on any error
   }
@@ -102,16 +100,16 @@ class MessageConsumer<T> extends DefaultConsumer {
 
     } catch (Exception e) {
       LOG.warn("Error handling message [{}] of type [{}]. Reject and send a nack",
-        envelope.getDeliveryTag(),
-        object.getClass().getSimpleName(),
-        e);
+          envelope.getDeliveryTag(),
+          object.getClass().getSimpleName(),
+          e);
       try {
         getChannel().basicNack(envelope.getDeliveryTag(), false, false);
       } catch (IOException e1) {
         LOG.warn("Failed to nack message [{}] of type [{}]",
-          envelope.getDeliveryTag(),
-          object.getClass().getSimpleName(),
-          e1);
+            envelope.getDeliveryTag(),
+            object.getClass().getSimpleName(),
+            e1);
       }
       return;
     }
@@ -121,9 +119,9 @@ class MessageConsumer<T> extends DefaultConsumer {
       getChannel().basicAck(envelope.getDeliveryTag(), false);
     } catch (IOException e) {
       LOG.warn("Failure acknowledging message [{}] of type [{}]",
-        envelope.getDeliveryTag(),
-        object.getClass().getSimpleName(),
-        e);
+          envelope.getDeliveryTag(),
+          object.getClass().getSimpleName(),
+          e);
     }
   }
 }
