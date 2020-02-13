@@ -1,19 +1,33 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * We send this message every time we encounter an error during crawling.
- */
+/** We send this message every time we encounter an error during crawling. */
 public class CrawlErrorMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;
@@ -34,15 +48,14 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public CrawlErrorMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("retry") int retry,
-    @JsonProperty("offset") int offset,
-    @JsonProperty("duration") long duration,
-    @JsonProperty("status") String status,
-    @JsonProperty("errorType") ErrorType errorType,
-    @Nullable @JsonProperty("throwable") Throwable throwable
-  ) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("retry") int retry,
+      @JsonProperty("offset") int offset,
+      @JsonProperty("duration") long duration,
+      @JsonProperty("status") String status,
+      @JsonProperty("errorType") ErrorType errorType,
+      @Nullable @JsonProperty("throwable") Throwable throwable) {
     this.duration = duration;
     this.datasetUuid = checkNotNull(datasetUuid);
     checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -104,12 +117,12 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
     }
     final CrawlErrorMessage other = (CrawlErrorMessage) obj;
     return Objects.equal(this.datasetUuid, other.datasetUuid)
-           && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.retry, other.retry)
-           && Objects.equal(this.offset, other.offset)
-           && Objects.equal(this.status, other.status)
-           && Objects.equal(this.errorType, other.errorType)
-           && Objects.equal(this.duration, other.duration);
+        && Objects.equal(this.attempt, other.attempt)
+        && Objects.equal(this.retry, other.retry)
+        && Objects.equal(this.offset, other.offset)
+        && Objects.equal(this.status, other.status)
+        && Objects.equal(this.errorType, other.errorType)
+        && Objects.equal(this.duration, other.duration);
   }
 
   @Override
@@ -120,41 +133,38 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-      .add("datasetUuid", datasetUuid)
-      .add("attempt", attempt)
-      .add("retry", retry)
-      .add("offset", offset)
-      .add("status", status)
-      .add("errorType", errorType)
-      .add("throwable", throwable)
-      .add("duration", duration)
-      .toString();
+        .add("datasetUuid", datasetUuid)
+        .add("attempt", attempt)
+        .add("retry", retry)
+        .add("offset", offset)
+        .add("status", status)
+        .add("errorType", errorType)
+        .add("throwable", throwable)
+        .add("duration", duration)
+        .toString();
   }
 
   public enum ErrorType {
 
     /**
-     * A protocol error means some kind of problem with the response we got. This can be invalid XML or things that
-     * just don't make sense.
+     * A protocol error means some kind of problem with the response we got. This can be invalid XML
+     * or things that just don't make sense.
      */
     PROTOCOL,
 
     /**
-     * A transport error is any kind of error that's related to the transport layer like a refused connection or a 404
-     * error etc.
+     * A transport error is any kind of error that's related to the transport layer like a refused
+     * connection or a 404 error etc.
      */
     TRANSPORT,
 
     /**
-     * A different error which we know what it is but doesn't fit into any of the other two categories.
+     * A different error which we know what it is but doesn't fit into any of the other two
+     * categories.
      */
     OTHER,
 
-    /**
-     * An error that we didn't expect and have no idea what it is.
-     */
+    /** An error that we didn't expect and have no idea what it is. */
     UNKNOWN
-
   }
-
 }

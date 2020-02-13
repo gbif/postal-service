@@ -15,15 +15,15 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -42,8 +42,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   private String runner;
   private Long executionId;
 
-  public PipelinesIndexedMessage() {
-  }
+  public PipelinesIndexedMessage() {}
 
   @JsonCreator
   public PipelinesIndexedMessage(

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
@@ -8,16 +23,16 @@ import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.google.common.base.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * We send this every time a darwin core archive has been validated after being downloaded and its metadata has been
- * synchronized.
+ * We send this every time a darwin core archive has been validated after being downloaded and its
+ * metadata has been synchronized.
  */
 public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
 
@@ -33,14 +48,13 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public DwcaValidationFinishedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("datasetType") DatasetType datasetType,
-    @JsonProperty("source") URI source,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("validationReport") DwcaValidationReport validationReport,
-    @JsonProperty("endpointType") EndpointType endpointType,
-    @JsonProperty("platform") Platform platform
-  ) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("datasetType") DatasetType datasetType,
+      @JsonProperty("source") URI source,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("validationReport") DwcaValidationReport validationReport,
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
     this.source = checkNotNull(source, "source can't be null");
@@ -51,24 +65,18 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
-  /**
-   * @return dataset uuid
-   */
+  /** @return dataset uuid */
   @Override
   public UUID getDatasetUuid() {
     return datasetUuid;
   }
 
-  /**
-   * @return the dataset type as given in the registry
-   */
+  /** @return the dataset type as given in the registry */
   public DatasetType getDatasetType() {
     return datasetType;
   }
 
-  /**
-   * @return source the archive has been downloaded from
-   */
+  /** @return source the archive has been downloaded from */
   public URI getSource() {
     return source;
   }
@@ -77,9 +85,7 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     return attempt;
   }
 
-  /**
-   * @return the validationReport for this archive
-   */
+  /** @return the validationReport for this archive */
   public DwcaValidationReport getValidationReport() {
     return validationReport;
   }
@@ -88,10 +94,7 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     return endpointType;
   }
 
-  /**
-   *
-   * @return the indexing platform that handles the message
-   */
+  /** @return the indexing platform that handles the message */
   public Platform getPlatform() {
     return platform;
   }
@@ -103,7 +106,8 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, datasetType, source, attempt, validationReport, endpointType, platform);
+    return Objects.hashCode(
+        datasetUuid, datasetType, source, attempt, validationReport, endpointType, platform);
   }
 
   @Override
@@ -116,24 +120,24 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     }
     final DwcaValidationFinishedMessage other = (DwcaValidationFinishedMessage) obj;
     return Objects.equal(this.datasetUuid, other.datasetUuid)
-           && Objects.equal(this.datasetType, other.datasetType)
-           && Objects.equal(this.source, other.source)
-           && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.validationReport, other.validationReport)
-           && Objects.equal(this.endpointType, other.endpointType)
-           && Objects.equal(this.platform, other.platform);
+        && Objects.equal(this.datasetType, other.datasetType)
+        && Objects.equal(this.source, other.source)
+        && Objects.equal(this.attempt, other.attempt)
+        && Objects.equal(this.validationReport, other.validationReport)
+        && Objects.equal(this.endpointType, other.endpointType)
+        && Objects.equal(this.platform, other.platform);
   }
 
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-      .add("datasetUuid", datasetUuid)
-      .add("datasetType", datasetType)
-      .add("source", source)
-      .add("attempt", attempt)
-      .add("validationReport", validationReport)
-      .add("endpointType", endpointType)
-      .add("platform", platform)
-      .toString();
+        .add("datasetUuid", datasetUuid)
+        .add("datasetType", datasetType)
+        .add("source", source)
+        .add("attempt", attempt)
+        .add("validationReport", validationReport)
+        .add("endpointType", endpointType)
+        .add("platform", platform)
+        .toString();
   }
 }

@@ -1,8 +1,20 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gbif.api.vocabulary.EndpointType;
 
 import java.io.IOException;
@@ -10,6 +22,10 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -32,8 +48,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private String resetPrefix;
   private Long executionId;
 
-  public PipelinesVerbatimMessage() {
-  }
+  public PipelinesVerbatimMessage() {}
 
   @JsonCreator
   public PipelinesVerbatimMessage(
@@ -106,16 +121,12 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this(datasetUuid, null, interpretTypes, pipelineSteps, endpointType);
   }
 
-  /**
-   * @return datasetUUID for the converted dataset
-   */
+  /** @return datasetUUID for the converted dataset */
   public UUID getDatasetUuid() {
     return datasetUuid;
   }
 
-  /**
-   * @return attempt for the converted dataset
-   */
+  /** @return attempt for the converted dataset */
   @Override
   public Integer getAttempt() {
     return attempt;
@@ -131,9 +142,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return executionId;
   }
 
-  /**
-   * @return types of interpretation - ALL, LOCATION, BASE or etc.
-   */
+  /** @return types of interpretation - ALL, LOCATION, BASE or etc. */
   public Set<String> getInterpretTypes() {
     return interpretTypes;
   }
@@ -267,8 +276,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     private Boolean useExtendedRecordId;
     private Long numberOfRecords;
 
-    public ValidationResult() {
-    }
+    public ValidationResult() {}
 
     @JsonCreator
     public ValidationResult(

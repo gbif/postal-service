@@ -15,14 +15,15 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.gbif.api.model.common.DOI;
 import org.gbif.api.model.common.DoiStatus;
 import org.gbif.common.messaging.api.Message;
 
 import java.net.URI;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

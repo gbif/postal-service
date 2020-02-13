@@ -1,8 +1,20 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
@@ -15,12 +27,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * We send this every time a darwin core archive has been validated after being downloaded and its metadata has been
- * synchronized.
+ * We send this every time a darwin core archive has been validated after being downloaded and its
+ * metadata has been synchronized.
  */
 public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
@@ -36,8 +52,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private Platform platform;
   private Long executionId;
 
-  public PipelinesDwcaMessage() {
-  }
+  public PipelinesDwcaMessage() {}
 
   @JsonCreator
   public PipelinesDwcaMessage(
@@ -62,24 +77,18 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.executionId = executionId;
   }
 
-  /**
-   * @return dataset uuid
-   */
+  /** @return dataset uuid */
   @Override
   public UUID getDatasetUuid() {
     return datasetUuid;
   }
 
-  /**
-   * @return the dataset type as given in the registry
-   */
+  /** @return the dataset type as given in the registry */
   public DatasetType getDatasetType() {
     return datasetType;
   }
 
-  /**
-   * @return source the archive has been downloaded from
-   */
+  /** @return source the archive has been downloaded from */
   public URI getSource() {
     return source;
   }
@@ -107,9 +116,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return platform;
   }
 
-  /**
-   * @return the validationReport for this archive
-   */
+  /** @return the validationReport for this archive */
   public DwcaValidationReport getValidationReport() {
     return validationReport;
   }
@@ -169,18 +176,26 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     }
     PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
     return attempt == that.attempt
-           && Objects.equals(datasetUuid, that.datasetUuid)
-           && datasetType == that.datasetType
-           && Objects.equals(source, that.source)
-           && Objects.equals(validationReport, that.validationReport)
-           && Objects.equals(pipelineSteps, that.pipelineSteps)
-           && Objects.equals(endpointType, that.endpointType)
-           && Objects.equals(executionId, that.executionId);
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && datasetType == that.datasetType
+        && Objects.equals(source, that.source)
+        && Objects.equals(validationReport, that.validationReport)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(endpointType, that.endpointType)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, pipelineSteps, endpointType, executionId);
+    return Objects.hash(
+        datasetUuid,
+        datasetType,
+        source,
+        attempt,
+        validationReport,
+        pipelineSteps,
+        endpointType,
+        executionId);
   }
 
   @Override

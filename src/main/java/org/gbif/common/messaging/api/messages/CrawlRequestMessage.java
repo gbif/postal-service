@@ -1,18 +1,31 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import java.util.Arrays;
 import java.util.UUID;
 
-import com.google.common.base.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * We send this message every time before we make a request to an endpoint.
- */
+/** We send this message every time before we make a request to an endpoint. */
 public class CrawlRequestMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;
@@ -27,13 +40,12 @@ public class CrawlRequestMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public CrawlRequestMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("requestTry") int requestTry,
-    @JsonProperty("request") byte[] request,
-    @JsonProperty("status") String status
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("requestTry") int requestTry,
+      @JsonProperty("request") byte[] request,
+      @JsonProperty("status") String status) {
 
-  ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -61,8 +73,8 @@ public class CrawlRequestMessage implements DatasetBasedMessage {
   }
 
   /**
-   * Returns a human-readable status that includes information about what is being crawled. In Crawler terms this would
-   * be the current CrawlContext.
+   * Returns a human-readable status that includes information about what is being crawled. In
+   * Crawler terms this would be the current CrawlContext.
    *
    * @return human-readable status
    */
@@ -86,10 +98,10 @@ public class CrawlRequestMessage implements DatasetBasedMessage {
 
     final CrawlRequestMessage other = (CrawlRequestMessage) obj;
     return Objects.equal(this.datasetUuid, other.datasetUuid)
-           && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.requestTry, other.requestTry)
-           && Arrays.equals(this.request, other.request)
-           && Objects.equal(this.status, other.status);
+        && Objects.equal(this.attempt, other.attempt)
+        && Objects.equal(this.requestTry, other.requestTry)
+        && Arrays.equals(this.request, other.request)
+        && Objects.equal(this.status, other.status);
   }
 
   @Override
@@ -100,12 +112,11 @@ public class CrawlRequestMessage implements DatasetBasedMessage {
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-      .add("datasetUuid", datasetUuid)
-      .add("attempt", attempt)
-      .add("requestTry", requestTry)
-      .add("request", request)
-      .add("status", status)
-      .toString();
+        .add("datasetUuid", datasetUuid)
+        .add("attempt", attempt)
+        .add("requestTry", requestTry)
+        .add("request", request)
+        .add("status", status)
+        .toString();
   }
-
 }
