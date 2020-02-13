@@ -129,12 +129,14 @@ public class DefaultMessageRegistry implements MessageRegistry {
   }
 
   @Override
+  @GuardedBy("lock")
   public Optional<String> getExchange(Class<? extends Message> message) {
     checkNotNull(message, "message can't be null");
 
     return Optional.fromNullable(exchangeMapping.get(message));
   }
 
+  @GuardedBy("lock")
   @Override
   public Optional<String> getGenericRoutingKey(Class<? extends Message> message) {
     checkNotNull(message, "message can't be null");

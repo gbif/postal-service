@@ -58,6 +58,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.executionId = executionId;
   }
 
+  @Override
   public Integer getAttempt() {
     return attempt;
   }

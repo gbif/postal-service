@@ -167,6 +167,7 @@ public class MessageListener implements AutoCloseable {
   /**
    * Does nothing, but adding for potential future use.
    */
+  @Override
   public void close() {
 
   }
