@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.common.DOI;
@@ -13,8 +28,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A message to request an update to a DOIs metadata and target URL in DataCite.
- * The DOI can be in any current state (registered, reserved, deleted) or even yet unknown to DataCite.
+ * A message to request an update to a DOIs metadata and target URL in DataCite. The DOI can be in
+ * any current state (registered, reserved, deleted) or even yet unknown to DataCite.
  */
 public class ChangeDoiMessage implements Message {
   public static final String ROUTING_KEY = "doi.change";
@@ -51,16 +66,12 @@ public class ChangeDoiMessage implements Message {
     return doi;
   }
 
-  /**
-   * @return the desired status this doi should be updated to
-   */
+  /** @return the desired status this doi should be updated to */
   public DoiStatus getStatus() {
     return status;
   }
 
-  /**
-   * @return the metadata as datacite xml
-   */
+  /** @return the metadata as datacite xml */
   public String getMetadata() {
     return metadata;
   }
@@ -88,7 +99,9 @@ public class ChangeDoiMessage implements Message {
       return false;
     }
     final ChangeDoiMessage other = (ChangeDoiMessage) obj;
-    return Objects.equals(this.doi, other.doi) && Objects.equals(this.status, other.status) && Objects
-        .equals(this.metadata, other.metadata) && Objects.equals(this.target, other.target);
+    return Objects.equals(this.doi, other.doi)
+        && Objects.equals(this.status, other.status)
+        && Objects.equals(this.metadata, other.metadata)
+        && Objects.equals(this.target, other.target);
   }
 }

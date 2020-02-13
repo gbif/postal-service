@@ -24,7 +24,7 @@
   </scm>
 
   <properties>
-    <spotless.check.skip>true</spotless.check.skip>
+    <spotless.check.skip>false</spotless.check.skip>
     <main.basedir>${project.basedir}</main.basedir>
 
     <amqp-client.version>3.1.4</amqp-client.version>

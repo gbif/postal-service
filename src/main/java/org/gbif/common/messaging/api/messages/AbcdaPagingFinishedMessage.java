@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.EndpointType;
@@ -5,19 +20,21 @@ import org.gbif.api.vocabulary.EndpointType;
 import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
+
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * We send this every time an ABCD archive has been downloaded.
- * This includes cases when the archive hasn't been modified since we last downloaded it.
+ * We send this every time an ABCD archive has been downloaded. This includes cases when the archive
+ * hasn't been modified since we last downloaded it.
  */
 public class AbcdaPagingFinishedMessage implements DatasetBasedMessage {
 
@@ -33,14 +50,13 @@ public class AbcdaPagingFinishedMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public AbcdaPagingFinishedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("source") URI source,
-    @JsonProperty("attempt") int attempt,
-    @Nullable @JsonProperty("lastModified") Date lastModified,
-    @JsonProperty("modified") boolean modified,
-    @JsonProperty("endpointType") EndpointType endpointType,
-    @JsonProperty("platform") Platform platform
-  ) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("source") URI source,
+      @JsonProperty("attempt") int attempt,
+      @Nullable @JsonProperty("lastModified") Date lastModified,
+      @JsonProperty("modified") boolean modified,
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -51,17 +67,13 @@ public class AbcdaPagingFinishedMessage implements DatasetBasedMessage {
     this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
   }
 
-  /**
-   * @return dataset uuid
-   */
+  /** @return dataset uuid */
   @Override
   public UUID getDatasetUuid() {
     return datasetUuid;
   }
 
-  /**
-   * @return source the archive has been downloaded from
-   */
+  /** @return source the archive has been downloaded from */
   public URI getSource() {
     return source;
   }
@@ -74,25 +86,21 @@ public class AbcdaPagingFinishedMessage implements DatasetBasedMessage {
     return endpointType;
   }
 
-  /**
-   * @return the date the downloaded archive was last modified or null e.g. for failed downloads
-   */
+  /** @return the date the downloaded archive was last modified or null e.g. for failed downloads */
   @Nullable
   public Date getLastModified() {
     return lastModified.orNull();
   }
 
   /**
-   * @return true if the archive has changed since we last downloaded it or never been downloaded before
+   * @return true if the archive has changed since we last downloaded it or never been downloaded
+   *     before
    */
   public boolean isModified() {
     return modified;
   }
 
-  /**
-   *
-   * @return platform that must index the Abcd fragment
-   */
+  /** @return platform that must index the Abcd fragment */
   public Platform getPlatform() {
     return platform;
   }
@@ -136,5 +144,4 @@ public class AbcdaPagingFinishedMessage implements DatasetBasedMessage {
         .add("endpointType", endpointType)
         .toString();
   }
-
 }

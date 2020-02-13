@@ -1,4 +1,21 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
+
+import org.gbif.api.vocabulary.EndpointType;
 
 import java.io.IOException;
 import java.net.URI;
@@ -6,8 +23,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-
-import org.gbif.api.vocabulary.EndpointType;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -17,8 +32,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * We send this every time an ABCD archive has been downloaded.
- * This includes cases when the archive hasn't been modified since we last downloaded it.
+ * We send this every time an ABCD archive has been downloaded. This includes cases when the archive
+ * hasn't been modified since we last downloaded it.
  */
 public class PipelinesAbcdMessage implements PipelineBasedMessage {
 
@@ -51,17 +66,13 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
     this.executionId = executionId;
   }
 
-  /**
-   * @return dataset uuid
-   */
+  /** @return dataset uuid */
   @Override
   public UUID getDatasetUuid() {
     return datasetUuid;
   }
 
-  /**
-   * @return source the archive has been downloaded from
-   */
+  /** @return source the archive has been downloaded from */
   public URI getSource() {
     return source;
   }
@@ -86,7 +97,8 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   }
 
   /**
-   * @return true if the archive has changed since we last downloaded it or never been downloaded before
+   * @return true if the archive has changed since we last downloaded it or never been downloaded
+   *     before
    */
   public boolean isModified() {
     return modified;
@@ -141,12 +153,12 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
       return false;
     }
     PipelinesAbcdMessage that = (PipelinesAbcdMessage) o;
-    return attempt == that.attempt &&
-        modified == that.modified &&
-        Objects.equals(datasetUuid, that.datasetUuid) &&
-        Objects.equals(source, that.source) &&
-        Objects.equals(pipelineSteps, that.pipelineSteps) &&
-        endpointType == that.endpointType;
+    return attempt == that.attempt
+        && modified == that.modified
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(source, that.source)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && endpointType == that.endpointType;
   }
 
   @Override
@@ -164,5 +176,4 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
     }
     return "";
   }
-
 }

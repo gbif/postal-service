@@ -1,22 +1,40 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.occurrence.Occurrence;
 import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
 
 import java.util.UUID;
+
 import javax.annotation.Nullable;
+
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The message sent whenever an "interpreted" occurrence has changed (either NEW, UPDATED, or DELETED). An interpreted
- * occurrence is the result of interpreting the values of a verbatim occurrence.
+ * The message sent whenever an "interpreted" occurrence has changed (either NEW, UPDATED, or
+ * DELETED). An interpreted occurrence is the result of interpreting the values of a verbatim
+ * occurrence.
  */
 public class OccurrenceMutatedMessage implements DatasetBasedMessage {
 
@@ -36,14 +54,16 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
   private final Integer latestCrawlAttemptForDataset;
 
   @JsonCreator
-  public OccurrenceMutatedMessage(@JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("status") OccurrencePersistenceStatus status,
-    @Nullable @JsonProperty("crawlAttempt") Integer crawlAttempt,
-    @Nullable @JsonProperty("oldOccurrence") Occurrence oldOccurrence,
-    @Nullable @JsonProperty("newOccurrence") Occurrence newOccurrence,
-    @Nullable @JsonProperty("deletionReason") OccurrenceDeletionReason deletionReason,
-    @Nullable @JsonProperty("crawlAttemptLastSeen") Integer crawlAttemptLastSeen,
-    @Nullable @JsonProperty("latestCrawlAttemptForDataset") Integer latestCrawlAttemptForDataset) {
+  public OccurrenceMutatedMessage(
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("status") OccurrencePersistenceStatus status,
+      @Nullable @JsonProperty("crawlAttempt") Integer crawlAttempt,
+      @Nullable @JsonProperty("oldOccurrence") Occurrence oldOccurrence,
+      @Nullable @JsonProperty("newOccurrence") Occurrence newOccurrence,
+      @Nullable @JsonProperty("deletionReason") OccurrenceDeletionReason deletionReason,
+      @Nullable @JsonProperty("crawlAttemptLastSeen") Integer crawlAttemptLastSeen,
+      @Nullable @JsonProperty("latestCrawlAttemptForDataset")
+          Integer latestCrawlAttemptForDataset) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.status = checkNotNull(status, "status can't be null");
     switch (status) {
@@ -60,10 +80,12 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
         checkNotNull(oldOccurrence, "oldOccurrence can't be null for deletes");
         checkNotNull(deletionReason, "deletionReason can't be null for deletes");
         if (deletionReason == OccurrenceDeletionReason.NOT_SEEN_IN_LAST_CRAWL) {
-          checkArgument(crawlAttemptLastSeen != null && crawlAttemptLastSeen > 0,
-            "crawlAttemptLastSeen must be greater than 0");
-          checkArgument(latestCrawlAttemptForDataset != null && latestCrawlAttemptForDataset > 0,
-            "latestCrawlAttemptForDataset must be greater than 0");
+          checkArgument(
+              crawlAttemptLastSeen != null && crawlAttemptLastSeen > 0,
+              "crawlAttemptLastSeen must be greater than 0");
+          checkArgument(
+              latestCrawlAttemptForDataset != null && latestCrawlAttemptForDataset > 0,
+              "latestCrawlAttemptForDataset must be greater than 0");
         }
         break;
       case UNCHANGED: // should never be seen
@@ -77,21 +99,47 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
     this.latestCrawlAttemptForDataset = latestCrawlAttemptForDataset;
   }
 
-  public static OccurrenceMutatedMessage buildNewMessage(UUID datasetUuid, Occurrence newOccurrence, int crawlAttempt) {
-    return new OccurrenceMutatedMessage(datasetUuid, OccurrencePersistenceStatus.NEW, crawlAttempt, null, newOccurrence,
-      null, null, null);
+  public static OccurrenceMutatedMessage buildNewMessage(
+      UUID datasetUuid, Occurrence newOccurrence, int crawlAttempt) {
+    return new OccurrenceMutatedMessage(
+        datasetUuid,
+        OccurrencePersistenceStatus.NEW,
+        crawlAttempt,
+        null,
+        newOccurrence,
+        null,
+        null,
+        null);
   }
 
-  public static OccurrenceMutatedMessage buildUpdateMessage(UUID datasetUuid, Occurrence oldOccurrence,
-    Occurrence newOccurrence, int crawlAttempt) {
-    return new OccurrenceMutatedMessage(datasetUuid, OccurrencePersistenceStatus.UPDATED, crawlAttempt, oldOccurrence,
-      newOccurrence, null, null, null);
+  public static OccurrenceMutatedMessage buildUpdateMessage(
+      UUID datasetUuid, Occurrence oldOccurrence, Occurrence newOccurrence, int crawlAttempt) {
+    return new OccurrenceMutatedMessage(
+        datasetUuid,
+        OccurrencePersistenceStatus.UPDATED,
+        crawlAttempt,
+        oldOccurrence,
+        newOccurrence,
+        null,
+        null,
+        null);
   }
 
-  public static OccurrenceMutatedMessage buildDeleteMessage(UUID datasetUuid, Occurrence oldOccurrence,
-    OccurrenceDeletionReason reason, Integer crawlAttemptLastSeen, Integer lastCrawlAttemptForDataset) {
-    return new OccurrenceMutatedMessage(datasetUuid, OccurrencePersistenceStatus.DELETED, null, oldOccurrence, null,
-      reason, crawlAttemptLastSeen, lastCrawlAttemptForDataset);
+  public static OccurrenceMutatedMessage buildDeleteMessage(
+      UUID datasetUuid,
+      Occurrence oldOccurrence,
+      OccurrenceDeletionReason reason,
+      Integer crawlAttemptLastSeen,
+      Integer lastCrawlAttemptForDataset) {
+    return new OccurrenceMutatedMessage(
+        datasetUuid,
+        OccurrencePersistenceStatus.DELETED,
+        null,
+        oldOccurrence,
+        null,
+        reason,
+        crawlAttemptLastSeen,
+        lastCrawlAttemptForDataset);
   }
 
   @Override
@@ -134,8 +182,14 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects
-      .hashCode(datasetUuid, crawlAttempt, status, oldOccurrence, newOccurrence, deletionReason, crawlAttemptLastSeen,
+    return Objects.hashCode(
+        datasetUuid,
+        crawlAttempt,
+        status,
+        oldOccurrence,
+        newOccurrence,
+        deletionReason,
+        crawlAttemptLastSeen,
         latestCrawlAttemptForDataset);
   }
 
@@ -148,19 +202,27 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
       return false;
     }
     final OccurrenceMutatedMessage other = (OccurrenceMutatedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid) && Objects.equal(this.crawlAttempt, other.crawlAttempt)
-           && Objects.equal(this.status, other.status) && Objects.equal(this.oldOccurrence, other.oldOccurrence)
-           && Objects.equal(this.newOccurrence, other.newOccurrence) && Objects
-      .equal(this.deletionReason, other.deletionReason) && Objects
-             .equal(this.crawlAttemptLastSeen, other.crawlAttemptLastSeen) && Objects
-             .equal(this.latestCrawlAttemptForDataset, other.latestCrawlAttemptForDataset);
+    return Objects.equal(this.datasetUuid, other.datasetUuid)
+        && Objects.equal(this.crawlAttempt, other.crawlAttempt)
+        && Objects.equal(this.status, other.status)
+        && Objects.equal(this.oldOccurrence, other.oldOccurrence)
+        && Objects.equal(this.newOccurrence, other.newOccurrence)
+        && Objects.equal(this.deletionReason, other.deletionReason)
+        && Objects.equal(this.crawlAttemptLastSeen, other.crawlAttemptLastSeen)
+        && Objects.equal(this.latestCrawlAttemptForDataset, other.latestCrawlAttemptForDataset);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("datasetUuid", datasetUuid).add("crawlAttempt", crawlAttempt)
-      .add("status", status).add("oldOccurrence", oldOccurrence).add("newOccurrence", newOccurrence)
-      .add("deletionReason", deletionReason).add("crawlAttemptLastSeen", crawlAttemptLastSeen)
-      .add("latestCrawlAttemptForDataset", latestCrawlAttemptForDataset).toString();
+    return MoreObjects.toStringHelper(this)
+        .add("datasetUuid", datasetUuid)
+        .add("crawlAttempt", crawlAttempt)
+        .add("status", status)
+        .add("oldOccurrence", oldOccurrence)
+        .add("newOccurrence", newOccurrence)
+        .add("deletionReason", deletionReason)
+        .add("crawlAttemptLastSeen", crawlAttemptLastSeen)
+        .add("latestCrawlAttemptForDataset", latestCrawlAttemptForDataset)
+        .toString();
   }
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.FinishReason;
@@ -6,16 +21,15 @@ import org.gbif.api.vocabulary.EndpointType;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.google.common.base.Objects;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * We send this every time we finish a crawl.
- */
+/** We send this every time we finish a crawl. */
 public class CrawlFinishedMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.finished";
@@ -29,13 +43,12 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public CrawlFinishedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("totalRecordCount") int totalRecordCount,
-    @JsonProperty("reason") FinishReason reason,
-    @JsonProperty("endpointType") EndpointType endpointType,
-    @JsonProperty("platform") Platform platform
-  ) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("totalRecordCount") int totalRecordCount,
+      @JsonProperty("reason") FinishReason reason,
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -87,11 +100,11 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
 
     final CrawlFinishedMessage other = (CrawlFinishedMessage) obj;
     return Objects.equal(this.datasetUuid, other.datasetUuid)
-           && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.totalRecordCount, other.totalRecordCount)
-           && Objects.equal(this.reason, other.reason)
-           && Objects.equal(this.endpointType, other.endpointType)
-           && Objects.equal(this.platform, other.platform);
+        && Objects.equal(this.attempt, other.attempt)
+        && Objects.equal(this.totalRecordCount, other.totalRecordCount)
+        && Objects.equal(this.reason, other.reason)
+        && Objects.equal(this.endpointType, other.endpointType)
+        && Objects.equal(this.platform, other.platform);
   }
 
   @Override
@@ -102,13 +115,12 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-      .add("datasetUuid", datasetUuid)
-      .add("attempt", attempt)
-      .add("totalRecordCount", totalRecordCount)
-      .add("reason", reason)
-      .add("endpointType", endpointType)
-      .add("platform", platform)
-      .toString();
+        .add("datasetUuid", datasetUuid)
+        .add("attempt", attempt)
+        .add("totalRecordCount", totalRecordCount)
+        .add("reason", reason)
+        .add("endpointType", endpointType)
+        .add("platform", platform)
+        .toString();
   }
-
 }

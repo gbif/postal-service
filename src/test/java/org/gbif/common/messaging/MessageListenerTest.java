@@ -1,3 +1,18 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.MessageRegistry;
@@ -5,15 +20,16 @@ import org.gbif.common.messaging.api.MessageRegistry;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Consumer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.Consumer;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -24,11 +40,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MessageListenerTest {
 
-  @Mock
-  Connection connection;
+  @Mock Connection connection;
 
-  @Mock
-  Channel channel;
+  @Mock Channel channel;
 
   private MessageListener listener;
 
@@ -44,7 +58,8 @@ public class MessageListenerTest {
     when(connection.isOpen()).thenReturn(true);
 
     ConnectionParameters params = new MockConnectionParameters();
-    when(params.getConnectionFactory().newConnection(any(ExecutorService.class))).thenReturn(connection);
+    when(params.getConnectionFactory().newConnection(any(ExecutorService.class)))
+        .thenReturn(connection);
     when(params.getConnectionFactory().newConnection()).thenReturn(connection);
     listener = new MessageListener(params, registry, new ObjectMapper());
   }
@@ -89,10 +104,6 @@ public class MessageListenerTest {
   private static class TestMessageCallback extends AbstractMessageCallback<TestMessage> {
 
     @Override
-    public void handleMessage(TestMessage message) {
-
-    }
-
+    public void handleMessage(TestMessage message) {}
   }
-
 }

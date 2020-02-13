@@ -1,19 +1,33 @@
+/*
+ * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.gbif.common.messaging.api.messages;
 
 import java.util.Arrays;
 import java.util.UUID;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * We send this message every time we get a response from an endpoint.
- */
+/** We send this message every time we get a response from an endpoint. */
 public class CrawlResponseMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;
@@ -34,15 +48,14 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public CrawlResponseMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("requestTry") int requestTry,
-    @JsonProperty("response") byte[] response,
-    @JsonProperty("duration") long duration,
-    @JsonProperty("recordCount") Optional<Integer> recordCount,
-    @JsonProperty("status") String status,
-    @JsonProperty("platform") Platform platform
-  ) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("requestTry") int requestTry,
+      @JsonProperty("response") byte[] response,
+      @JsonProperty("duration") long duration,
+      @JsonProperty("recordCount") Optional<Integer> recordCount,
+      @JsonProperty("status") String status,
+      @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid);
 
     checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -57,13 +70,13 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
     this.duration = duration;
 
     this.recordCount = checkNotNull(recordCount, "recordCount can't be null");
-    checkArgument(!recordCount.isPresent() || recordCount.get() >= 0,
-                  "recordCount has to be absent or greater than or equal to 0");
+    checkArgument(
+        !recordCount.isPresent() || recordCount.get() >= 0,
+        "recordCount has to be absent or greater than or equal to 0");
 
     this.status = checkNotNull(status, "status can't be null");
 
     this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
-
   }
 
   @Override
@@ -115,30 +128,30 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
 
     final CrawlResponseMessage other = (CrawlResponseMessage) obj;
     return Objects.equal(this.datasetUuid, other.datasetUuid)
-           && Objects.equal(this.attempt, other.attempt)
-           && Objects.equal(this.requestTry, other.requestTry)
-           && Arrays.equals(this.response, other.response)
-           && Objects.equal(this.duration, other.duration)
-           && Objects.equal(this.recordCount, other.recordCount)
-           && Objects.equal(this.status, other.status);
+        && Objects.equal(this.attempt, other.attempt)
+        && Objects.equal(this.requestTry, other.requestTry)
+        && Arrays.equals(this.response, other.response)
+        && Objects.equal(this.duration, other.duration)
+        && Objects.equal(this.recordCount, other.recordCount)
+        && Objects.equal(this.status, other.status);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, attempt, requestTry, Arrays.hashCode(response), duration, recordCount, status);
+    return Objects.hashCode(
+        datasetUuid, attempt, requestTry, Arrays.hashCode(response), duration, recordCount, status);
   }
 
   @Override
   public String toString() {
     return Objects.toStringHelper(this)
-      .add("datasetUuid", datasetUuid)
-      .add("attempt", attempt)
-      .add("requestTry", requestTry)
-      .add("response", response)
-      .add("duration", duration)
-      .add("recordCount", recordCount)
-      .add("status", status)
-      .toString();
+        .add("datasetUuid", datasetUuid)
+        .add("attempt", attempt)
+        .add("requestTry", requestTry)
+        .add("response", response)
+        .add("duration", duration)
+        .add("recordCount", recordCount)
+        .add("status", status)
+        .toString();
   }
-
 }
