@@ -1,4 +1,4 @@
-#Postal Service
+# Postal Service
 
 This project wraps RabbitMQ into a higher level API that should make it easy to send and receive messages. In order
 to use it you need to specify the following properties and make them available to Guice (presumably through a mvn
@@ -16,7 +16,7 @@ each one pointing to different RabbitMQ daemons.
 
 Then install the module like: new PostalServiceModule(<your-prefix>, properties);
 
-##To build this project
+## To build this project
 Execute the Maven command (a Maven profile is not required):
 
 ```
