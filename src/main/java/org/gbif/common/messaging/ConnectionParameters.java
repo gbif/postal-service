@@ -15,8 +15,6 @@
  */
 package org.gbif.common.messaging;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.rabbitmq.client.ConnectionFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -31,13 +29,13 @@ public class ConnectionParameters {
   private final String password;
   private final String virtualHost;
 
-  @Inject
   public ConnectionParameters(
-      @Named("hostname") String host,
-      @Named("port") int port,
-      @Named("username") String username,
-      @Named("password") String password,
-      @Named("virtualhost") String virtualHost) {
+      String host, // hostname
+      int port, // port
+      String username, // username
+      String password, // password
+      String virtualHost // virtualhost
+      ) {
     this.host = checkNotNull(host, "host can't be null");
     this.port = port;
     this.username = checkNotNull(username, "username can't be null");

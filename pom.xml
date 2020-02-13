@@ -33,8 +33,6 @@
     <commons-io.version>2.4</commons-io.version>
     <gbif-api.version>0.103.5-jackson2</gbif-api.version>
     <gbif-common.version>0.32</gbif-common.version>
-    <gbif-common-service.version>0.16</gbif-common-service.version>
-    <guice.version>4.0</guice.version>
     <guava.version>18.0</guava.version>
     <jackson2.version>2.9.9</jackson2.version>
     <jcommander.version>1.48</jcommander.version>
@@ -73,11 +71,6 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>${jsr305.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <version>${guice.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -136,11 +129,6 @@
       <groupId>org.gbif</groupId>
       <artifactId>gbif-api</artifactId>
       <version>${gbif-api.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common-service</artifactId>
-      <version>${gbif-common-service.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
