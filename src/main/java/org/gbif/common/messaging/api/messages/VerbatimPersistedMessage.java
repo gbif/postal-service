@@ -51,7 +51,7 @@ public class VerbatimPersistedMessage implements DatasetBasedMessage {
     checkArgument(attempt > 0, "attempt must be greater than 0");
     this.attempt = attempt;
     this.status = checkNotNull(status, "status can't be null");
-    this.occurrenceKey = checkNotNull(occurrenceKey, "occurrenceKey can't be null");
+    this.occurrenceKey = occurrenceKey;
   }
 
   @Override

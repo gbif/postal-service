@@ -122,6 +122,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   }
 
   /** @return datasetUUID for the converted dataset */
+  @Override
   public UUID getDatasetUuid() {
     return datasetUuid;
   }
