@@ -13,17 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gbif.common.messaging.api.messages;
-
-import java.util.Set;
-
-public interface PipelineBasedMessage extends DatasetBasedMessage {
-
-  Integer getAttempt();
-
-  Set<String> getPipelineSteps();
-
-  Long getExecutionId();
-
-  void setExecutionId(Long executionId);
-}
