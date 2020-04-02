@@ -96,6 +96,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesIndexedMessage.class, "occurrence")
             .put(PipelinesHdfsViewBuiltMessage.class, "occurrence")
             .put(PipelinesBalancerMessage.class, "occurrence")
+            .put(PipelinesFragmenterMessage.class, "occurrence")
             .build();
 
     MESSAGE_TO_ROUTING_KEY_MAPPING =
@@ -138,6 +139,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY)
             .put(PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY)
             .put(PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY)
+            .put(PipelinesFragmenterMessage.class, PipelinesFragmenterMessage.ROUTING_KEY)
             .build();
   }
 
