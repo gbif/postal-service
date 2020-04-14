@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.gbif.api.vocabulary.EndpointType;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +47,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private String resetPrefix;
   private String onlyForStep;
   private Long executionId;
+  private EndpointType endpointType;
 
   public PipelinesInterpretedMessage() {}
 
@@ -58,7 +61,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("onlyForStep") String onlyForStep,
-      @JsonProperty("executionId") Long executionId) {
+      @JsonProperty("executionId") Long executionId,
+      @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -69,6 +73,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.resetPrefix = resetPrefix;
     this.onlyForStep = onlyForStep;
     this.executionId = executionId;
+    this.endpointType = endpointType;
   }
 
   public PipelinesInterpretedMessage(
@@ -77,7 +82,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       Set<String> pipelineSteps,
       Long numberOfRecords,
       boolean repeatAttempt,
-      String resetPrefix) {
+      String resetPrefix,
+      EndpointType endpointType) {
     this(
         datasetUuid,
         attempt,
@@ -87,7 +93,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         repeatAttempt,
         resetPrefix,
         null,
-        null);
+        null,
+        endpointType);
   }
 
   @Override
@@ -135,6 +142,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return onlyForStep;
   }
 
+  public EndpointType getEndpointType() {
+    return endpointType;
+  }
+
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -175,6 +186,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setOnlyForStep(EndpointType endpointType) {
+    this.endpointType = endpointType;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -197,7 +213,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(numberOfRecords, that.numberOfRecords)
         && Objects.equals(resetPrefix, that.resetPrefix)
         && Objects.equals(onlyForStep, that.onlyForStep)
-        && Objects.equals(executionId, that.executionId);
+        && Objects.equals(executionId, that.executionId)
+        && Objects.equals(endpointType, that.endpointType);
   }
 
   @Override
@@ -211,7 +228,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         repeatAttempt,
         resetPrefix,
         onlyForStep,
-        executionId);
+        executionId,
+        endpointType);
   }
 
   @Override
