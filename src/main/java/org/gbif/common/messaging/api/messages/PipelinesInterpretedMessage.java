@@ -43,6 +43,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
+  private Long numberOfRecords;
   private boolean repeatAttempt;
   private String resetPrefix;
   private String onlyForStep;
@@ -57,6 +58,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("numberOfRecords") Long numberOfRecords,
       @JsonProperty("runner") String runner,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
       @JsonProperty("resetPrefix") String resetPrefix,
@@ -69,6 +71,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
+    this.numberOfRecords = numberOfRecords;
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
     this.onlyForStep = onlyForStep;
@@ -81,6 +84,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       UUID datasetUuid,
       int attempt,
       Set<String> pipelineSteps,
+      Long numberOfRecords,
       boolean repeatAttempt,
       String resetPrefix,
       EndpointType endpointType,
@@ -89,6 +93,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         datasetUuid,
         attempt,
         pipelineSteps,
+        numberOfRecords,
         null,
         repeatAttempt,
         resetPrefix,
@@ -123,6 +128,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return ROUTING_KEY;
   }
 
+  public Long getNumberOfRecords() {
+    return numberOfRecords;
+  }
+
   public String getRunner() {
     return runner;
   }
@@ -143,7 +152,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return endpointType;
   }
 
-  public ValidationResult getValidationReport() {
+  public ValidationResult getValidationResult() {
     return validationResult;
   }
 
@@ -159,6 +168,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
 
   public PipelinesInterpretedMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
+    return this;
+  }
+
+  public PipelinesInterpretedMessage setNumberOfRecords(Long numberOfRecords) {
+    this.numberOfRecords = numberOfRecords;
     return this;
   }
 
@@ -215,6 +229,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(onlyForStep, that.onlyForStep)
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
+        && Objects.equals(numberOfRecords, that.numberOfRecords)
         && Objects.equals(validationResult, that.validationResult);
   }
 
@@ -229,6 +244,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         resetPrefix,
         onlyForStep,
         executionId,
+        numberOfRecords,
         endpointType,
         validationResult);
   }
