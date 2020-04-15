@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.EndpointType;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -48,6 +49,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private String onlyForStep;
   private Long executionId;
   private EndpointType endpointType;
+  private DwcaValidationReport validationReport;
 
   public PipelinesInterpretedMessage() {}
 
@@ -62,7 +64,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("onlyForStep") String onlyForStep,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("validationReport") DwcaValidationReport validationReport) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -74,6 +77,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.onlyForStep = onlyForStep;
     this.executionId = executionId;
     this.endpointType = endpointType;
+    this.validationReport = validationReport;
   }
 
   public PipelinesInterpretedMessage(
@@ -83,7 +87,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       Long numberOfRecords,
       boolean repeatAttempt,
       String resetPrefix,
-      EndpointType endpointType) {
+      EndpointType endpointType,
+      DwcaValidationReport validationReport) {
     this(
         datasetUuid,
         attempt,
@@ -94,7 +99,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         resetPrefix,
         null,
         null,
-        endpointType);
+        endpointType,
+        validationReport);
   }
 
   @Override
@@ -146,6 +152,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return endpointType;
   }
 
+  public DwcaValidationReport getValidationReport() {
+    return validationReport;
+  }
+
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -186,8 +196,13 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesInterpretedMessage setOnlyForStep(EndpointType endpointType) {
+  public PipelinesInterpretedMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
+    return this;
+  }
+
+  public PipelinesInterpretedMessage setValidationReport(DwcaValidationReport validationReport) {
+    this.validationReport = validationReport;
     return this;
   }
 
@@ -214,7 +229,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(resetPrefix, that.resetPrefix)
         && Objects.equals(onlyForStep, that.onlyForStep)
         && Objects.equals(executionId, that.executionId)
-        && Objects.equals(endpointType, that.endpointType);
+        && Objects.equals(endpointType, that.endpointType)
+        && Objects.equals(validationReport, that.validationReport);
   }
 
   @Override
@@ -229,7 +245,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         resetPrefix,
         onlyForStep,
         executionId,
-        endpointType);
+        endpointType,
+        validationReport);
   }
 
   @Override
