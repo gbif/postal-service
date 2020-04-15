@@ -152,7 +152,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return endpointType;
   }
 
-  public ValidationResult getValidationReport() {
+  public ValidationResult getValidationResult() {
     return validationResult;
   }
 
