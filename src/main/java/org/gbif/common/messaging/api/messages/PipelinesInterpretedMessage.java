@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.EndpointType;
-import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
