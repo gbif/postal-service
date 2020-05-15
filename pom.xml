@@ -34,7 +34,7 @@
     <gbif-api.version>0.110</gbif-api.version>
     <gbif-common.version>0.32</gbif-common.version>
     <guava.version>18.0</guava.version>
-    <jackson2.version>2.9.9</jackson2.version>
+    <jackson2.version>2.11.0</jackson2.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.1</jsr305.version>
     <junit.version>4.11</junit.version>
