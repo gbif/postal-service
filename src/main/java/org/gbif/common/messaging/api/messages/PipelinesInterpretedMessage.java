@@ -15,14 +15,14 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-
-import org.gbif.api.vocabulary.EndpointType;
-import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
