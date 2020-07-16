@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
@@ -133,7 +134,7 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("datasetUuid", datasetUuid)
         .add("source", source)
         .add("attempt", attempt)

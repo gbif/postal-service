@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -137,7 +138,7 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("datasetUuid", datasetUuid)
         .add("datasetType", datasetType)
         .add("source", source)

@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * A configuration class which holds the host and port to connect yammer metrics to a ganglia
@@ -43,7 +43,7 @@ public class GangliaConfiguration {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("host", host)
         .add("port", port)
         .add("name", name)

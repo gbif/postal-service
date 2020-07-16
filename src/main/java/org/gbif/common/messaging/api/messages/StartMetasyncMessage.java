@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -65,6 +66,6 @@ public class StartMetasyncMessage implements Message {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("installationKey", installationKey).toString();
+    return MoreObjects.toStringHelper(this).add("installationKey", installationKey).toString();
   }
 }

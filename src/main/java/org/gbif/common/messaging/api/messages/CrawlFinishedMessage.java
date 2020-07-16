@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -113,7 +114,7 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("datasetUuid", datasetUuid)
         .add("attempt", attempt)
         .add("totalRecordCount", totalRecordCount)

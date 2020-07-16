@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
@@ -132,7 +133,7 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("datasetUuid", datasetUuid)
         .add("attempt", attempt)
         .add("retry", retry)

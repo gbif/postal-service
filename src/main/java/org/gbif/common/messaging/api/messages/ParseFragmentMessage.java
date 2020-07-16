@@ -19,6 +19,7 @@ import org.gbif.common.messaging.api.Message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -65,6 +66,6 @@ public class ParseFragmentMessage implements Message {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).add("occurrenceKey", occurrenceKey).toString();
+    return MoreObjects.toStringHelper(this).add("occurrenceKey", occurrenceKey).toString();
   }
 }
