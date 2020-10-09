@@ -150,7 +150,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return ROUTING_KEY;
+    String key = ROUTING_KEY;
+    if (runner != null && !runner.isEmpty()) {
+      return key + "." + runner.toLowerCase();
+    }
+    return key;
   }
 
   public String getRunner() {
