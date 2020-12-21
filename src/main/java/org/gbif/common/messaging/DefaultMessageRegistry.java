@@ -59,7 +59,6 @@ public class DefaultMessageRegistry implements MessageRegistry {
     MESSAGE_TO_EXCHANGE_MAPPING =
         ImmutableMap.<Class<? extends Message>, String>builder()
             .put(AbcdaDownloadFinishedMessage.class, "crawler")
-            .put(AbcdaPagingFinishedMessage.class, "crawler")
             .put(CrawlErrorMessage.class, "crawler")
             .put(CrawlFinishedMessage.class, "crawler")
             .put(CrawlStartedMessage.class, "crawler")
@@ -103,7 +102,6 @@ public class DefaultMessageRegistry implements MessageRegistry {
     MESSAGE_TO_ROUTING_KEY_MAPPING =
         ImmutableMap.<Class<? extends Message>, String>builder()
             .put(AbcdaDownloadFinishedMessage.class, AbcdaDownloadFinishedMessage.ROUTING_KEY)
-            .put(AbcdaPagingFinishedMessage.class, AbcdaPagingFinishedMessage.ROUTING_KEY)
             .put(CrawlErrorMessage.class, "crawl.error")
             .put(CrawlFinishedMessage.class, CrawlFinishedMessage.ROUTING_KEY)
             .put(CrawlStartedMessage.class, "crawl.started")

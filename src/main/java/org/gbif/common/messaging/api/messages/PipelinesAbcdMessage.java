@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PipelinesAbcdMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = AbcdaPagingFinishedMessage.ROUTING_KEY;
+  public static final String ROUTING_KEY = AbcdaDownloadFinishedMessage.ROUTING_KEY;
 
   private UUID datasetUuid;
   private URI source;
