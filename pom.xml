@@ -37,7 +37,7 @@
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.1</jsr305.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <logback.version>1.1.9</logback.version>
     <mockito.version>1.9.5</mockito.version>
     <slf4j.version>1.7.22</slf4j.version>
