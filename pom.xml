@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>42</version>
+    <version>49</version>
   </parent>
 
   <groupId>org.gbif.common</groupId>
   <artifactId>gbif-postal-service</artifactId>
-  <version>0.47-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>GBIF Postal service</name>
@@ -34,15 +34,15 @@
     <gbif-api.version>0.110</gbif-api.version>
     <gbif-common.version>0.32</gbif-common.version>
     <guava.version>18.0</guava.version>
-    <jackson2.version>2.9.9</jackson2.version>
+    <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.1</jsr305.version>
-    <junit.version>4.11</junit.version>
+    <junit.version>4.12</junit.version>
     <logback.version>1.1.9</logback.version>
     <mockito.version>1.9.5</mockito.version>
     <slf4j.version>1.7.22</slf4j.version>
     <reflections.version>0.9.10</reflections.version>
-    <validation-api.version>1.1.0.Final</validation-api.version>
+    <validation-api.version>2.0.1.Final</validation-api.version>
 
     <!-- Sonar -->
     <sonar.projectName>GBIF Postal service</sonar.projectName>
@@ -108,22 +108,22 @@
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-guava</artifactId>
-      <version>${jackson2.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>${jackson2.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>${jackson2.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>${jackson2.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.gbif</groupId>
