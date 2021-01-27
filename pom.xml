@@ -31,16 +31,16 @@
     <assertj.version>1.6.1</assertj.version>
     <assertj-guava.version>1.2.0</assertj-guava.version>
     <commons-io.version>2.4</commons-io.version>
-    <gbif-api.version>0.110</gbif-api.version>
+    <gbif-api.version>0.137</gbif-api.version>
     <gbif-common.version>0.32</gbif-common.version>
     <guava.version>18.0</guava.version>
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.1</jsr305.version>
     <junit.version>4.12</junit.version>
-    <logback.version>1.1.9</logback.version>
+    <logback.version>1.2.3</logback.version>
     <mockito.version>1.9.5</mockito.version>
-    <slf4j.version>1.7.22</slf4j.version>
+    <slf4j.version>1.7.30</slf4j.version>
     <reflections.version>0.9.10</reflections.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
 
