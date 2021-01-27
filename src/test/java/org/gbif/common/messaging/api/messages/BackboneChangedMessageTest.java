@@ -22,7 +22,7 @@ import org.gbif.common.messaging.api.Util;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BackboneChangedMessageTest {
   @Test

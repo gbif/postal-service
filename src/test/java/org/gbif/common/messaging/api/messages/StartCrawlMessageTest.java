@@ -20,10 +20,10 @@ import org.gbif.common.messaging.api.Util;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class StartCrawlMessageTest {
 
@@ -33,13 +33,13 @@ public class StartCrawlMessageTest {
     StartCrawlMessage message = new StartCrawlMessage(uuid);
     assertNull(message.getPriority());
 
-    assertThat(message.getDatasetUuid()).isEqualTo(uuid);
+    assertEquals(uuid, message.getDatasetUuid());
 
     message = new StartCrawlMessage(uuid, 5);
-    assertThat(message.getPriority()).isEqualTo(5);
+    assertEquals(5, message.getPriority());
 
     message = new StartCrawlMessage(uuid, 10, Platform.ALL);
-    assertThat(message.getPriority()).isEqualTo(10);
+    assertEquals(10, message.getPriority());
   }
 
   @Test

@@ -20,7 +20,7 @@ import org.gbif.common.messaging.api.Util;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /** */
 public class MatchDatasetMessageTest {

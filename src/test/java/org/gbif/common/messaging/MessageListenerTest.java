@@ -20,24 +20,24 @@ import org.gbif.common.messaging.api.MessageRegistry;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Consumer;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MessageListenerTest {
 
   @Mock Connection connection;
@@ -50,12 +50,11 @@ public class MessageListenerTest {
   private static final String DEFAULT_ROUTINGKEY = "bar";
   private static final String QUEUE = "queue";
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     MessageRegistry registry = new DefaultMessageRegistry();
     registry.register(TestMessage.class, DEFAULT_EXCHANGE, DEFAULT_ROUTINGKEY);
     when(connection.createChannel()).thenReturn(channel);
-    when(connection.isOpen()).thenReturn(true);
 
     ConnectionParameters params = new MockConnectionParameters();
     when(params.getConnectionFactory().newConnection(any(ExecutorService.class)))

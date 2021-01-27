@@ -20,9 +20,9 @@ import org.gbif.common.messaging.api.Util;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class StartMetasyncMessageTest {
 
@@ -30,7 +30,7 @@ public class StartMetasyncMessageTest {
   public void testConstructor() {
     UUID uuid = UUID.randomUUID();
     StartMetasyncMessage message = new StartMetasyncMessage(uuid);
-    assertThat(message.getInstallationKey()).isEqualTo(uuid);
+    assertEquals(uuid, message.getInstallationKey());
   }
 
   @Test

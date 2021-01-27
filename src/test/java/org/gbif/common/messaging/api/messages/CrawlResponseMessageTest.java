@@ -20,11 +20,11 @@ import org.gbif.common.messaging.api.Util;
 import java.io.IOException;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.base.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CrawlResponseMessageTest {
 

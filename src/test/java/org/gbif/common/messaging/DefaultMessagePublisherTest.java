@@ -20,28 +20,28 @@ import org.gbif.common.messaging.api.MessageRegistry;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Fail.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultMessagePublisherTest {
 
   @Mock Connection connection;
@@ -59,12 +59,11 @@ public class DefaultMessagePublisherTest {
   private static final String TEST_EXCHANGE = "fooexchange";
   private static final String TEST_ROUTINGKEY = "barkey";
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     registry = new DefaultMessageRegistry();
     registry.register(TestMessage.class, DEFAULT_EXCHANGE, DEFAULT_ROUTINGKEY);
     when(connection.createChannel()).thenReturn(channel);
-    when(connection.isOpen()).thenReturn(true);
 
     ConnectionParameters params = new MockConnectionParameters();
     when(params.getConnectionFactory().newConnection()).thenReturn(connection);
@@ -134,12 +133,7 @@ public class DefaultMessagePublisherTest {
         .when(channel)
         .basicPublish(anyString(), anyString(), any(AMQP.BasicProperties.class), any(byte[].class));
 
-    try {
-      publisher.send(message);
-      fail("Exception should have been thrown");
-    } catch (IOException e) {
-      // Expected
-    }
+    assertThrows(IOException.class, () -> publisher.send(message));
 
     verify(channel, times(3))
         .basicPublish(

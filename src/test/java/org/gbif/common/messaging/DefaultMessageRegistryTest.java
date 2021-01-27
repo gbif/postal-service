@@ -20,22 +20,22 @@ import org.gbif.common.messaging.api.MessageRegistry;
 import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
 import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.guava.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultMessageRegistryTest {
 
   private MessageRegistry registry;
 
-  @Before
+  @BeforeEach
   public void setup() {
     registry = new DefaultMessageRegistry();
   }
@@ -50,40 +50,44 @@ public class DefaultMessageRegistryTest {
       System.out.println(msgClass);
 
       Optional<String> exchange = registry.getExchange(msgClass);
-      assertTrue("exchange missing for " + msgClass, exchange.isPresent());
+      assertTrue(exchange.isPresent(), "exchange missing for " + msgClass);
 
       Optional<String> routing = registry.getGenericRoutingKey(msgClass);
-      assertTrue("routing missing for " + msgClass, routing.isPresent());
+      assertTrue(routing.isPresent(), "routing missing for " + msgClass);
     }
   }
 
   @Test
   public void testGetExchange() {
     Optional<String> exchange = registry.getExchange(CrawlStartedMessage.class);
-    assertThat(exchange).contains("crawler");
+    assertTrue(exchange.isPresent());
+    assertTrue(exchange.get().contains("crawler"));
   }
 
   @Test
   public void testGetRoutingKey() {
     Optional<String> routing = registry.getGenericRoutingKey(CrawlStartedMessage.class);
-    assertThat(routing).contains("crawl.started");
+    assertTrue(routing.isPresent());
+    assertTrue(routing.get().contains("crawl.started"));
   }
 
   @Test
   public void testRegisterUnregister() {
-    assertThat(registry.getExchange(TestMessage.class)).isAbsent();
-    assertThat(registry.getGenericRoutingKey(TestMessage.class)).isAbsent();
+    assertFalse(registry.getExchange(TestMessage.class).isPresent());
+    assertFalse(registry.getGenericRoutingKey(TestMessage.class).isPresent());
 
     registry.register(TestMessage.class, "foo", "bar");
     Optional<String> result = registry.getExchange(TestMessage.class);
-    assertThat(result).contains("foo");
+    assertTrue(result.isPresent());
+    assertTrue(result.get().contains("foo"));
 
     result = registry.getGenericRoutingKey(TestMessage.class);
-    assertThat(result).contains("bar");
+    assertTrue(result.isPresent());
+    assertTrue(result.get().contains("bar"));
 
     registry.unregister(TestMessage.class);
-    assertThat(registry.getExchange(TestMessage.class)).isAbsent();
-    assertThat(registry.getGenericRoutingKey(TestMessage.class)).isAbsent();
+    assertFalse(registry.getExchange(TestMessage.class).isPresent());
+    assertFalse(registry.getGenericRoutingKey(TestMessage.class).isPresent());
   }
 
   @Test
@@ -91,21 +95,21 @@ public class DefaultMessageRegistryTest {
     registry.clear();
 
     ImmutableSet<Class<? extends Message>> messages = registry.getRegisteredMessages();
-    assertThat(messages).hasSize(0);
+    assertEquals(0, messages.size());
 
     registry.register(TestMessage.class, "foo", "bar");
     messages = registry.getRegisteredMessages();
-    assertThat(messages).hasSize(1);
-    assertThat(messages).contains(TestMessage.class);
+    assertEquals(1, messages.size());
+    assertTrue(messages.contains(TestMessage.class));
   }
 
   @Test
   public void testClear() {
     ImmutableSet<Class<? extends Message>> messages = registry.getRegisteredMessages();
-    assertThat(messages.size()).isGreaterThan(0);
+    assertTrue(messages.size() > 0);
 
     registry.clear();
     messages = registry.getRegisteredMessages();
-    assertThat(messages).hasSize(0);
+    assertEquals(0, messages.size());
   }
 }

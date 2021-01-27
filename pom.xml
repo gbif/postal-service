@@ -28,8 +28,6 @@
     <main.basedir>${project.basedir}</main.basedir>
 
     <amqp-client.version>3.1.4</amqp-client.version>
-    <assertj.version>1.6.1</assertj.version>
-    <assertj-guava.version>1.2.0</assertj-guava.version>
     <commons-io.version>2.4</commons-io.version>
     <gbif-api.version>0.137</gbif-api.version>
     <gbif-common.version>0.32</gbif-common.version>
@@ -37,9 +35,9 @@
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.1</jsr305.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>5.6.3</junit.version>
     <logback.version>1.2.3</logback.version>
-    <mockito.version>1.9.5</mockito.version>
+    <mockito.version>3.3.3</mockito.version>
     <slf4j.version>1.7.30</slf4j.version>
     <reflections.version>0.9.10</reflections.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
@@ -62,12 +60,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>${jsr305.version}</version>
@@ -86,24 +78,6 @@
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <version>${validation-api.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>${assertj.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-guava</artifactId>
-      <version>${assertj-guava.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -131,12 +105,6 @@
       <version>${gbif-api.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
@@ -151,6 +119,26 @@
       <artifactId>gbif-common</artifactId>
       <version>${gbif-common.version}</version>
     </dependency>
+
+    <!--Test dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
@@ -161,6 +149,12 @@
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
       <version>${reflections.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

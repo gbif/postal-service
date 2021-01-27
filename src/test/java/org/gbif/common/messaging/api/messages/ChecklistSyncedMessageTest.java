@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ChecklistSyncedMessageTest {
 

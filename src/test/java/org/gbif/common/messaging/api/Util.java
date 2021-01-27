@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.guava.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Util {
 
@@ -45,16 +45,16 @@ public class Util {
    * @param message to test
    */
   public static void testDefaultMessageRegistry(Class<? extends Message> message) {
-    assertThat(REGISTRY.getRegisteredMessages()).contains(message);
-    assertThat(REGISTRY.getExchange(message)).isPresent();
-    assertThat(REGISTRY.getGenericRoutingKey(message)).isPresent();
+    assertTrue(REGISTRY.getRegisteredMessages().contains(message));
+    assertTrue(REGISTRY.getExchange(message).isPresent());
+    assertTrue(REGISTRY.getGenericRoutingKey(message).isPresent());
   }
 
   public static <T extends Message> void testSerDe(T message, Class<T> messageClass)
       throws IOException {
     byte[] bytes = MAPPER.writeValueAsBytes(message);
     T message2 = MAPPER.readValue(bytes, messageClass);
-    assertThat(message).isEqualTo(message2);
+    assertEquals(message2, message);
   }
 
   private Util() {

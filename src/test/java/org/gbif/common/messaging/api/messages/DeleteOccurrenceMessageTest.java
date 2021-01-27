@@ -19,7 +19,7 @@ import org.gbif.common.messaging.api.Util;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DeleteOccurrenceMessageTest {
 
