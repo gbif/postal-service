@@ -96,6 +96,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesHdfsViewBuiltMessage.class, "occurrence")
             .put(PipelinesBalancerMessage.class, "occurrence")
             .put(PipelinesFragmenterMessage.class, "occurrence")
+            .put(TransferDownloadToAzureMessage.class, "occurrence")
             .put(VocabularyReleasedMessage.class, "vocabulary")
             .build();
 
@@ -139,6 +140,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY)
             .put(PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY)
             .put(PipelinesFragmenterMessage.class, PipelinesFragmenterMessage.ROUTING_KEY)
+            .put(TransferDownloadToAzureMessage.class, TransferDownloadToAzureMessage.ROUTING_KEY)
             .put(VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY)
             .build();
   }
