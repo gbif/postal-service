@@ -50,6 +50,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private Long executionId;
   private EndpointType endpointType;
   private ValidationResult validationResult;
+  private Set<String> extensionRowTypes;
 
   public PipelinesInterpretedMessage() {}
 
@@ -65,7 +66,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("onlyForStep") String onlyForStep,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("validationResult") ValidationResult validationResult) {
+      @JsonProperty("validationResult") ValidationResult validationResult,
+      @JsonProperty("extensionRowTypes") Set<String> extensionRowTypes) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -78,6 +80,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.executionId = executionId;
     this.endpointType = endpointType;
     this.validationResult = validationResult;
+    this.extensionRowTypes = extensionRowTypes == null ? Collections.emptySet() : extensionRowTypes;
   }
 
   public PipelinesInterpretedMessage(
@@ -88,7 +91,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       boolean repeatAttempt,
       String resetPrefix,
       EndpointType endpointType,
-      ValidationResult validationResult) {
+      ValidationResult validationResult,
+      Set<String> extensionRowTypes) {
     this(
         datasetUuid,
         attempt,
@@ -100,7 +104,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         null,
         null,
         endpointType,
-        validationResult);
+        validationResult,
+        extensionRowTypes);
   }
 
   @Override
@@ -160,6 +165,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return validationResult;
   }
 
+  public Set<String> getExtensionRowTypes() {
+    return extensionRowTypes;
+  }
+
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -210,6 +219,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setExtensionRowTypes(Set<String> extensionRowTypes) {
+    this.extensionRowTypes = extensionRowTypes;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -234,7 +248,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfRecords, that.numberOfRecords)
-        && Objects.equals(validationResult, that.validationResult);
+        && Objects.equals(validationResult, that.validationResult)
+        && Objects.equals(extensionRowTypes, that.extensionRowTypes);
   }
 
   @Override
@@ -250,7 +265,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         executionId,
         numberOfRecords,
         endpointType,
-        validationResult);
+        validationResult,
+        extensionRowTypes);
   }
 
   @Override
