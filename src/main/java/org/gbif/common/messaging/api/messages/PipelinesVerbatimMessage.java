@@ -47,7 +47,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private ValidationResult validationResult;
   private String resetPrefix;
   private Long executionId;
-  private Set<String> extensionRowTypes;
 
   public PipelinesVerbatimMessage() {}
 
@@ -62,8 +61,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("extraPath") String extraPath,
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("extensionRowTypes") Set<String> extensionRowTypes
+      @JsonProperty("executionId") Long executionId
     ) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
@@ -75,7 +73,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.validationResult = validationResult;
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
-    this.extensionRowTypes = extensionRowTypes == null ? Collections.emptySet() : extensionRowTypes;
   }
 
   public PipelinesVerbatimMessage(
@@ -84,8 +81,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       Set<String> interpretTypes,
       Set<String> pipelineSteps,
       EndpointType endpointType,
-      ValidationResult validationResult,
-      Set<String> extensionRowTypes
+      ValidationResult validationResult
     ) {
     this(
         datasetUuid,
@@ -97,8 +93,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         null,
         validationResult,
         null,
-        null,
-      extensionRowTypes);
+        null);
   }
 
   public PipelinesVerbatimMessage(
@@ -106,8 +101,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       Integer attempt,
       Set<String> interpretTypes,
       Set<String> pipelineSteps,
-      EndpointType endpointType,
-      Set<String> extensionRowTypes) {
+      EndpointType endpointType) {
     this(
         datasetUuid,
         attempt,
@@ -118,17 +112,15 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         null,
         new ValidationResult(true, true, null, null),
         null,
-        null,
-      extensionRowTypes);
+        null);
   }
 
   public PipelinesVerbatimMessage(
       UUID datasetUuid,
       Set<String> interpretTypes,
       Set<String> pipelineSteps,
-      EndpointType endpointType,
-      Set<String> extensionRowTypes) {
-    this(datasetUuid, null, interpretTypes, pipelineSteps, endpointType, extensionRowTypes);
+      EndpointType endpointType) {
+    this(datasetUuid, null, interpretTypes, pipelineSteps, endpointType);
   }
 
   /** @return datasetUUID for the converted dataset */
@@ -187,10 +179,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return resetPrefix;
   }
 
-  public Set<String> getExtensionRowTypes() {
-    return extensionRowTypes;
-  }
-
   public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
@@ -236,11 +224,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesVerbatimMessage setExtensionRowTypes(Set<String> extensionRowTypes) {
-    this.extensionRowTypes = extensionRowTypes;
-    return this;
-  }
-
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -264,8 +247,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         && Objects.equals(extraPath, that.extraPath)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(executionId, that.executionId)
-        && Objects.equals(extensionRowTypes, that.extensionRowTypes);
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
@@ -280,8 +262,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         extraPath,
         validationResult,
         resetPrefix,
-        executionId,
-        extensionRowTypes);
+        executionId);
   }
 
   @Override
