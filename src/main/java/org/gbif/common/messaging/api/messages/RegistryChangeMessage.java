@@ -97,6 +97,7 @@ public class RegistryChangeMessage implements Message {
   public enum ChangeType {
     CREATED,
     UPDATED,
-    DELETED
+    DELETED,
+    UPDATE_COMPONENT
   }
 }
