@@ -29,8 +29,8 @@
 
     <amqp-client.version>3.1.4</amqp-client.version>
     <commons-io.version>2.4</commons-io.version>
-    <gbif-api.version>0.144-SNAPSHOT</gbif-api.version>
-    <gbif-common.version>0.32</gbif-common.version>
+    <gbif-api.version>0.144</gbif-api.version>
+    <gbif-common.version>0.50</gbif-common.version>
     <guava.version>18.0</guava.version>
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
