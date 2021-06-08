@@ -51,6 +51,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
   private ValidationResult validationResult;
   private Set<String> interpretTypes;
+  private boolean isValidator = false;
 
   public PipelinesInterpretedMessage() {}
 
@@ -67,7 +68,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("validationResult") ValidationResult validationResult,
-      @JsonProperty("interpretTypes") Set<String> interpretTypes) {
+      @JsonProperty("interpretTypes") Set<String> interpretTypes,
+      @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -81,31 +83,9 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.validationResult = validationResult;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
-  }
-
-  public PipelinesInterpretedMessage(
-      UUID datasetUuid,
-      int attempt,
-      Set<String> pipelineSteps,
-      Long numberOfRecords,
-      boolean repeatAttempt,
-      String resetPrefix,
-      EndpointType endpointType,
-      ValidationResult validationResult,
-      Set<String> interpretTypes) {
-    this(
-        datasetUuid,
-        attempt,
-        pipelineSteps,
-        numberOfRecords,
-        null,
-        repeatAttempt,
-        resetPrefix,
-        null,
-        null,
-        endpointType,
-        validationResult,
-        interpretTypes);
+    if (isValidator != null) {
+      this.isValidator = isValidator;
+    }
   }
 
   @Override
@@ -131,8 +111,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
+    if (isValidator) {
+      key = key + "." + "validator";
+    }
     if (runner != null && !runner.isEmpty()) {
-      return key + "." + runner.toLowerCase();
+      key = key + "." + runner.toLowerCase();
     }
     return key;
   }
@@ -167,6 +150,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
 
   public Set<String> getInterpretTypes() {
     return interpretTypes;
+  }
+
+  public boolean isValidator() {
+    return isValidator;
   }
 
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
@@ -224,6 +211,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setValidator(boolean validator) {
+    isValidator = validator;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -249,7 +241,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfRecords, that.numberOfRecords)
         && Objects.equals(validationResult, that.validationResult)
-        && Objects.equals(interpretTypes, that.interpretTypes);
+        && Objects.equals(interpretTypes, that.interpretTypes)
+        && isValidator == that.isValidator;
   }
 
   @Override
@@ -266,7 +259,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         numberOfRecords,
         endpointType,
         validationResult,
-        interpretTypes);
+        interpretTypes,
+        isValidator);
   }
 
   @Override

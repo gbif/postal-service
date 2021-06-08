@@ -45,6 +45,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
   private Platform platform;
   private Long executionId;
+  private boolean isValidator = false;
 
   public PipelinesXmlMessage() {}
 
@@ -57,7 +58,8 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("platform") Platform platform,
-      @JsonProperty("executionId") Long executionId) {
+      @JsonProperty("executionId") Long executionId,
+      @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -68,6 +70,9 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
     this.executionId = executionId;
+    if (isValidator != null) {
+      this.isValidator = isValidator;
+    }
   }
 
   @Override
@@ -108,7 +113,11 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return ROUTING_KEY;
+    String key = ROUTING_KEY;
+    if (isValidator) {
+      key = key + "." + "validator";
+    }
+    return key;
   }
 
   public PipelinesXmlMessage setDatasetUuid(UUID datasetUuid) {
@@ -141,6 +150,20 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesXmlMessage setPlatform(Platform platform) {
+    this.platform = platform;
+    return this;
+  }
+
+  public boolean isValidator() {
+    return isValidator;
+  }
+
+  public PipelinesXmlMessage setValidator(boolean validator) {
+    isValidator = validator;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -161,13 +184,21 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
         && reason == that.reason
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(endpointType, that.endpointType)
-        && Objects.equals(executionId, that.executionId);
+        && Objects.equals(executionId, that.executionId)
+        && isValidator == that.isValidator;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid, attempt, totalRecordCount, reason, pipelineSteps, endpointType, executionId);
+        datasetUuid,
+        attempt,
+        totalRecordCount,
+        reason,
+        pipelineSteps,
+        endpointType,
+        executionId,
+        isValidator);
   }
 
   @Override

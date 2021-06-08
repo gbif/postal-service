@@ -47,6 +47,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private ValidationResult validationResult;
   private String resetPrefix;
   private Long executionId;
+  private boolean isValidator = false;
 
   public PipelinesVerbatimMessage() {}
 
@@ -61,8 +62,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("extraPath") String extraPath,
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("executionId") Long executionId
-    ) {
+      @JsonProperty("executionId") Long executionId,
+      @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -73,54 +74,9 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.validationResult = validationResult;
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
-  }
-
-  public PipelinesVerbatimMessage(
-      UUID datasetUuid,
-      Integer attempt,
-      Set<String> interpretTypes,
-      Set<String> pipelineSteps,
-      EndpointType endpointType,
-      ValidationResult validationResult
-    ) {
-    this(
-        datasetUuid,
-        attempt,
-        interpretTypes,
-        pipelineSteps,
-        null,
-        endpointType,
-        null,
-        validationResult,
-        null,
-        null);
-  }
-
-  public PipelinesVerbatimMessage(
-      UUID datasetUuid,
-      Integer attempt,
-      Set<String> interpretTypes,
-      Set<String> pipelineSteps,
-      EndpointType endpointType) {
-    this(
-        datasetUuid,
-        attempt,
-        interpretTypes,
-        pipelineSteps,
-        null,
-        endpointType,
-        null,
-        new ValidationResult(true, true, null, null),
-        null,
-        null);
-  }
-
-  public PipelinesVerbatimMessage(
-      UUID datasetUuid,
-      Set<String> interpretTypes,
-      Set<String> pipelineSteps,
-      EndpointType endpointType) {
-    this(datasetUuid, null, interpretTypes, pipelineSteps, endpointType);
+    if (isValidator != null) {
+      this.isValidator = isValidator;
+    }
   }
 
   /** @return datasetUUID for the converted dataset */
@@ -153,8 +109,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
+    if (isValidator) {
+      key = key + "." + "validator";
+    }
     if (runner != null && !runner.isEmpty()) {
-      return key + "." + runner.toLowerCase();
+      key = key + "." + runner.toLowerCase();
     }
     return key;
   }
@@ -224,6 +183,15 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public boolean isValidator() {
+    return isValidator;
+  }
+
+  public PipelinesVerbatimMessage setValidator(boolean validator) {
+    isValidator = validator;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -247,7 +215,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         && Objects.equals(extraPath, that.extraPath)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(executionId, that.executionId);
+        && Objects.equals(executionId, that.executionId)
+        && isValidator == that.isValidator;
   }
 
   @Override
@@ -262,7 +231,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         extraPath,
         validationResult,
         resetPrefix,
-        executionId);
+        executionId,
+        isValidator);
   }
 
   @Override

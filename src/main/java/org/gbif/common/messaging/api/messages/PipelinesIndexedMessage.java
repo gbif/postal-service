@@ -41,6 +41,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private String runner;
   private Long executionId;
+  private boolean isValidator = false;
 
   public PipelinesIndexedMessage() {}
 
@@ -50,17 +51,17 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
-      @JsonProperty("executionId") Long executionId) {
+      @JsonProperty("executionId") Long executionId,
+      @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.executionId = executionId;
-  }
-
-  public PipelinesIndexedMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
-    this(datasetUuid, attempt, pipelineSteps, null, null);
+    if (isValidator != null) {
+      this.isValidator = isValidator;
+    }
   }
 
   @Override
@@ -86,8 +87,11 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
+    if (isValidator) {
+      key = key + "." + "validator";
+    }
     if (runner != null && !runner.isEmpty()) {
-      return key + "." + runner.toLowerCase();
+      key = key + "." + runner.toLowerCase();
     }
     return key;
   }
@@ -116,6 +120,15 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public boolean isValidator() {
+    return isValidator;
+  }
+
+  public PipelinesIndexedMessage setValidator(boolean validator) {
+    isValidator = validator;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -134,12 +147,13 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(runner, that.runner)
-        && Objects.equals(executionId, that.executionId);
+        && Objects.equals(executionId, that.executionId)
+        && isValidator == that.isValidator;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId, isValidator);
   }
 
   @Override
