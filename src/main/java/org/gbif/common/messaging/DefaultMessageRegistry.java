@@ -96,6 +96,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesHdfsViewBuiltMessage.class, "occurrence")
             .put(PipelinesBalancerMessage.class, "occurrence")
             .put(PipelinesFragmenterMessage.class, "occurrence")
+            .put(PipelinesArchiveValidatorMessage.class, "occurrence")
+            .put(PipelinesMetricsCollectedMessage.class, "occurrence")
             .put(VocabularyReleasedMessage.class, "vocabulary")
             .build();
 
@@ -139,6 +141,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY)
             .put(PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY)
             .put(PipelinesFragmenterMessage.class, PipelinesFragmenterMessage.ROUTING_KEY)
+            .put(PipelinesArchiveValidatorMessage.class, PipelinesArchiveValidatorMessage.ROUTING_KEY)
+            .put(PipelinesMetricsCollectedMessage.class, PipelinesMetricsCollectedMessage.ROUTING_KEY)
             .put(VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY)
             .build();
   }
