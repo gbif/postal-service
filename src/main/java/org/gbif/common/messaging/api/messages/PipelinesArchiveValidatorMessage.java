@@ -15,6 +15,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.EndpointType;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
@@ -29,8 +31,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * This message instructs the dataset mutator service to send PipelinesArchiveValidatorMessage for each
- * occurrence in the dataset.
+ * This message instructs the dataset mutator service to send PipelinesArchiveValidatorMessage for
+ * each occurrence in the dataset.
  */
 public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
@@ -39,8 +41,8 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
-  private String runner;
   private Long executionId;
+  private EndpointType endpointType;
   private boolean isValidator = false;
 
   public PipelinesArchiveValidatorMessage() {}
@@ -52,16 +54,22 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("isValidator") Boolean isValidator,
+      @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
-    this.runner = runner;
     this.executionId = executionId;
+    this.endpointType = endpointType;
     if (isValidator != null) {
       this.isValidator = isValidator;
     }
+  }
+
+  @Override
+  public void setExecutionId(Long executionId) {
+    this.executionId = executionId;
   }
 
   @Override
@@ -90,14 +98,15 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     if (isValidator) {
       key = key + "." + "validator";
     }
-    if (runner != null && !runner.isEmpty()) {
-      key = key + "." + runner.toLowerCase();
-    }
     return key;
   }
 
-  public String getRunner() {
-    return runner;
+  public EndpointType getEndpointType() {
+    return endpointType;
+  }
+
+  public boolean isValidator() {
+    return isValidator;
   }
 
   public PipelinesArchiveValidatorMessage setDatasetUuid(UUID datasetUuid) {
@@ -115,23 +124,14 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesArchiveValidatorMessage setRunner(String runner) {
-    this.runner = runner;
-    return this;
-  }
-
-  public boolean isValidator() {
-    return isValidator;
-  }
-
   public PipelinesArchiveValidatorMessage setValidator(boolean validator) {
     isValidator = validator;
     return this;
   }
 
-  @Override
-  public void setExecutionId(Long executionId) {
-    this.executionId = executionId;
+  public PipelinesArchiveValidatorMessage setEndpointType(EndpointType endpointType) {
+    this.endpointType = endpointType;
+    return this;
   }
 
   @Override
@@ -146,14 +146,14 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     return attempt == that.attempt
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(runner, that.runner)
+        && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(executionId, that.executionId)
         && isValidator == that.isValidator;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId, isValidator);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, endpointType, executionId, isValidator);
   }
 
   @Override
