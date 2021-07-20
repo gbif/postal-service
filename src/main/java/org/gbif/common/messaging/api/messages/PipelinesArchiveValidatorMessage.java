@@ -52,7 +52,6 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("isValidator") Boolean isValidator,
       @JsonProperty("endpointType") EndpointType endpointType) {

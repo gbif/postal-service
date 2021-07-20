@@ -39,7 +39,6 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
-  private String runner;
   private Long executionId;
   private boolean isValidator = false;
 
@@ -50,14 +49,12 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
-    this.runner = runner;
     this.executionId = executionId;
     if (isValidator != null) {
       this.isValidator = isValidator;
@@ -90,14 +87,7 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
     if (isValidator) {
       key = key + "." + "validator";
     }
-    if (runner != null && !runner.isEmpty()) {
-      key = key + "." + runner.toLowerCase();
-    }
     return key;
-  }
-
-  public String getRunner() {
-    return runner;
   }
 
   public PipelinesMetricsCollectedMessage setDatasetUuid(UUID datasetUuid) {
@@ -112,11 +102,6 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
 
   public PipelinesMetricsCollectedMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
-    return this;
-  }
-
-  public PipelinesMetricsCollectedMessage setRunner(String runner) {
-    this.runner = runner;
     return this;
   }
 
@@ -146,14 +131,13 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
     return attempt == that.attempt
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(runner, that.runner)
         && Objects.equals(executionId, that.executionId)
         && isValidator == that.isValidator;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId, isValidator);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, executionId, isValidator);
   }
 
   @Override
