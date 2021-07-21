@@ -15,8 +15,6 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.vocabulary.EndpointType;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
@@ -42,7 +40,7 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private Long executionId;
-  private EndpointType endpointType;
+  private String fileFormat;
   private boolean isValidator = false;
 
   public PipelinesArchiveValidatorMessage() {}
@@ -54,13 +52,13 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("isValidator") Boolean isValidator,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("fileFormat") String fileFormat) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.executionId = executionId;
-    this.endpointType = endpointType;
+    this.fileFormat = fileFormat;
     if (isValidator != null) {
       this.isValidator = isValidator;
     }
@@ -100,8 +98,8 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     return key;
   }
 
-  public EndpointType getEndpointType() {
-    return endpointType;
+  public String getFileFormat() {
+    return fileFormat;
   }
 
   public boolean isValidator() {
@@ -128,8 +126,8 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesArchiveValidatorMessage setEndpointType(EndpointType endpointType) {
-    this.endpointType = endpointType;
+  public PipelinesArchiveValidatorMessage setFileFormat(String fileFormat) {
+    this.fileFormat = fileFormat;
     return this;
   }
 
@@ -145,14 +143,14 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     return attempt == that.attempt
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(endpointType, that.endpointType)
+        && Objects.equals(fileFormat, that.fileFormat)
         && Objects.equals(executionId, that.executionId)
         && isValidator == that.isValidator;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, endpointType, executionId, isValidator);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, fileFormat, executionId, isValidator);
   }
 
   @Override
