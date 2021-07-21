@@ -15,6 +15,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.EndpointType;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
@@ -41,6 +43,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private String runner;
   private Long executionId;
+  private EndpointType endpointType;
   private boolean isValidator = false;
 
   public PipelinesIndexedMessage() {}
@@ -52,6 +55,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
       @JsonProperty("executionId") Long executionId,
+      @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt >= 0, "attempt has to be greater than 0");
@@ -59,6 +63,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.executionId = executionId;
+    this.endpointType = endpointType;
     if (isValidator != null) {
       this.isValidator = isValidator;
     }
@@ -134,6 +139,15 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     this.executionId = executionId;
   }
 
+  public EndpointType getEndpointType() {
+    return endpointType;
+  }
+
+  public PipelinesIndexedMessage setEndpointType(EndpointType endpointType) {
+    this.endpointType = endpointType;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -148,12 +162,13 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(runner, that.runner)
         && Objects.equals(executionId, that.executionId)
+        && Objects.equals(endpointType, that.endpointType)
         && isValidator == that.isValidator;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId, isValidator);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId, endpointType, isValidator);
   }
 
   @Override
