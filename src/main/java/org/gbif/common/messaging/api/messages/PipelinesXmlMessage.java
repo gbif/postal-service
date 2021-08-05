@@ -63,7 +63,6 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    checkArgument(totalRecordCount >= 0, "totalRecordCount has to be greater than or equal to 0");
     this.totalRecordCount = totalRecordCount;
     this.reason = checkNotNull(reason, "reason can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
