@@ -29,8 +29,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * This message instructs the dataset mutator service to send PipelinesArchiveValidatorMessage for
- * each occurrence in the dataset.
+ * This message is used trigger Checklists validations.
  */
 public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
