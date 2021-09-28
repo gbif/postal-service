@@ -66,6 +66,33 @@ public interface MessagePublisher {
   void send(Object message, String exchange, String routingKey, boolean persistent)
       throws IOException;
 
+
+  /**
+   * Sends a message to a reply queue. Tries to reuse a channel and only opens a new one if the old one was closed.
+   *
+   * @param message to send. This is being converted into JSON using Jackson
+   * @param persistent whether the message should be persisted by the broker
+   * @param correlationId used to correspond RPC messages with requests
+   * @param replyTo callback queue
+   */
+  void replyToQueue(Object message, boolean persistent, String correlationId, String replyTo)
+    throws IOException;
+
+  /**
+   * Sends and wait for reply of an optionally persistent message to the given exchange with the given routing key. Tries
+   * to reuse a channel and only opens a new one if the old one was closed.
+   *
+   * @param message to send. This is being converted into JSON using Jackson
+   * @param exchange to publish to
+   * @param routingKey to use
+   * @param persistent whether the message should be persisted by the broker
+   * @param correlationId used to correspond RPC messages with requests
+   * @param replyTo callback queue
+   * @param consumer reply message consumer
+   */
+  <T> void sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
+                                 String correlationId, String replyTo, java.util.function.Consumer<T> consumer) throws IOException;
+
   /** Closes any resources used. */
   void close();
 }

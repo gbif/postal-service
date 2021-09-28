@@ -21,6 +21,7 @@ import org.gbif.common.messaging.api.MessageRegistry;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -28,13 +29,17 @@ import javax.annotation.concurrent.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.base.Optional;
 import com.google.common.collect.Queues;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.MessageProperties;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -156,6 +161,104 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         LOG.debug("Failed sending message, retrying");
       }
     }
+  }
+
+  @Override
+  public void replyToQueue(Object message, boolean persistent, String correlationId, String replyTo)
+    throws IOException {
+    checkNotNull(message, "message can't be null");
+    checkNotNull(correlationId, "correlationId can't be null");
+    checkNotNull(replyTo, "replyTo can't be null");
+
+    byte[] data = mapper.writeValueAsBytes(message);
+    LOG.debug(
+      "Sending message of type [{}] to replyTo [{}] using correlationId [{}]",
+      message.getClass().getSimpleName(),
+      replyTo,
+      correlationId);
+
+    for (int attempt = 1; attempt <= NUMBER_OF_RETRIES; attempt++) {
+      Channel channel = provideChannel();
+      try {
+        declareQueue(replyTo, channel);
+        AMQP.BasicProperties properties = getProperties(persistent).builder().correlationId(correlationId).build();
+        channel.basicPublish("", replyTo, properties, data);
+        // We're not releasing this in a finally block because we assume the channel is "bad" if an
+        // exception occurred
+        releaseChannel(channel);
+        return;
+      } catch (IOException e) {
+        if (attempt >= NUMBER_OF_RETRIES) {
+          LOG.warn("Tried sending message but failed {} times, aborting", attempt);
+          throw e;
+        }
+        LOG.debug("Failed sending message, retrying");
+      }
+    }
+  }
+
+  @Override
+  public <T> void sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
+                                 String correlationId, String replyTo, java.util.function.Consumer<T> consumer)
+    throws IOException {
+    checkNotNull(message, "message can't be null");
+    checkNotNull(exchange, "exchange can't be null");
+    checkNotNull(routingKey, "routingKey can't be null");
+    checkNotNull(correlationId, "correlationId can't be null");
+    checkNotNull(replyTo, "replyTo can't be null");
+    checkNotNull(consumer, "consumer can't be null");
+
+    byte[] data = mapper.writeValueAsBytes(message);
+    LOG.debug(
+      "Sending message of type [{}] to exchange [{}] using routing key [{}]",
+      message.getClass().getSimpleName(),
+      exchange,
+      routingKey);
+
+    for (int attempt = 1; attempt <= NUMBER_OF_RETRIES; attempt++) {
+      Channel channel = provideChannel();
+
+      try {
+        AMQP.BasicProperties.Builder properties = getProperties(persistent).builder();
+        properties.correlationId(correlationId).replyTo(replyTo);
+        declareQueue(replyTo, channel);
+        channel.basicPublish(exchange, routingKey, properties.build(), data);
+        channel.basicConsume(replyTo, true, new DefaultConsumer(channel) {
+                               @Override
+                               public void handleDelivery(
+                                 String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body
+                               ) throws IOException {
+                                 if (properties.getCorrelationId().equals(correlationId)) {
+                                   consumer.accept(mapper.readValue(body, new TypeReference<T>() {}));
+                                 }
+                               }
+                             }
+
+        );
+        // We're not releasing this in a finally block because we assume the channel is "bad" if an
+        // exception occurred
+        releaseChannel(channel);
+        return;
+      } catch (IOException e) {
+        if (attempt >= NUMBER_OF_RETRIES) {
+          LOG.warn("Tried sending message but failed {} times, aborting", attempt);
+          throw e;
+        }
+        LOG.debug("Failed sending message, retrying");
+      }
+    }
+  }
+
+  private void declareQueue(String queueName, Channel channel) {
+    try {
+      channel.queueDeclare(queueName, true, false, false, new HashMap<>());
+    } catch (Exception ex) {
+      LOG.warn("Error declaring channel", ex);
+    }
+  }
+
+  private AMQP.BasicProperties getProperties(boolean persistent) {
+    return persistent? MessageProperties.PERSISTENT_TEXT_PLAIN : MessageProperties.TEXT_PLAIN;
   }
 
   /**

@@ -19,6 +19,7 @@ import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import com.google.common.collect.ForwardingObject;
 
@@ -61,6 +62,25 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
   public void send(Object message, String exchange, String routingKey, boolean persistent)
       throws IOException {
     delegate().send(message, exchange, routingKey, persistent);
+  }
+
+  @Override
+  public void replyToQueue(Object message, boolean persistent, String correlationId, String replyTo)
+    throws IOException {
+    delegate().replyToQueue(message, persistent, correlationId, replyTo);
+  }
+
+  @Override
+  public <T> void sendAndReceive(
+    Object message,
+    String exchange,
+    String routingKey,
+    boolean persistent,
+    String correlationId,
+    String replyTo,
+    Consumer<T> consumer
+  ) throws IOException {
+    delegate().sendAndReceive(message, exchange, routingKey, persistent, correlationId, replyTo, consumer);
   }
 
   @Override

@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -78,7 +79,7 @@ public class DefaultMessagePublisherTest {
         .basicPublish(
             eq(DEFAULT_EXCHANGE),
             eq("foobar"),
-            eq(MessageProperties.TEXT_PLAIN),
+            refEq(MessageProperties.TEXT_PLAIN),
             any(byte[].class));
   }
 
@@ -88,7 +89,7 @@ public class DefaultMessagePublisherTest {
 
     verify(channel)
         .basicPublish(
-            eq(TEST_EXCHANGE), eq("foobar"), eq(MessageProperties.TEXT_PLAIN), any(byte[].class));
+            eq(TEST_EXCHANGE), eq("foobar"), refEq(MessageProperties.TEXT_PLAIN), any(byte[].class));
   }
 
   @Test
@@ -99,7 +100,7 @@ public class DefaultMessagePublisherTest {
         .basicPublish(
             eq(TEST_EXCHANGE),
             eq(TEST_ROUTINGKEY),
-            eq(MessageProperties.TEXT_PLAIN),
+            refEq(MessageProperties.TEXT_PLAIN),
             any(byte[].class));
   }
 
@@ -111,7 +112,7 @@ public class DefaultMessagePublisherTest {
         .basicPublish(
             eq(DEFAULT_EXCHANGE),
             eq("foobar"),
-            eq(MessageProperties.PERSISTENT_TEXT_PLAIN),
+            refEq(MessageProperties.PERSISTENT_TEXT_PLAIN),
             any(byte[].class));
   }
 
@@ -123,7 +124,7 @@ public class DefaultMessagePublisherTest {
         .basicPublish(
             eq(TEST_EXCHANGE),
             eq(TEST_ROUTINGKEY),
-            eq(MessageProperties.PERSISTENT_TEXT_PLAIN),
+            refEq(MessageProperties.PERSISTENT_TEXT_PLAIN),
             any(byte[].class));
   }
 
@@ -139,7 +140,7 @@ public class DefaultMessagePublisherTest {
         .basicPublish(
             eq(DEFAULT_EXCHANGE),
             eq("foobar"),
-            eq(MessageProperties.TEXT_PLAIN),
+            refEq(MessageProperties.TEXT_PLAIN),
             any(byte[].class));
   }
 
@@ -157,7 +158,7 @@ public class DefaultMessagePublisherTest {
         .basicPublish(
             eq(DEFAULT_EXCHANGE),
             eq("foobar"),
-            eq(MessageProperties.TEXT_PLAIN),
+            refEq(MessageProperties.TEXT_PLAIN),
             any(byte[].class));
   }
 }

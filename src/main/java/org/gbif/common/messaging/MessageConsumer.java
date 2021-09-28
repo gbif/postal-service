@@ -81,7 +81,7 @@ class MessageConsumer<T> extends DefaultConsumer {
     if (object == null) {
       getChannel().basicReject(envelope.getDeliveryTag(), false);
     } else {
-      handleCallback(envelope, object); // which will ACK or NACK
+      handleCallback(envelope, object, properties); // which will ACK or NACK
     }
   }
 
@@ -115,11 +115,11 @@ class MessageConsumer<T> extends DefaultConsumer {
     return object; // will be null on any error
   }
 
-  private void handleCallback(Envelope envelope, T object) {
+  private void handleCallback(Envelope envelope, T object, AMQP.BasicProperties properties) {
     // Handle the message and send a Nack if the Callback throws an Exception
     try {
+      callback.setContext(properties);
       callback.handleMessage(object);
-
     } catch (Exception e) {
       LOG.warn(
           "Error handling message [{}] of type [{}]. Reject and send a nack",
