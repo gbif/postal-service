@@ -72,6 +72,18 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
 
   @Override
   public <T> void sendAndReceive(
+    Message message,
+    String routingKey,
+    boolean persistent,
+    String correlationId,
+    String replyTo,
+    Consumer<T> consumer
+  ) throws IOException {
+    delegate().sendAndReceive(message, routingKey, persistent, correlationId, replyTo, consumer);
+  }
+
+  @Override
+  public <T> void sendAndReceive(
     Object message,
     String exchange,
     String routingKey,

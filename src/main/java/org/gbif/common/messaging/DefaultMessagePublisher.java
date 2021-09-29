@@ -198,6 +198,15 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   }
 
   @Override
+  public <T> void sendAndReceive(Message message, String routingKey, boolean persistent,
+                                 String correlationId, String replyTo, java.util.function.Consumer<T> consumer)
+    throws IOException{
+    Optional<String> exchange = registry.getExchange(message.getClass());
+    checkArgument(exchange.isPresent(), "No exchange found for Message");
+    sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId, replyTo, consumer);
+  }
+
+  @Override
   public <T> void sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
                                  String correlationId, String replyTo, java.util.function.Consumer<T> consumer)
     throws IOException {
