@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>52</version>
+    <version>55</version>
   </parent>
 
   <groupId>org.gbif.common</groupId>
@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
 
   <name>GBIF Postal service</name>
-  <url>http://github.org/gbif/postal-service</url>
+  <url>https://github.org/gbif/postal-service</url>
 
   <scm>
     <connection>scm:git:git@github.com:gbif/postal-service.git</connection>
@@ -25,19 +25,18 @@
 
   <properties>
     <spotless.check.skip>false</spotless.check.skip>
-    <main.basedir>${project.basedir}</main.basedir>
 
     <amqp-client.version>3.1.4</amqp-client.version>
-    <commons-io.version>2.4</commons-io.version>
-    <gbif-api.version>0.144</gbif-api.version>
-    <gbif-common.version>0.50</gbif-common.version>
+    <commons-io.version>2.7</commons-io.version>
+    <gbif-api.version>0.155</gbif-api.version>
+    <gbif-common.version>0.52</gbif-common.version>
     <guava.version>18.0</guava.version>
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
-    <jsr305.version>3.0.1</jsr305.version>
-    <junit.version>5.6.3</junit.version>
+    <jsr305.version>3.0.2</jsr305.version>
+    <junit.version>5.8.1</junit.version>
     <logback.version>1.2.3</logback.version>
-    <mockito.version>3.3.3</mockito.version>
+    <mockito.version>3.12.4</mockito.version>
     <slf4j.version>1.7.30</slf4j.version>
     <reflections.version>0.9.10</reflections.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
@@ -49,16 +48,29 @@
   <repositories>
     <repository>
       <id>gbif-all</id>
-      <url>http://repository.gbif.org/content/groups/gbif</url>
+      <url>https://repository.gbif.org/content/groups/gbif/</url>
     </repository>
     <repository>
       <!-- for JCommander -->
       <id>gbif-thirdparty</id>
-      <url>http://repository.gbif.org/content/repositories/thirdparty</url>
+      <url>https://repository.gbif.org/content/repositories/thirdparty</url>
     </repository>
   </repositories>
 
   <dependencies>
+    <!-- GBIF dependencies -->
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-api</artifactId>
+      <version>${gbif-api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>gbif-common</artifactId>
+      <version>${gbif-common.version}</version>
+    </dependency>
+
+    <!-- Third party dependencies -->
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
@@ -99,11 +111,7 @@
       <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-api</artifactId>
-      <version>${gbif-api.version}</version>
-    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -113,11 +121,6 @@
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>${jcommander.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.gbif</groupId>
-      <artifactId>gbif-common</artifactId>
-      <version>${gbif-common.version}</version>
     </dependency>
 
     <!--Test dependencies -->

@@ -18,11 +18,12 @@ package org.gbif.common.messaging.api.messages;
 import java.util.Arrays;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,7 +41,7 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
 
   private final long duration;
 
-  private final Optional<Integer> recordCount;
+  private final Integer recordCount;
 
   private final String status;
 
@@ -53,7 +54,7 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
       @JsonProperty("requestTry") int requestTry,
       @JsonProperty("response") byte[] response,
       @JsonProperty("duration") long duration,
-      @JsonProperty("recordCount") Optional<Integer> recordCount,
+      @Nullable @JsonProperty("recordCount") Integer recordCount,
       @JsonProperty("status") String status,
       @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid);
@@ -69,10 +70,10 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
     checkArgument(duration > 0, "duration has to be greater than 0");
     this.duration = duration;
 
-    this.recordCount = checkNotNull(recordCount, "recordCount can't be null");
     checkArgument(
-        !recordCount.isPresent() || recordCount.get() >= 0,
+        recordCount == null || recordCount >= 0,
         "recordCount has to be absent or greater than or equal to 0");
+    this.recordCount = recordCount;
 
     this.status = checkNotNull(status, "status can't be null");
 
@@ -92,7 +93,8 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
     return duration;
   }
 
-  public Optional<Integer> getRecordCount() {
+  @Nullable
+  public Integer getRecordCount() {
     return recordCount;
   }
 

@@ -15,7 +15,8 @@
  */
 package org.gbif.common.messaging.api;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
+
 import com.google.common.collect.ImmutableSet;
 
 /** Used to register default exchanges and routing keys for Messages. */

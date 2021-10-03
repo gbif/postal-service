@@ -22,8 +22,6 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.common.base.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CrawlResponseMessageTest {
@@ -42,7 +40,22 @@ public class CrawlResponseMessageTest {
             1,
             new byte[] {1, 2, 3},
             1L,
-            Optional.of(1),
+            1,
+            "status",
+            Platform.ALL);
+    Util.testSerDe(message, CrawlResponseMessage.class);
+  }
+
+  @Test
+  public void testSerDeNoRecordCount() throws IOException {
+    CrawlResponseMessage message =
+        new CrawlResponseMessage(
+            UUID.randomUUID(),
+            1,
+            1,
+            new byte[] {1, 2, 3},
+            1L,
+            null,
             "status",
             Platform.ALL);
     Util.testSerDe(message, CrawlResponseMessage.class);
@@ -53,10 +66,10 @@ public class CrawlResponseMessageTest {
     UUID datasetKey = UUID.randomUUID();
     CrawlResponseMessage message1 =
         new CrawlResponseMessage(
-            datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status", Platform.ALL);
+            datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, 1, "status", Platform.ALL);
     CrawlResponseMessage message2 =
         new CrawlResponseMessage(
-            datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, Optional.of(1), "status", Platform.ALL);
+            datasetKey, 1, 1, new byte[] {1, 2, 3}, 1L, 1, "status", Platform.ALL);
     assertEquals(message1, message2);
     assertEquals(message1.hashCode(), message2.hashCode());
   }
