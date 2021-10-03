@@ -17,18 +17,57 @@ package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
-import org.gbif.common.messaging.api.messages.*;
+import org.gbif.common.messaging.api.messages.AbcdaDownloadFinishedMessage;
+import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
+import org.gbif.common.messaging.api.messages.ChangeDoiMessage;
+import org.gbif.common.messaging.api.messages.ChecklistAnalyzedMessage;
+import org.gbif.common.messaging.api.messages.ChecklistNormalizedMessage;
+import org.gbif.common.messaging.api.messages.ChecklistSyncedMessage;
+import org.gbif.common.messaging.api.messages.CrawlErrorMessage;
+import org.gbif.common.messaging.api.messages.CrawlFinishedMessage;
+import org.gbif.common.messaging.api.messages.CrawlRequestMessage;
+import org.gbif.common.messaging.api.messages.CrawlResponseMessage;
+import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
+import org.gbif.common.messaging.api.messages.DeleteDataResourceOccurrencesMessage;
+import org.gbif.common.messaging.api.messages.DeleteDatasetOccurrencesMessage;
+import org.gbif.common.messaging.api.messages.DeleteOccurrenceMessage;
+import org.gbif.common.messaging.api.messages.DwcaDownloadFinishedMessage;
+import org.gbif.common.messaging.api.messages.DwcaMetasyncFinishedMessage;
+import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
+import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
+import org.gbif.common.messaging.api.messages.InterpretDatasetMessage;
+import org.gbif.common.messaging.api.messages.InterpretVerbatimMessage;
+import org.gbif.common.messaging.api.messages.MatchDatasetMessage;
+import org.gbif.common.messaging.api.messages.OccurrenceFragmentedMessage;
+import org.gbif.common.messaging.api.messages.OccurrenceMutatedMessage;
+import org.gbif.common.messaging.api.messages.ParseDatasetMessage;
+import org.gbif.common.messaging.api.messages.ParseFragmentMessage;
+import org.gbif.common.messaging.api.messages.PipelinesAbcdMessage;
+import org.gbif.common.messaging.api.messages.PipelinesBalancerMessage;
+import org.gbif.common.messaging.api.messages.PipelinesDwcaMessage;
+import org.gbif.common.messaging.api.messages.PipelinesFragmenterMessage;
+import org.gbif.common.messaging.api.messages.PipelinesHdfsViewBuiltMessage;
+import org.gbif.common.messaging.api.messages.PipelinesIndexedMessage;
+import org.gbif.common.messaging.api.messages.PipelinesInterpretedMessage;
+import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage;
+import org.gbif.common.messaging.api.messages.PipelinesXmlMessage;
+import org.gbif.common.messaging.api.messages.RegistryChangeMessage;
+import org.gbif.common.messaging.api.messages.StartCrawlMessage;
+import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
+import org.gbif.common.messaging.api.messages.VerbatimPersistedMessage;
+import org.gbif.common.messaging.api.messages.VocabularyReleasedMessage;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 
 /**
  * A default implementation of the {@link MessageRegistry} interface where all the messages from
@@ -42,104 +81,101 @@ public class DefaultMessageRegistry implements MessageRegistry {
   private final Object lock = new Object();
 
   /* These are the default messages which are the seed for any new instance */
-  private static final ImmutableMap<Class<? extends Message>, String> MESSAGE_TO_EXCHANGE_MAPPING;
-  private static final ImmutableMap<Class<? extends Message>, String>
-      MESSAGE_TO_ROUTING_KEY_MAPPING;
+  private static final Map<Class<? extends Message>, String> MESSAGE_TO_EXCHANGE_MAPPING;
+  private static final Map<Class<? extends Message>, String> MESSAGE_TO_ROUTING_KEY_MAPPING;
 
   @GuardedBy("lock")
   private final ConcurrentMap<Class<? extends Message>, String> exchangeMapping =
-      Maps.newConcurrentMap();
+      new ConcurrentHashMap<>();
 
   @GuardedBy("lock")
   private final ConcurrentMap<Class<? extends Message>, String> routingKeyMapping =
-      Maps.newConcurrentMap();
+      new ConcurrentHashMap<>();
 
   static {
-    MESSAGE_TO_EXCHANGE_MAPPING =
-        ImmutableMap.<Class<? extends Message>, String>builder()
-            .put(AbcdaDownloadFinishedMessage.class, "crawler")
-            .put(CrawlErrorMessage.class, "crawler")
-            .put(CrawlFinishedMessage.class, "crawler")
-            .put(CrawlStartedMessage.class, "crawler")
-            .put(CrawlRequestMessage.class, "crawler")
-            .put(CrawlResponseMessage.class, "crawler")
-            .put(OccurrenceFragmentedMessage.class, "crawler")
-            .put(DwcaDownloadFinishedMessage.class, "crawler")
-            .put(DwcaMetasyncFinishedMessage.class, "crawler")
-            .put(DwcaValidationFinishedMessage.class, "crawler")
-            .put(FragmentPersistedMessage.class, "occurrence")
-            .put(VerbatimPersistedMessage.class, "occurrence")
-            .put(OccurrenceMutatedMessage.class, "occurrence")
-            .put(DeleteOccurrenceMessage.class, "occurrence")
-            .put(DeleteDataResourceOccurrencesMessage.class, "occurrence")
-            .put(DeleteDatasetOccurrencesMessage.class, "occurrence")
-            .put(ParseFragmentMessage.class, "occurrence")
-            .put(ParseDatasetMessage.class, "occurrence")
-            .put(InterpretVerbatimMessage.class, "occurrence")
-            .put(InterpretDatasetMessage.class, "occurrence")
-            .put(RegistryChangeMessage.class, "registry")
-            .put(StartCrawlMessage.class, "registry")
-            .put(StartMetasyncMessage.class, "registry")
-            .put(ChangeDoiMessage.class, "registry")
-            .put(ChecklistNormalizedMessage.class, "checklist")
-            .put(ChecklistSyncedMessage.class, "checklist")
-            .put(ChecklistAnalyzedMessage.class, "checklist")
-            .put(BackboneChangedMessage.class, "checklist")
-            .put(MatchDatasetMessage.class, "checklist")
-            .put(PipelinesXmlMessage.class, "crawler")
-            .put(PipelinesDwcaMessage.class, "crawler")
-            .put(PipelinesAbcdMessage.class, "crawler")
-            .put(PipelinesVerbatimMessage.class, "occurrence")
-            .put(PipelinesInterpretedMessage.class, "occurrence")
-            .put(PipelinesIndexedMessage.class, "occurrence")
-            .put(PipelinesHdfsViewBuiltMessage.class, "occurrence")
-            .put(PipelinesBalancerMessage.class, "occurrence")
-            .put(PipelinesFragmenterMessage.class, "occurrence")
-            .put(VocabularyReleasedMessage.class, "vocabulary")
-            .build();
+    Map<Class<? extends Message>, String> messageToExchangeMappingInternal = new HashMap<>();
+    messageToExchangeMappingInternal.put(AbcdaDownloadFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(CrawlErrorMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(CrawlFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(CrawlStartedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(CrawlRequestMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(CrawlResponseMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(OccurrenceFragmentedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(DwcaDownloadFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(DwcaMetasyncFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(DwcaValidationFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(FragmentPersistedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(VerbatimPersistedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(OccurrenceMutatedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(DeleteOccurrenceMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(DeleteDataResourceOccurrencesMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(DeleteDatasetOccurrencesMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(ParseFragmentMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(ParseDatasetMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(InterpretVerbatimMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(InterpretDatasetMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(RegistryChangeMessage.class, "registry");
+    messageToExchangeMappingInternal.put(StartCrawlMessage.class, "registry");
+    messageToExchangeMappingInternal.put(StartMetasyncMessage.class, "registry");
+    messageToExchangeMappingInternal.put(ChangeDoiMessage.class, "registry");
+    messageToExchangeMappingInternal.put(ChecklistNormalizedMessage.class, "checklist");
+    messageToExchangeMappingInternal.put(ChecklistSyncedMessage.class, "checklist");
+    messageToExchangeMappingInternal.put(ChecklistAnalyzedMessage.class, "checklist");
+    messageToExchangeMappingInternal.put(BackboneChangedMessage.class, "checklist");
+    messageToExchangeMappingInternal.put(MatchDatasetMessage.class, "checklist");
+    messageToExchangeMappingInternal.put(PipelinesXmlMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(PipelinesDwcaMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(PipelinesAbcdMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(PipelinesVerbatimMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesInterpretedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesIndexedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesHdfsViewBuiltMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesBalancerMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesFragmenterMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(VocabularyReleasedMessage.class, "vocabulary");
+    MESSAGE_TO_EXCHANGE_MAPPING = Collections.unmodifiableMap(messageToExchangeMappingInternal);
 
-    MESSAGE_TO_ROUTING_KEY_MAPPING =
-        ImmutableMap.<Class<? extends Message>, String>builder()
-            .put(AbcdaDownloadFinishedMessage.class, AbcdaDownloadFinishedMessage.ROUTING_KEY)
-            .put(CrawlErrorMessage.class, "crawl.error")
-            .put(CrawlFinishedMessage.class, CrawlFinishedMessage.ROUTING_KEY)
-            .put(CrawlStartedMessage.class, "crawl.started")
-            .put(CrawlRequestMessage.class, "crawl.request")
-            .put(CrawlResponseMessage.class, "crawl.response")
-            .put(DwcaDownloadFinishedMessage.class, DwcaDownloadFinishedMessage.ROUTING_KEY)
-            .put(DwcaMetasyncFinishedMessage.class, DwcaMetasyncFinishedMessage.ROUTING_KEY)
-            .put(DwcaValidationFinishedMessage.class, DwcaValidationFinishedMessage.ROUTING_KEY)
-            .put(OccurrenceFragmentedMessage.class, "crawler.fragment.new")
-            .put(FragmentPersistedMessage.class, "occurrence.fragment.persisted")
-            .put(VerbatimPersistedMessage.class, "occurrence.verbatim.persisted")
-            .put(OccurrenceMutatedMessage.class, "occurrence.interpreted.mutated")
-            .put(DeleteOccurrenceMessage.class, "occurrence.delete.occurrence")
-            .put(DeleteDataResourceOccurrencesMessage.class, "occurrence.delete.dataresource")
-            .put(DeleteDatasetOccurrencesMessage.class, "occurrence.delete.dataset")
-            .put(ParseFragmentMessage.class, "occurrence.parse.occurrence")
-            .put(ParseDatasetMessage.class, "occurrence.parse.dataset")
-            .put(InterpretVerbatimMessage.class, "occurrence.interpret.occurrence")
-            .put(InterpretDatasetMessage.class, "occurrence.interpret.dataset")
-            .put(RegistryChangeMessage.class, "registry.change.#")
-            .put(StartCrawlMessage.class, "crawl.start")
-            .put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY)
-            .put(ChecklistNormalizedMessage.class, ChecklistNormalizedMessage.ROUTING_KEY)
-            .put(ChecklistSyncedMessage.class, ChecklistSyncedMessage.ROUTING_KEY)
-            .put(ChecklistAnalyzedMessage.class, ChecklistAnalyzedMessage.ROUTING_KEY)
-            .put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY)
-            .put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY)
-            .put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY)
-            .put(PipelinesDwcaMessage.class, PipelinesDwcaMessage.ROUTING_KEY)
-            .put(PipelinesXmlMessage.class, PipelinesXmlMessage.ROUTING_KEY)
-            .put(PipelinesAbcdMessage.class, PipelinesAbcdMessage.ROUTING_KEY)
-            .put(PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY)
-            .put(PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY)
-            .put(PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY)
-            .put(PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY)
-            .put(PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY)
-            .put(PipelinesFragmenterMessage.class, PipelinesFragmenterMessage.ROUTING_KEY)
-            .put(VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY)
-            .build();
+    Map<Class<? extends Message>, String> messageToRoutingKeyMapping = new HashMap<>();
+    messageToRoutingKeyMapping.put(AbcdaDownloadFinishedMessage.class, AbcdaDownloadFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(CrawlErrorMessage.class, "crawl.error");
+    messageToRoutingKeyMapping.put(CrawlFinishedMessage.class, CrawlFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(CrawlStartedMessage.class, "crawl.started");
+    messageToRoutingKeyMapping.put(CrawlRequestMessage.class, "crawl.request");
+    messageToRoutingKeyMapping.put(CrawlResponseMessage.class, "crawl.response");
+    messageToRoutingKeyMapping.put(DwcaDownloadFinishedMessage.class, DwcaDownloadFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(DwcaMetasyncFinishedMessage.class, DwcaMetasyncFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(DwcaValidationFinishedMessage.class, DwcaValidationFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(OccurrenceFragmentedMessage.class, "crawler.fragment.new");
+    messageToRoutingKeyMapping.put(FragmentPersistedMessage.class, "occurrence.fragment.persisted");
+    messageToRoutingKeyMapping.put(VerbatimPersistedMessage.class, "occurrence.verbatim.persisted");
+    messageToRoutingKeyMapping.put(OccurrenceMutatedMessage.class, "occurrence.interpreted.mutated");
+    messageToRoutingKeyMapping.put(DeleteOccurrenceMessage.class, "occurrence.delete.occurrence");
+    messageToRoutingKeyMapping.put(DeleteDataResourceOccurrencesMessage.class, "occurrence.delete.dataresource");
+    messageToRoutingKeyMapping.put(DeleteDatasetOccurrencesMessage.class, "occurrence.delete.dataset");
+    messageToRoutingKeyMapping.put(ParseFragmentMessage.class, "occurrence.parse.occurrence");
+    messageToRoutingKeyMapping.put(ParseDatasetMessage.class, "occurrence.parse.dataset");
+    messageToRoutingKeyMapping.put(InterpretVerbatimMessage.class, "occurrence.interpret.occurrence");
+    messageToRoutingKeyMapping.put(InterpretDatasetMessage.class, "occurrence.interpret.dataset");
+    messageToRoutingKeyMapping.put(RegistryChangeMessage.class, "registry.change.#");
+    messageToRoutingKeyMapping.put(StartCrawlMessage.class, "crawl.start");
+    messageToRoutingKeyMapping.put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(ChecklistNormalizedMessage.class, ChecklistNormalizedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(ChecklistSyncedMessage.class, ChecklistSyncedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(ChecklistAnalyzedMessage.class, ChecklistAnalyzedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesDwcaMessage.class, PipelinesDwcaMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesXmlMessage.class, PipelinesXmlMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesAbcdMessage.class, PipelinesAbcdMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesFragmenterMessage.class, PipelinesFragmenterMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY);
+    MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);
   }
 
   public DefaultMessageRegistry() {
@@ -164,9 +200,9 @@ public class DefaultMessageRegistry implements MessageRegistry {
   }
 
   @Override
-  public ImmutableSet<Class<? extends Message>> getRegisteredMessages() {
+  public Set<Class<? extends Message>> getRegisteredMessages() {
     synchronized (lock) {
-      return ImmutableSet.copyOf(exchangeMapping.keySet());
+      return Collections.unmodifiableSet(exchangeMapping.keySet());
     }
   }
 

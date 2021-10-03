@@ -21,11 +21,10 @@ import org.gbif.common.messaging.api.Util;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.Maps;
 
 public class DwcaMetasyncFinishedMessageTest {
 
@@ -43,7 +42,7 @@ public class DwcaMetasyncFinishedMessageTest {
             DatasetType.OCCURRENCE,
             new URI("http://google.de"),
             1,
-            Maps.<String, UUID>newHashMap(),
+            new HashMap<>(),
             OccurrenceFragmentedMessageTest.report(uuid),
             Platform.ALL);
 

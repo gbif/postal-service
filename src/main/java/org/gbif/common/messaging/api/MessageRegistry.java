@@ -16,8 +16,7 @@
 package org.gbif.common.messaging.api;
 
 import java.util.Optional;
-
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 /** Used to register default exchanges and routing keys for Messages. */
 public interface MessageRegistry {
@@ -49,7 +48,7 @@ public interface MessageRegistry {
    *
    * @return immutable set of registered message classes
    */
-  ImmutableSet<Class<? extends Message>> getRegisteredMessages();
+  Set<Class<? extends Message>> getRegisteredMessages();
 
   /**
    * Registers a new message in this registry. If any information did already exist about this

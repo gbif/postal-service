@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.google.common.collect.Queues;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
@@ -54,7 +53,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
    * pool is exhausted, new channels are created. This is unbounded in size and dependent on
    * consumer load (e.g. concurrent threads).
    */
-  private final ConcurrentLinkedQueue<Channel> channelPool = Queues.newConcurrentLinkedQueue();
+  private final ConcurrentLinkedQueue<Channel> channelPool = new ConcurrentLinkedQueue<>();
 
   /**
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link
