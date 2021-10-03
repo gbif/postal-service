@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -43,7 +42,7 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
   private final UUID datasetUuid;
   private final URI source;
   private final int attempt;
-  private final Optional<Date> lastModified;
+  private final Date lastModified;
   private final boolean modified;
   private final EndpointType endpointType;
   private final Platform platform;
@@ -56,15 +55,15 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
       @Nullable @JsonProperty("lastModified") Date lastModified,
       @JsonProperty("modified") boolean modified,
       @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("platform") Platform platform) {
+      @Nullable @JsonProperty("platform") Platform platform) {
     this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
     this.source = checkNotNull(source, "source can't be null");
     checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.lastModified = Optional.fromNullable(lastModified);
+    this.lastModified = lastModified;
     this.modified = modified;
     this.endpointType = endpointType;
-    this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.platform = platform != null ? platform : Platform.ALL;
   }
 
   /** @return dataset uuid */
@@ -85,7 +84,7 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
   /** @return the date the downloaded archive was last modified or null e.g. for failed downloads */
   @Nullable
   public Date getLastModified() {
-    return lastModified.orNull();
+    return lastModified;
   }
 
   /**

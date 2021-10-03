@@ -19,12 +19,12 @@ import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
 import org.gbif.common.messaging.api.messages.*;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -153,7 +153,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
   public Optional<String> getExchange(Class<? extends Message> message) {
     checkNotNull(message, "message can't be null");
 
-    return Optional.fromNullable(exchangeMapping.get(message));
+    return Optional.ofNullable(exchangeMapping.get(message));
   }
 
   @GuardedBy("lock")
@@ -161,7 +161,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
   public Optional<String> getGenericRoutingKey(Class<? extends Message> message) {
     checkNotNull(message, "message can't be null");
 
-    return Optional.fromNullable(routingKeyMapping.get(message));
+    return Optional.ofNullable(routingKeyMapping.get(message));
   }
 
   @Override

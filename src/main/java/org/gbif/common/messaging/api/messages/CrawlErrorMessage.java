@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -43,7 +42,7 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
 
   private final ErrorType errorType;
 
-  private final Optional<Throwable> throwable;
+  private final Throwable throwable;
 
   private final long duration;
 
@@ -67,7 +66,7 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
     this.offset = offset;
     this.status = checkNotNull(status);
     this.errorType = checkNotNull(errorType);
-    this.throwable = Optional.fromNullable(throwable);
+    this.throwable = throwable;
   }
 
   public int getAttempt() {
@@ -104,7 +103,7 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
     return "crawl.error" + errorType.toString().toLowerCase();
   }
 
-  public Optional<Throwable> getThrowable() {
+  public Throwable getThrowable() {
     return throwable;
   }
 

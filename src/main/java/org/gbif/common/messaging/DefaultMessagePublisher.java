@@ -21,6 +21,7 @@ import org.gbif.common.messaging.api.MessageRegistry;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -31,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.google.common.base.Optional;
 import com.google.common.collect.Queues;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

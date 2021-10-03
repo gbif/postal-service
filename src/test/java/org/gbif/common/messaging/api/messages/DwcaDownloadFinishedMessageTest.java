@@ -21,6 +21,7 @@ import org.gbif.common.messaging.api.Util;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class DwcaDownloadFinishedMessageTest {
             UUID.randomUUID(),
             new URI("http://google.de"),
             1,
-            null,
+            new Date(),
             true,
             EndpointType.DWC_ARCHIVE,
             Platform.ALL);
