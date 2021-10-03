@@ -21,16 +21,13 @@ import org.gbif.api.vocabulary.OccurrenceSchemaType;
 import org.gbif.common.messaging.api.Util;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.common.base.Charsets;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OccurrenceFragmentedMessageTest {
 
@@ -51,7 +48,7 @@ public class OccurrenceFragmentedMessageTest {
         new OccurrenceFragmentedMessage(
             uuid,
             1,
-            test.getBytes(Charsets.UTF_8),
+            test.getBytes(StandardCharsets.UTF_8),
             OccurrenceSchemaType.ABCD_1_2,
             EndpointType.BIOCASE,
             report(uuid));
@@ -66,7 +63,7 @@ public class OccurrenceFragmentedMessageTest {
         new OccurrenceFragmentedMessage(
             datasetKey,
             1,
-            fragment.getBytes(Charsets.UTF_8),
+            fragment.getBytes(StandardCharsets.UTF_8),
             OccurrenceSchemaType.ABCD_2_0_6,
             EndpointType.BIOCASE,
             report(datasetKey));
@@ -74,19 +71,19 @@ public class OccurrenceFragmentedMessageTest {
         new OccurrenceFragmentedMessage(
             datasetKey,
             1,
-            fragment.getBytes(Charsets.UTF_8),
+            fragment.getBytes(StandardCharsets.UTF_8),
             OccurrenceSchemaType.ABCD_2_0_6,
             EndpointType.BIOCASE,
             report(datasetKey));
-    assertTrue(message1.equals(message2));
+    assertEquals(message1, message2);
     assertEquals(message1.hashCode(), message2.hashCode());
   }
 
   @Test
   public void testCompareHashcodeNotEqual() {
     UUID datasetKey = UUID.randomUUID();
-    byte[] raw1 = "<xml><inner>fake 1</inner></xml>".getBytes(Charsets.UTF_8);
-    byte[] raw2 = "<xml><inner>fake 2</inner></xml>".getBytes(Charsets.UTF_8);
+    byte[] raw1 = "<xml><inner>fake 1</inner></xml>".getBytes(StandardCharsets.UTF_8);
+    byte[] raw2 = "<xml><inner>fake 2</inner></xml>".getBytes(StandardCharsets.UTF_8);
     OccurrenceFragmentedMessage message1 =
         new OccurrenceFragmentedMessage(
             datasetKey,
@@ -103,7 +100,7 @@ public class OccurrenceFragmentedMessageTest {
             OccurrenceSchemaType.ABCD_2_0_6,
             EndpointType.BIOCASE,
             report(datasetKey));
-    assertFalse(message1.equals(message2));
+    assertNotEquals(message1, message2);
     assertNotEquals(message1.hashCode(), message2.hashCode());
   }
 }

@@ -15,6 +15,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.apache.commons.lang3.StringUtils;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.utils.PreconditionUtils;
 
@@ -24,7 +25,6 @@ import java.util.StringJoiner;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Strings;
 
 /** A message to notify the release of a vocabulary. */
 public class VocabularyReleasedMessage implements Message {
@@ -41,8 +41,8 @@ public class VocabularyReleasedMessage implements Message {
       @JsonProperty("version") String version,
       @JsonProperty("releaseDownloadUrl") URI releaseDownloadUrl) {
     PreconditionUtils.checkArgument(
-        !Strings.isNullOrEmpty(vocabularyName), "vocabulary name can't be null");
-    PreconditionUtils.checkArgument(!Strings.isNullOrEmpty(version), "version can't be null");
+        StringUtils.isNotEmpty(vocabularyName), "vocabulary name can't be null");
+    PreconditionUtils.checkArgument(StringUtils.isNotEmpty(version), "version can't be null");
     this.vocabularyName = vocabularyName;
     this.version = version;
     this.releaseDownloadUrl =

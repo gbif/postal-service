@@ -22,11 +22,10 @@ import org.gbif.utils.file.FileUtils;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.base.Charsets;
 
 public class ChangeDoiMessageTest {
 
@@ -39,7 +38,7 @@ public class ChangeDoiMessageTest {
   public void testSerDe() throws IOException {
     String xml =
         IOUtils.toString(
-            FileUtils.classpathStream("datacite-example-full-v3.1.xml"), Charsets.UTF_8);
+            FileUtils.classpathStream("datacite-example-full-v3.1.xml"), StandardCharsets.UTF_8);
     final ChangeDoiMessage message =
         new ChangeDoiMessage(
             DoiStatus.REGISTERED, new DOI("10.999/gbif"), xml, URI.create("http://www.gbif.org"));
