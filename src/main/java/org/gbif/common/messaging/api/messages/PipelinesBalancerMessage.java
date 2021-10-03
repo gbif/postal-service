@@ -24,8 +24,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class PipelinesBalancerMessage implements Message {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.balancer";
@@ -38,7 +36,7 @@ public class PipelinesBalancerMessage implements Message {
   @JsonCreator
   public PipelinesBalancerMessage(
       @JsonProperty("messageClass") String messageClass, @JsonProperty("payload") String payload) {
-    this.messageClass = checkNotNull(messageClass, "messageClass can't be null");
+    this.messageClass = Objects.requireNonNull(messageClass, "messageClass can't be null");
     this.payload = payload;
   }
 

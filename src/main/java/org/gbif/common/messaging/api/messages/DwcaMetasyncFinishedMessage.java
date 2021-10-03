@@ -17,19 +17,16 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * We send this every time the dataset metadata found in a darwin core archive has been deposited in
@@ -57,14 +54,14 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
       @JsonProperty("constituents") Map<String, UUID> constituents,
       @JsonProperty("validationReport") DwcaValidationReport validationReport,
       @JsonProperty("platform") Platform platform) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
-    this.source = checkNotNull(source, "source can't be null");
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    this.datasetType = Objects.requireNonNull(datasetType, "datasetType can't be null");
+    this.source = Objects.requireNonNull(source, "source can't be null");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.constituents = checkNotNull(constituents, "constituents can't be null");
-    this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
-    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.constituents = Objects.requireNonNull(constituents, "constituents can't be null");
+    this.validationReport = Objects.requireNonNull(validationReport, "validationReport can't be null");
+    this.platform = platform != null ? platform : Platform.ALL;
   }
 
   /** @return dataset uuid */
@@ -114,37 +111,34 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(
-        datasetUuid, datasetType, source, attempt, constituents, validationReport);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DwcaMetasyncFinishedMessage that = (DwcaMetasyncFinishedMessage) o;
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && datasetType == that.datasetType
+        && Objects.equals(source, that.source)
+        && Objects.equals(constituents, that.constituents)
+        && Objects.equals(validationReport, that.validationReport)
+        && platform == that.platform;
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    final DwcaMetasyncFinishedMessage other = (DwcaMetasyncFinishedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.datasetType, other.datasetType)
-        && Objects.equal(this.source, other.source)
-        && Objects.equal(this.attempt, other.attempt)
-        && Objects.equal(this.constituents, other.constituents)
-        && Objects.equal(this.validationReport, other.validationReport);
+  public int hashCode() {
+    return Objects.hash(datasetUuid, datasetType, source, attempt, constituents, validationReport, platform);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("datasetUuid", datasetUuid)
-        .add("datasetType", datasetType)
-        .add("source", source)
-        .add("attempt", attempt)
-        .add("constituents", constituents)
-        .add("validationReport", validationReport)
+    return new StringJoiner(", ", DwcaMetasyncFinishedMessage.class.getSimpleName() + "[", "]")
+        .add("datasetUuid=" + datasetUuid)
+        .add("datasetType=" + datasetType)
+        .add("source=" + source)
+        .add("attempt=" + attempt)
+        .add("constituents=" + constituents)
+        .add("validationReport=" + validationReport)
+        .add("platform=" + platform)
         .toString();
   }
 }

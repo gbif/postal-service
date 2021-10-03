@@ -16,16 +16,15 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.api.Message;
+import org.gbif.utils.PreconditionUtils;
+
+import java.util.Objects;
+import java.util.StringJoiner;
 
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** This message instructs the occurrence deletion service to delete a single Occurrence. */
 public class DeleteOccurrenceMessage implements Message {
@@ -46,15 +45,14 @@ public class DeleteOccurrenceMessage implements Message {
       @Nullable @JsonProperty("crawlAttemptLastSeen") Integer crawlAttemptLastSeen,
       @Nullable @JsonProperty("latestCrawlAttemptForDataset")
           Integer latestCrawlAttemptForDataset) {
-
-    checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
+    PreconditionUtils.checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
     this.occurrenceKey = occurrenceKey;
-    this.deletionReason = checkNotNull(deletionReason, "deletionReason can't be null");
+    this.deletionReason = Objects.requireNonNull(deletionReason, "deletionReason can't be null");
     if (deletionReason == OccurrenceDeletionReason.NOT_SEEN_IN_LAST_CRAWL) {
-      checkArgument(
+      PreconditionUtils.checkArgument(
           crawlAttemptLastSeen != null && crawlAttemptLastSeen > 0,
           "crawlAttemptLastSeen must be greater than 0");
-      checkArgument(
+      PreconditionUtils.checkArgument(
           latestCrawlAttemptForDataset != null && latestCrawlAttemptForDataset > 0,
           "latestCrawlAttemptForDataset must be greater than 0");
     }
@@ -84,33 +82,28 @@ public class DeleteOccurrenceMessage implements Message {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(
-        occurrenceKey, deletionReason, crawlAttemptLastSeen, latestCrawlAttemptForDataset);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DeleteOccurrenceMessage that = (DeleteOccurrenceMessage) o;
+    return occurrenceKey == that.occurrenceKey 
+        && deletionReason == that.deletionReason 
+        && Objects.equals(crawlAttemptLastSeen, that.crawlAttemptLastSeen)
+        && Objects.equals(latestCrawlAttemptForDataset, that.latestCrawlAttemptForDataset);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    final DeleteOccurrenceMessage other = (DeleteOccurrenceMessage) obj;
-    return Objects.equal(this.occurrenceKey, other.occurrenceKey)
-        && Objects.equal(this.deletionReason, other.deletionReason)
-        && Objects.equal(this.crawlAttemptLastSeen, other.crawlAttemptLastSeen)
-        && Objects.equal(this.latestCrawlAttemptForDataset, other.latestCrawlAttemptForDataset);
+  public int hashCode() {
+    return Objects.hash(occurrenceKey, deletionReason, crawlAttemptLastSeen, latestCrawlAttemptForDataset);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("occurrenceKey", occurrenceKey)
-        .add("deletionReason", deletionReason)
-        .add("crawlAttemptLastSeen", crawlAttemptLastSeen)
-        .add("latestCrawlAttemptForDataset", latestCrawlAttemptForDataset)
+    return new StringJoiner(", ", DeleteOccurrenceMessage.class.getSimpleName() + "[", "]")
+        .add("occurrenceKey=" + occurrenceKey)
+        .add("deletionReason=" + deletionReason)
+        .add("crawlAttemptLastSeen=" + crawlAttemptLastSeen)
+        .add("latestCrawlAttemptForDataset=" + latestCrawlAttemptForDataset)
         .toString();
   }
 }

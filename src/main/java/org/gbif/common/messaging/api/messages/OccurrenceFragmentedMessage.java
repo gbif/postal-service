@@ -18,19 +18,17 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.api.vocabulary.OccurrenceSchemaType;
+import org.gbif.utils.PreconditionUtils;
 
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * We send this message for every new occurrence fragment we produce. This class does not make a
@@ -58,12 +56,12 @@ public class OccurrenceFragmentedMessage implements DatasetBasedMessage {
       @JsonProperty("schemaType") OccurrenceSchemaType schemaType,
       @JsonProperty("endpointType") EndpointType endpointType,
       @Nullable @JsonProperty("validationReport") DwcaValidationReport validationReport) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    checkArgument(attempt > 0, "attempt must be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt must be greater than 0");
     this.attempt = attempt;
-    this.fragment = checkNotNull(fragment, "fragment can't be null");
-    this.schemaType = checkNotNull(schemaType, "schemaType can't be null");
-    this.endpointType = checkNotNull(endpointType, "endpointType can't be null");
+    this.fragment = Objects.requireNonNull(fragment, "fragment can't be null");
+    this.schemaType = Objects.requireNonNull(schemaType, "schemaType can't be null");
+    this.endpointType = Objects.requireNonNull(endpointType, "endpointType can't be null");
     this.validationReport = validationReport;
   }
 
@@ -99,43 +97,33 @@ public class OccurrenceFragmentedMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof OccurrenceFragmentedMessage)) {
-      return false;
-    }
-
-    final OccurrenceFragmentedMessage other = (OccurrenceFragmentedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.attempt, other.attempt)
-        && Arrays.equals(this.fragment, other.fragment)
-        && Objects.equal(this.schemaType, other.schemaType)
-        && Objects.equal(this.endpointType, other.endpointType)
-        && Objects.equal(this.validationReport, other.validationReport);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    OccurrenceFragmentedMessage that = (OccurrenceFragmentedMessage) o;
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Arrays.equals(fragment, that.fragment)
+        && schemaType == that.schemaType && endpointType == that.endpointType
+        && Objects.equals(validationReport, that.validationReport);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(
-        datasetUuid,
-        attempt,
-        Arrays.hashCode(fragment),
-        schemaType,
-        endpointType,
-        validationReport);
+    int result = Objects.hash(datasetUuid, attempt, schemaType, endpointType, validationReport);
+    result = 31 * result + Arrays.hashCode(fragment);
+    return result;
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("datasetUuid", datasetUuid)
-        .add("attempt", attempt)
-        .add("fragment", fragment)
-        .add("schemaType", schemaType)
-        .add("endpointType", endpointType)
-        .add("validationReport", validationReport)
+    return new StringJoiner(", ", OccurrenceFragmentedMessage.class.getSimpleName() + "[", "]")
+        .add("datasetUuid=" + datasetUuid)
+        .add("attempt=" + attempt)
+        .add("fragment=" + Arrays.toString(fragment))
+        .add("schemaType=" + schemaType)
+        .add("endpointType=" + endpointType)
+        .add("validationReport=" + validationReport)
         .toString();
   }
 }

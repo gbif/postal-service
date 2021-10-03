@@ -18,21 +18,18 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * We send this every time a darwin core archive has been validated after being downloaded and its
@@ -65,15 +62,15 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("platform") Platform platform,
       @JsonProperty("executionId") Long executionId) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
-    this.source = checkNotNull(source, "source can't be null");
-    checkArgument(attempt >= 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    this.datasetType = Objects.requireNonNull(datasetType, "datasetType can't be null");
+    this.source = Objects.requireNonNull(source, "source can't be null");
+    PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
+    this.validationReport = Objects.requireNonNull(validationReport, "validationReport can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
-    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.platform = platform != null ? platform : Platform.ALL;
     this.executionId = executionId;
   }
 

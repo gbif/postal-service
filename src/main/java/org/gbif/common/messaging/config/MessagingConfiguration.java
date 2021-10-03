@@ -18,11 +18,11 @@ package org.gbif.common.messaging.config;
 import org.gbif.common.messaging.ConnectionParameters;
 
 import java.io.IOException;
+import java.util.StringJoiner;
 
 import javax.validation.constraints.NotNull;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.base.MoreObjects;
 import com.rabbitmq.client.AMQP;
 
 /**
@@ -59,12 +59,11 @@ public class MessagingConfiguration {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("host", host)
-        .add("virtualHost", virtualHost)
-        .add("port", port)
-        .add("username", username)
-        .add("password", password)
+    return new StringJoiner(", ", MessagingConfiguration.class.getSimpleName() + "[", "]")
+        .add("host='" + host + "'")
+        .add("virtualHost='" + virtualHost + "'")
+        .add("username='" + username + "'")
+        .add("port=" + port)
         .toString();
   }
 }

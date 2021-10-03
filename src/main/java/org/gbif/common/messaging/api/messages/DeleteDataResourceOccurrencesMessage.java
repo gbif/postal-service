@@ -17,9 +17,10 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.api.Message;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
 
 /**
  * This message instructs the occurrence deletion service to delete all occurrence records for the
@@ -44,19 +45,15 @@ public class DeleteDataResourceOccurrencesMessage implements Message {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(dataResourceId);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DeleteDataResourceOccurrencesMessage that = (DeleteDataResourceOccurrencesMessage) o;
+    return dataResourceId == that.dataResourceId;
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    final DeleteDataResourceOccurrencesMessage other = (DeleteDataResourceOccurrencesMessage) obj;
-    return Objects.equal(this.dataResourceId, other.dataResourceId);
+  public int hashCode() {
+    return Objects.hash(dataResourceId);
   }
 }

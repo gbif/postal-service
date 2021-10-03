@@ -15,17 +15,16 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.utils.PreconditionUtils;
+
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** We send this message every time we encounter an error during crawling. */
 public class CrawlErrorMessage implements DatasetBasedMessage {
@@ -57,15 +56,15 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
       @JsonProperty("errorType") ErrorType errorType,
       @Nullable @JsonProperty("throwable") Throwable throwable) {
     this.duration = duration;
-    this.datasetUuid = checkNotNull(datasetUuid);
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid);
+   PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    checkArgument(retry > 0, "retry has to be greater than 0");
+   PreconditionUtils.checkArgument(retry > 0, "retry has to be greater than 0");
     this.retry = retry;
-    checkArgument(offset >= 0, "offset has to be greater than or equal to 0");
+   PreconditionUtils.checkArgument(offset >= 0, "offset has to be greater than or equal to 0");
     this.offset = offset;
-    this.status = checkNotNull(status);
-    this.errorType = checkNotNull(errorType);
+    this.status = Objects.requireNonNull(status);
+    this.errorType = Objects.requireNonNull(errorType);
     this.throwable = throwable;
   }
 
@@ -108,39 +107,35 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final CrawlErrorMessage other = (CrawlErrorMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.attempt, other.attempt)
-        && Objects.equal(this.retry, other.retry)
-        && Objects.equal(this.offset, other.offset)
-        && Objects.equal(this.status, other.status)
-        && Objects.equal(this.errorType, other.errorType)
-        && Objects.equal(this.duration, other.duration);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    CrawlErrorMessage that = (CrawlErrorMessage) o;
+    return attempt == that.attempt
+        && retry == that.retry
+        && offset == that.offset
+        && duration == that.duration
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(status, that.status)
+        && errorType == that.errorType;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, attempt, retry, offset, status, errorType, duration);
+    return Objects.hash(datasetUuid, attempt, retry, offset, status, errorType, duration);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("datasetUuid", datasetUuid)
-        .add("attempt", attempt)
-        .add("retry", retry)
-        .add("offset", offset)
-        .add("status", status)
-        .add("errorType", errorType)
-        .add("throwable", throwable)
-        .add("duration", duration)
+    return new StringJoiner(", ", CrawlErrorMessage.class.getSimpleName() + "[", "]")
+        .add("datasetUuid=" + datasetUuid)
+        .add("attempt=" + attempt)
+        .add("retry=" + retry)
+        .add("offset=" + offset)
+        .add("status='" + status + "'")
+        .add("errorType=" + errorType)
+        .add("throwable=" + throwable)
+        .add("duration=" + duration)
         .toString();
   }
 

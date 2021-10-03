@@ -18,6 +18,7 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.MessageCallback;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -31,8 +32,6 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This is the consumer used by {@link MessageListener} to handle AMQP deliveries. It deserializes
@@ -55,11 +54,11 @@ class MessageConsumer<T> extends DefaultConsumer {
   MessageConsumer(
       Class<T> clazz, Channel channel, ObjectMapper mapper, MessageCallback<T> callback) {
     super(channel);
-    checkNotNull(channel, "channel can't be null");
+    Objects.requireNonNull(channel, "channel can't be null");
 
-    this.clazz = checkNotNull(clazz, "clazz can't be null");
-    this.mapper = checkNotNull(mapper, "mapper can't be null");
-    this.callback = checkNotNull(callback, "callback can't be null");
+    this.clazz = Objects.requireNonNull(clazz, "clazz can't be null");
+    this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
+    this.callback = Objects.requireNonNull(callback, "callback can't be null");
   }
 
   /**

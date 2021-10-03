@@ -15,13 +15,11 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** Indicates that a dataset should be rematched to the backbone */
 public class MatchDatasetMessage implements DatasetBasedMessage {
@@ -31,7 +29,7 @@ public class MatchDatasetMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public MatchDatasetMessage(@JsonProperty("datasetUuid") UUID datasetUuid) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
   }
 
   @Override
@@ -45,19 +43,15 @@ public class MatchDatasetMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(datasetUuid);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    MatchDatasetMessage that = (MatchDatasetMessage) o;
+    return Objects.equals(datasetUuid, that.datasetUuid);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (MatchDatasetMessage.class != obj.getClass()) {
-      return false;
-    }
-    final MatchDatasetMessage other = (MatchDatasetMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid);
+  public int hashCode() {
+    return Objects.hash(datasetUuid);
   }
 }

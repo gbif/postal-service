@@ -15,11 +15,11 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
 
 /**
  * This message instructs the dataset mutator service to send ParseFragmentMessages for each
@@ -45,19 +45,15 @@ public class ParseDatasetMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(datasetUuid);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ParseDatasetMessage that = (ParseDatasetMessage) o;
+    return Objects.equals(datasetUuid, that.datasetUuid);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    final ParseDatasetMessage other = (ParseDatasetMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid);
+  public int hashCode() {
+    return Objects.hash(datasetUuid);
   }
 }

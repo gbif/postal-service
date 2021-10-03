@@ -16,12 +16,11 @@
 package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.MessagePublisher;
+import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
 
 import com.google.common.util.concurrent.RateLimiter;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 public class RateLimitingMessagePublisher extends ForwardingMessagePublisher {
 
@@ -29,7 +28,7 @@ public class RateLimitingMessagePublisher extends ForwardingMessagePublisher {
 
   public RateLimitingMessagePublisher(MessagePublisher delegate, int requestsPerSecond) {
     super(delegate);
-    checkArgument(requestsPerSecond > 0, "requestsPerSecond has to be greater than zero");
+    PreconditionUtils.checkArgument(requestsPerSecond > 0, "requestsPerSecond has to be greater than zero");
     rateLimiter = RateLimiter.create(requestsPerSecond);
   }
 

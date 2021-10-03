@@ -19,10 +19,9 @@ import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.google.common.collect.ForwardingObject;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A simple object forwarding calls from this object to the delegate object.
@@ -34,7 +33,7 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
   private final MessagePublisher delegate;
 
   protected ForwardingMessagePublisher(MessagePublisher delegate) {
-    this.delegate = checkNotNull(delegate, "delegate can't be null");
+    this.delegate = Objects.requireNonNull(delegate, "delegate can't be null");
   }
 
   @Override

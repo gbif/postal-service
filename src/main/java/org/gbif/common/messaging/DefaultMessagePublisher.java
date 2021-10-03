@@ -18,9 +18,11 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.utils.PreconditionUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -36,9 +38,6 @@ import com.google.common.collect.Queues;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** This class can be used to publish messages easily. */
 @ThreadSafe
@@ -79,9 +78,9 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   public DefaultMessagePublisher(
       ConnectionParameters connectionParameters, MessageRegistry registry, ObjectMapper mapper)
       throws IOException {
-    checkNotNull(connectionParameters, "connectionParameters can't be null");
-    this.mapper = checkNotNull(mapper, "mapper can't be null");
-    this.registry = checkNotNull(registry, "registry can't be null");
+    Objects.requireNonNull(connectionParameters, "connectionParameters can't be null");
+    this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
+    this.registry = Objects.requireNonNull(registry, "registry can't be null");
 
     this.mapper.registerModule(new GuavaModule());
     this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -98,10 +97,10 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
   @Override
   public void send(Message message, boolean persistent) throws IOException {
-    checkNotNull(message, "message can't be null");
+    Objects.requireNonNull(message, "message can't be null");
 
     Optional<String> exchange = registry.getExchange(message.getClass());
-    checkArgument(exchange.isPresent(), "No exchange found for Message");
+    PreconditionUtils.checkArgument(exchange.isPresent(), "No exchange found for Message");
     String routingKey = message.getRoutingKey();
 
     send(message, exchange.get(), routingKey, persistent);
@@ -109,8 +108,8 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
   @Override
   public void send(Message message, String exchange) throws IOException {
-    checkNotNull(message, "message can't be null");
-    checkNotNull(exchange, "exchange can't be null");
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(exchange, "exchange can't be null");
 
     String routingKey = message.getRoutingKey();
     send(message, exchange, routingKey);
@@ -124,9 +123,9 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   @Override
   public void send(Object message, String exchange, String routingKey, boolean persistent)
       throws IOException {
-    checkNotNull(message, "message can't be null");
-    checkNotNull(exchange, "exchange can't be null");
-    checkNotNull(routingKey, "routingKey can't be null");
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(exchange, "exchange can't be null");
+    Objects.requireNonNull(routingKey, "routingKey can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(

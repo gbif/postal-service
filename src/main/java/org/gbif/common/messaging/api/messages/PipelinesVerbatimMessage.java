@@ -27,8 +27,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Message is published when the conversion from of dataset from various formats(DwC or Xml) to
  * avro(ExtendedRecord) is done.
@@ -63,8 +61,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId
     ) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.interpretTypes = checkNotNull(interpretTypes, "interpretTypes can't be null");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    this.interpretTypes = Objects.requireNonNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;

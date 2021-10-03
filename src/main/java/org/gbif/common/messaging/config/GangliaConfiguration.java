@@ -15,13 +15,14 @@
  */
 package org.gbif.common.messaging.config;
 
+import java.util.StringJoiner;
+
 import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.beust.jcommander.Parameter;
-import com.google.common.base.MoreObjects;
 
 /**
  * A configuration class which holds the host and port to connect yammer metrics to a ganglia
@@ -43,10 +44,10 @@ public class GangliaConfiguration {
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("host", host)
-        .add("port", port)
-        .add("name", name)
+    return new StringJoiner(", ", GangliaConfiguration.class.getSimpleName() + "[", "]")
+        .add("host='" + host + "'")
+        .add("port=" + port)
+        .add("name='" + name + "'")
         .toString();
   }
 }

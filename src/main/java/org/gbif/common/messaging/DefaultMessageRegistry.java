@@ -19,6 +19,7 @@ import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
 import org.gbif.common.messaging.api.messages.*;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 
@@ -28,8 +29,6 @@ import javax.annotation.concurrent.ThreadSafe;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A default implementation of the {@link MessageRegistry} interface where all the messages from
@@ -151,7 +150,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
   @Override
   @GuardedBy("lock")
   public Optional<String> getExchange(Class<? extends Message> message) {
-    checkNotNull(message, "message can't be null");
+    Objects.requireNonNull(message, "message can't be null");
 
     return Optional.ofNullable(exchangeMapping.get(message));
   }
@@ -159,7 +158,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
   @GuardedBy("lock")
   @Override
   public Optional<String> getGenericRoutingKey(Class<? extends Message> message) {
-    checkNotNull(message, "message can't be null");
+    Objects.requireNonNull(message, "message can't be null");
 
     return Optional.ofNullable(routingKeyMapping.get(message));
   }
@@ -181,9 +180,9 @@ public class DefaultMessageRegistry implements MessageRegistry {
    */
   @Override
   public void register(Class<? extends Message> message, String exchange, String routingKey) {
-    checkNotNull(message, "message can't be null");
-    checkNotNull(exchange, "exchange can't be null");
-    checkNotNull(routingKey, "routingKey can't be null");
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(exchange, "exchange can't be null");
+    Objects.requireNonNull(routingKey, "routingKey can't be null");
 
     synchronized (lock) {
       exchangeMapping.put(message, exchange);
@@ -199,7 +198,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
    */
   @Override
   public void unregister(Class<? extends Message> message) {
-    checkNotNull(message, "message can't be null");
+    Objects.requireNonNull(message, "message can't be null");
 
     synchronized (lock) {
       exchangeMapping.remove(message);
