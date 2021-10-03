@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
@@ -81,7 +80,6 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
     this.registry = Objects.requireNonNull(registry, "registry can't be null");
 
-    this.mapper.registerModule(new GuavaModule());
     this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     LOG.info("Connecting to AMQP broker {}", connectionParameters);

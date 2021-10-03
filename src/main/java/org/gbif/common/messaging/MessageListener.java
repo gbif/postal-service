@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -98,7 +97,6 @@ public class MessageListener implements AutoCloseable {
     // This ensures that the connection is valid, otherwise it'd throw an exception now
     Connection connection = connectionFactory.newConnection();
     connection.close(); // we don't store this or reuse it
-    mapper.registerModule(new GuavaModule());
   }
 
   /**

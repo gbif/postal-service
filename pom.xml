@@ -30,7 +30,6 @@
     <commons-io.version>2.7</commons-io.version>
     <gbif-api.version>0.155</gbif-api.version>
     <gbif-common.version>0.52</gbif-common.version>
-    <guava.version>18.0</guava.version>
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.2</jsr305.version>
@@ -77,11 +76,6 @@
       <version>${jsr305.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.rabbitmq</groupId>
       <artifactId>amqp-client</artifactId>
       <version>${amqp-client.version}</version>
@@ -90,11 +84,6 @@
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <version>${validation-api.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-guava</artifactId>
-      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
