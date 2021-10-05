@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ * Copyright 2021 Global Biodiversity Information Facility (GBIF)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the dataset mutator service to send PipelinesArchiveValidatorMessage for
  * each occurrence in the dataset.
  */
-public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidatorMessage {
+public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidatorMessage implements RpcMessage{
 
   public static final String ROUTING_KEY = "occurrence.pipelines.checklist.validator";
+
+  private String correlationId;
+
+  private String replyTo;
 
 
   public PipelinesChecklistValidatorMessage() {}
@@ -42,10 +46,28 @@ public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidato
     super(datasetUuid, attempt, pipelineSteps, executionId, true, fileFormat);
   }
 
-
-
   @Override
   public String getRoutingKey() {
     return ROUTING_KEY;
+  }
+
+  @Override
+  public void setCorrelationId(String correlationId) {
+    this.correlationId = correlationId;
+  }
+
+  @Override
+  public String getCorrelationId() {
+    return correlationId;
+  }
+
+  @Override
+  public void setReplyTo(String replyTo) {
+    this.replyTo = replyTo;
+  }
+
+  @Override
+  public String getReplyTo() {
+    return replyTo;
   }
 }

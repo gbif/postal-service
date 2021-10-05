@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ * Copyright 2021 Global Biodiversity Information Facility (GBIF)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package org.gbif.common.messaging.api;
-
-import com.rabbitmq.client.AMQP;
 
 /**
  * Called for every new message. Implementations of this class need to be thread-safe.
@@ -34,17 +32,6 @@ public interface MessageCallback<T> {
    * @param message to process
    */
   void handleMessage(T message);
-
-  /** Default method to set BasicProperties, used later if needed by consumers.*/
-  default void setContext(AMQP.BasicProperties properties) {
-    //nothing
-  }
-
-  /** Default method to get BasicProperties, used later if needed by consumers.*/
-  default AMQP.BasicProperties getContext() {
-    return null;
-  }
-
   /**
    * Returns the class of the message to be handled (i.e. the type {@code T}.
    *

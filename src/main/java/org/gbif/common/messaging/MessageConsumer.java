@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Global Biodiversity Information Facility (GBIF)
+ * Copyright 2021 Global Biodiversity Information Facility (GBIF)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.MessageCallback;
+import org.gbif.common.messaging.api.messages.RpcMessage;
 
 import java.io.IOException;
 
@@ -115,10 +116,16 @@ class MessageConsumer<T> extends DefaultConsumer {
     return object; // will be null on any error
   }
 
+  private void setRpcData(RpcMessage rpcMessage, AMQP.BasicProperties properties) {
+    rpcMessage.setCorrelationId(properties.getCorrelationId());
+    rpcMessage.setReplyTo(properties.getReplyTo());
+  }
   private void handleCallback(Envelope envelope, T object, AMQP.BasicProperties properties) {
     // Handle the message and send a Nack if the Callback throws an Exception
     try {
-      callback.setContext(properties);
+      if (object instanceof RpcMessage) {
+        setRpcData((RpcMessage)object, properties);
+      }
       callback.handleMessage(object);
     } catch (Exception e) {
       LOG.warn(

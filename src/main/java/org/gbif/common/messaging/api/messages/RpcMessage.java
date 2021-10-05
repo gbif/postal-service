@@ -15,25 +15,16 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.common.messaging.api.Util;
+/** Message type to be used in RPC/Reply-Request communication.*/
+public interface RpcMessage {
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+  void setCorrelationId(String correlationId);
 
-import org.junit.jupiter.api.Test;
+  /** Unique identifier value that is attached to requests and messages that allow reference.*/
+  String getCorrelationId();
 
-public class RegistryChangeMessageTest {
+  void setReplyTo(String replyTo);
 
-  @Test
-  public void testDefaultMessageRegistry() {
-    Util.testDefaultMessageRegistry(RegistryChangeMessage.class);
-  }
-
-  @Test
-  public void testSerDe() throws IOException, URISyntaxException {
-    RegistryChangeMessage message =
-        new RegistryChangeMessage(
-            RegistryChangeMessage.ChangeType.UPDATED, String.class, "foo", "bar");
-    Util.testSerDe(message, RegistryChangeMessage.class);
-  }
+  /** Queue to reply to.*/
+  String getReplyTo();
 }
