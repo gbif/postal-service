@@ -78,7 +78,7 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
     String correlationId,
     String replyTo,
     Consumer<T> consumer
-  ) throws IOException {
+  ) throws IOException, InterruptedException {
     delegate().sendAndReceive(message, routingKey, persistent, correlationId, replyTo, consumer);
   }
 
@@ -91,7 +91,7 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
     String correlationId,
     String replyTo,
     Consumer<T> consumer
-  ) throws IOException {
+  ) throws IOException, InterruptedException {
     delegate().sendAndReceive(message, exchange, routingKey, persistent, correlationId, replyTo, consumer);
   }
 

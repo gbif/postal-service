@@ -90,7 +90,7 @@ public interface MessagePublisher {
    * @param consumer reply message consumer
    */
   <T> void sendAndReceive(Message message, String routingKey, boolean persistent,
-                      String correlationId, String replyTo, java.util.function.Consumer<T> consumer) throws IOException;
+                      String correlationId, String replyTo, java.util.function.Consumer<T> consumer) throws IOException, InterruptedException;
   /**
    * Sends and wait for reply of an optionally persistent message to the given exchange with the given routing key. Tries
    * to reuse a channel and only opens a new one if the old one was closed.
@@ -104,7 +104,7 @@ public interface MessagePublisher {
    * @param consumer reply message consumer
    */
   <T> void sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
-                                 String correlationId, String replyTo, java.util.function.Consumer<T> consumer) throws IOException;
+                                 String correlationId, String replyTo, java.util.function.Consumer<T> consumer) throws IOException, InterruptedException;
 
   /** Closes any resources used. */
   void close();

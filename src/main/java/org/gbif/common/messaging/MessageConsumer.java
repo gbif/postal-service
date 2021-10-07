@@ -116,10 +116,13 @@ class MessageConsumer<T> extends DefaultConsumer {
     return object; // will be null on any error
   }
 
+  /** Sets the correlationId and replyTo fields. */
   private void setRpcData(RpcMessage rpcMessage, AMQP.BasicProperties properties) {
     rpcMessage.setCorrelationId(properties.getCorrelationId());
     rpcMessage.setReplyTo(properties.getReplyTo());
   }
+
+  /** Callback method.*/
   private void handleCallback(Envelope envelope, T object, AMQP.BasicProperties properties) {
     // Handle the message and send a Nack if the Callback throws an Exception
     try {

@@ -23,6 +23,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -200,7 +202,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   @Override
   public <T> void sendAndReceive(Message message, String routingKey, boolean persistent,
                                  String correlationId, String replyTo, java.util.function.Consumer<T> consumer)
-    throws IOException{
+    throws IOException, InterruptedException {
     Optional<String> exchange = registry.getExchange(message.getClass());
     checkArgument(exchange.isPresent(), "No exchange found for Message");
     sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId, replyTo, consumer);
@@ -209,7 +211,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   @Override
   public <T> void sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
                                  String correlationId, String replyTo, java.util.function.Consumer<T> consumer)
-    throws IOException {
+    throws IOException, InterruptedException {
     checkNotNull(message, "message can't be null");
     checkNotNull(exchange, "exchange can't be null");
     checkNotNull(routingKey, "routingKey can't be null");
@@ -232,13 +234,14 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         properties.correlationId(correlationId).replyTo(replyTo);
         declareQueue(replyTo, channel);
         channel.basicPublish(exchange, routingKey, properties.build(), data);
+        final BlockingQueue<byte[]> response = new ArrayBlockingQueue<>(1);
         channel.basicConsume(replyTo, true, new DefaultConsumer(channel) {
                                @Override
                                public void handleDelivery(
                                  String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body
                                ) throws IOException {
                                  if (properties.getCorrelationId().equals(correlationId)) {
-                                   consumer.accept(mapper.readValue(body, new TypeReference<T>() {}));
+                                   response.offer(body);
                                  }
                                }
                              }
@@ -246,9 +249,10 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         );
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
         // exception occurred
+        consumer.accept(mapper.readValue(response.take(), new TypeReference<T>() {}));
         releaseChannel(channel);
         return;
-      } catch (IOException e) {
+      } catch (IOException | InterruptedException e) {
         if (attempt >= NUMBER_OF_RETRIES) {
           LOG.warn("Tried sending message but failed {} times, aborting", attempt);
           throw e;
