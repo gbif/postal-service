@@ -200,24 +200,23 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   }
 
   @Override
-  public <T> void sendAndReceive(Message message, String routingKey, boolean persistent,
-                                 String correlationId, String replyTo, java.util.function.Consumer<T> consumer)
+  public <T> T sendAndReceive(Message message, String routingKey, boolean persistent,
+                                 String correlationId, String replyTo)
     throws IOException, InterruptedException {
     Optional<String> exchange = registry.getExchange(message.getClass());
     checkArgument(exchange.isPresent(), "No exchange found for Message");
-    sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId, replyTo, consumer);
+    return sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId, replyTo);
   }
 
   @Override
-  public <T> void sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
-                                 String correlationId, String replyTo, java.util.function.Consumer<T> consumer)
+  public <T> T sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
+                                 String correlationId, String replyTo)
     throws IOException, InterruptedException {
     checkNotNull(message, "message can't be null");
     checkNotNull(exchange, "exchange can't be null");
     checkNotNull(routingKey, "routingKey can't be null");
     checkNotNull(correlationId, "correlationId can't be null");
     checkNotNull(replyTo, "replyTo can't be null");
-    checkNotNull(consumer, "consumer can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(
@@ -249,9 +248,9 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         );
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
         // exception occurred
-        consumer.accept(mapper.readValue(response.take(), new TypeReference<T>() {}));
+        T result = mapper.readValue(response.take(), new TypeReference<T>() {});
         releaseChannel(channel);
-        return;
+        return result;
       } catch (IOException | InterruptedException e) {
         if (attempt >= NUMBER_OF_RETRIES) {
           LOG.warn("Tried sending message but failed {} times, aborting", attempt);
@@ -260,6 +259,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         LOG.debug("Failed sending message, retrying");
       }
     }
+    return null;
   }
 
   private void declareQueue(String queueName, Channel channel) {
