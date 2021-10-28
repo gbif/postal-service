@@ -1,6 +1,4 @@
 /*
- * Copyright 2021 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,7 +17,6 @@ import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import com.google.common.collect.ForwardingObject;
 
@@ -75,10 +72,9 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
     Message message,
     String routingKey,
     boolean persistent,
-    String correlationId,
-    String replyTo
+    String correlationId
   ) throws IOException, InterruptedException {
-    return delegate().sendAndReceive(message, routingKey, persistent, correlationId, replyTo);
+    return delegate().sendAndReceive(message, routingKey, persistent, correlationId);
   }
 
   @Override
@@ -87,10 +83,9 @@ public class ForwardingMessagePublisher extends ForwardingObject implements Mess
     String exchange,
     String routingKey,
     boolean persistent,
-    String correlationId,
-    String replyTo
+    String correlationId
   ) throws IOException, InterruptedException {
-    return delegate().sendAndReceive(message, exchange, routingKey, persistent, correlationId, replyTo);
+    return delegate().sendAndReceive(message, exchange, routingKey, persistent, correlationId);
   }
 
   @Override

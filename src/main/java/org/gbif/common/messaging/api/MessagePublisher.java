@@ -1,6 +1,4 @@
 /*
- * Copyright 2021 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -90,7 +88,7 @@ public interface MessagePublisher {
    * @param consumer reply message consumer
    */
   <T> T sendAndReceive(Message message, String routingKey, boolean persistent,
-                      String correlationId, String replyTo) throws IOException, InterruptedException;
+                      String correlationId) throws IOException, InterruptedException;
   /**
    * Sends and wait for reply of an optionally persistent message to the given exchange with the given routing key. Tries
    * to reuse a channel and only opens a new one if the old one was closed.
@@ -104,7 +102,7 @@ public interface MessagePublisher {
    * @param consumer reply message consumer
    */
   <T> T sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
-                                 String correlationId, String replyTo) throws IOException, InterruptedException;
+                                 String correlationId) throws IOException, InterruptedException;
 
   /** Closes any resources used. */
   void close();
