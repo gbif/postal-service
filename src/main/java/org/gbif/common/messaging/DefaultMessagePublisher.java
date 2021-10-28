@@ -1,6 +1,4 @@
 /*
- * Copyright 2021 Global Biodiversity Information Facility (GBIF)
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -182,7 +180,6 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     for (int attempt = 1; attempt <= NUMBER_OF_RETRIES; attempt++) {
       Channel channel = provideChannel();
       try {
-        declareQueue(replyTo, channel);
         AMQP.BasicProperties properties = getProperties(persistent).builder().correlationId(correlationId).build();
         channel.basicPublish("", replyTo, properties, data);
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
@@ -201,22 +198,21 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
   @Override
   public <T> T sendAndReceive(Message message, String routingKey, boolean persistent,
-                                 String correlationId, String replyTo)
+                                 String correlationId)
     throws IOException, InterruptedException {
     Optional<String> exchange = registry.getExchange(message.getClass());
     checkArgument(exchange.isPresent(), "No exchange found for Message");
-    return sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId, replyTo);
+    return sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId);
   }
 
   @Override
   public <T> T sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
-                                 String correlationId, String replyTo)
+                                 String correlationId)
     throws IOException, InterruptedException {
     checkNotNull(message, "message can't be null");
     checkNotNull(exchange, "exchange can't be null");
     checkNotNull(routingKey, "routingKey can't be null");
     checkNotNull(correlationId, "correlationId can't be null");
-    checkNotNull(replyTo, "replyTo can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(
@@ -227,14 +223,13 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
     for (int attempt = 1; attempt <= NUMBER_OF_RETRIES; attempt++) {
       Channel channel = provideChannel();
-
       try {
         AMQP.BasicProperties.Builder properties = getProperties(persistent).builder();
+        String replyTo = channel.queueDeclare().getQueue();
         properties.correlationId(correlationId).replyTo(replyTo);
-        declareQueue(replyTo, channel);
         channel.basicPublish(exchange, routingKey, properties.build(), data);
         final BlockingQueue<byte[]> response = new ArrayBlockingQueue<>(1);
-        channel.basicConsume(replyTo, true, new DefaultConsumer(channel) {
+        String cTag = channel.basicConsume(replyTo, true, new DefaultConsumer(channel) {
                                @Override
                                public void handleDelivery(
                                  String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body
@@ -249,7 +244,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
         // exception occurred
         T result = mapper.readValue(response.take(), new TypeReference<T>() {});
-        releaseChannel(channel);
+        channel.basicCancel(cTag);
         return result;
       } catch (IOException | InterruptedException e) {
         if (attempt >= NUMBER_OF_RETRIES) {
@@ -257,6 +252,8 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
           throw e;
         }
         LOG.debug("Failed sending message, retrying");
+      } finally {
+        releaseChannel(channel);
       }
     }
     return null;
@@ -337,7 +334,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     for (Channel c : channelPool) {
       try {
         c.waitForConfirmsOrDie();
-      } catch (IOException | InterruptedException e) {
+      } catch (IOException | InterruptedException | IllegalStateException e) {
         LOG.warn("Exception waiting for confirms", e);
       }
     }
