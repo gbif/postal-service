@@ -97,6 +97,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesArchiveValidatorMessage.class, "occurrence")
             .put(PipelinesChecklistValidatorMessage.class, "occurrence")
             .put(PipelinesMetricsCollectedMessage.class, "occurrence")
+            .put(PipelinesCleanerMessage.class, "occurrence")
             .put(VocabularyReleasedMessage.class, "vocabulary")
             .build();
 
@@ -143,6 +144,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
             .put(PipelinesArchiveValidatorMessage.class, PipelinesArchiveValidatorMessage.ROUTING_KEY)
             .put(PipelinesChecklistValidatorMessage.class, PipelinesChecklistValidatorMessage.ROUTING_KEY)
             .put(PipelinesMetricsCollectedMessage.class, PipelinesMetricsCollectedMessage.ROUTING_KEY)
+            .put(PipelinesCleanerMessage.class, PipelinesCleanerMessage.ROUTING_KEY)
             .put(VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY)
             .build();
   }
