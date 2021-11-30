@@ -16,9 +16,11 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageCallback;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.utils.PreconditionUtils;
 import org.gbif.utils.concurrent.NamedThreadFactory;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 
@@ -27,13 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class MessageListener implements AutoCloseable {
 
@@ -84,10 +82,10 @@ public class MessageListener implements AutoCloseable {
       ObjectMapper mapper,
       int prefetchCount)
       throws IOException {
-    checkNotNull(connectionParameters, "connectionParameters can't be null");
-    this.mapper = checkNotNull(mapper, "mapper can't be null");
-    this.registry = checkNotNull(registry, "registry can't be null");
-    checkArgument(prefetchCount >= 1, "prefetchCount needs to be greater than or equal to 1");
+    Objects.requireNonNull(connectionParameters, "connectionParameters can't be null");
+    this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
+    this.registry = Objects.requireNonNull(registry, "registry can't be null");
+    PreconditionUtils.checkArgument(prefetchCount >= 1, "prefetchCount needs to be greater than or equal to 1");
     this.prefetchCount = prefetchCount;
 
     this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -97,7 +95,6 @@ public class MessageListener implements AutoCloseable {
     // This ensures that the connection is valid, otherwise it'd throw an exception now
     Connection connection = connectionFactory.newConnection();
     connection.close(); // we don't store this or reuse it
-    mapper.registerModule(new GuavaModule());
   }
 
   /**
@@ -112,10 +109,10 @@ public class MessageListener implements AutoCloseable {
    */
   public <T extends Message> void listen(
       String queue, int numberOfThreads, MessageCallback<T> callback) throws IOException {
-    checkNotNull(callback, "callback can't be null");
+    Objects.requireNonNull(callback, "callback can't be null");
 
     Optional<String> routingKey = registry.getGenericRoutingKey(callback.getMessageClass());
-    checkArgument(routingKey.isPresent(), "The message needs to be registered");
+   PreconditionUtils.checkArgument(routingKey.isPresent(), "The message needs to be registered");
 
     listen(queue, routingKey.get(), numberOfThreads, callback);
   }
@@ -134,10 +131,10 @@ public class MessageListener implements AutoCloseable {
   public <T extends Message> void listen(
       String queue, String routingKey, int numberOfThreads, MessageCallback<T> callback)
       throws IOException {
-    checkNotNull(callback, "callback can't be null");
+    Objects.requireNonNull(callback, "callback can't be null");
 
     Optional<String> exchange = registry.getExchange(callback.getMessageClass());
-    checkArgument(exchange.isPresent(), "The message needs to be registered");
+   PreconditionUtils.checkArgument(exchange.isPresent(), "The message needs to be registered");
 
     listen(queue, routingKey, exchange.get(), numberOfThreads, callback);
   }
@@ -165,10 +162,10 @@ public class MessageListener implements AutoCloseable {
       int numberOfThreads,
       MessageCallback<T> callback)
       throws IOException {
-    checkNotNull(queue, "queue can't be null");
-    checkNotNull(routingKey, "routingKey can't be null");
-    checkNotNull(callback, "callback can't be empty");
-    checkArgument(numberOfThreads >= 1, "numberOfThreads needs to be greater than or equal to 1");
+    Objects.requireNonNull(queue, "queue can't be null");
+    Objects.requireNonNull(routingKey, "routingKey can't be null");
+    Objects.requireNonNull(callback, "callback can't be empty");
+   PreconditionUtils.checkArgument(numberOfThreads >= 1, "numberOfThreads needs to be greater than or equal to 1");
 
     Connection connection =
         connectionFactory.newConnection(

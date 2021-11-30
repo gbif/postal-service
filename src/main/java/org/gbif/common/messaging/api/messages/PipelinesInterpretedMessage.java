@@ -13,6 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.util.PreconditionUtils;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
 
@@ -25,9 +26,6 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
@@ -68,8 +66,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
       @JsonProperty("isValidator") Boolean isValidator) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    checkArgument(attempt >= 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;

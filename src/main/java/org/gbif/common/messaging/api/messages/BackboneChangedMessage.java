@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Preconditions;
 
 /** The message sent whenever the GBIF backbone has been altered. */
 public class BackboneChangedMessage implements Message {
@@ -30,7 +29,7 @@ public class BackboneChangedMessage implements Message {
 
   @JsonCreator
   public BackboneChangedMessage(@JsonProperty("metrics") DatasetMetrics metrics) {
-    this.metrics = Preconditions.checkNotNull(metrics);
+    this.metrics = Objects.requireNonNull(metrics);
   }
 
   @Override

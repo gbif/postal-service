@@ -14,17 +14,16 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.api.Message;
+import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** A message to notify the release of a vocabulary. */
 public class VocabularyReleasedMessage implements Message {
@@ -40,13 +39,13 @@ public class VocabularyReleasedMessage implements Message {
       @JsonProperty("vocabularyName") String vocabularyName,
       @JsonProperty("version") String version,
       @JsonProperty("releaseDownloadUrl") URI releaseDownloadUrl) {
-    Preconditions.checkArgument(
-        !Strings.isNullOrEmpty(vocabularyName), "vocabulary name can't be null");
-    Preconditions.checkArgument(!Strings.isNullOrEmpty(version), "version can't be null");
+    PreconditionUtils.checkArgument(
+        StringUtils.isNotEmpty(vocabularyName), "vocabulary name can't be null");
+    PreconditionUtils.checkArgument(StringUtils.isNotEmpty(version), "version can't be null");
     this.vocabularyName = vocabularyName;
     this.version = version;
     this.releaseDownloadUrl =
-        checkNotNull(releaseDownloadUrl, "release download URL can't be null");
+        Objects.requireNonNull(releaseDownloadUrl, "release download URL can't be null");
   }
 
   @Override

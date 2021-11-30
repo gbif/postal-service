@@ -13,18 +13,17 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.utils.PreconditionUtils;
+
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** We send this message every time we get a response from an endpoint. */
 public class CrawlResponseMessage implements DatasetBasedMessage {
@@ -55,27 +54,27 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
       @Nullable @JsonProperty("recordCount") Integer recordCount,
       @JsonProperty("status") String status,
       @JsonProperty("platform") Platform platform) {
-    this.datasetUuid = checkNotNull(datasetUuid);
+    this.datasetUuid = Objects.requireNonNull(datasetUuid);
 
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
 
-    checkArgument(requestTry > 0, "requestTry has to be greater than 0");
+    PreconditionUtils.checkArgument(requestTry > 0, "requestTry has to be greater than 0");
     this.requestTry = requestTry;
 
-    this.response = checkNotNull(response, "response can't be null");
+    this.response = Objects.requireNonNull(response, "response can't be null");
 
-    checkArgument(duration > 0, "duration has to be greater than 0");
+    PreconditionUtils.checkArgument(duration > 0, "duration has to be greater than 0");
     this.duration = duration;
 
-    checkArgument(
+    PreconditionUtils.checkArgument(
         recordCount == null || recordCount >= 0,
         "recordCount has to be absent or greater than or equal to 0");
     this.recordCount = recordCount;
 
-    this.status = checkNotNull(status, "status can't be null");
+    this.status = Objects.requireNonNull(status, "status can't be null");
 
-    this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.platform = platform != null ? platform : Platform.ALL;
   }
 
   @Override
@@ -118,40 +117,38 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof CrawlResponseMessage)) {
-      return false;
-    }
-
-    final CrawlResponseMessage other = (CrawlResponseMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.attempt, other.attempt)
-        && Objects.equal(this.requestTry, other.requestTry)
-        && Arrays.equals(this.response, other.response)
-        && Objects.equal(this.duration, other.duration)
-        && Objects.equal(this.recordCount, other.recordCount)
-        && Objects.equal(this.status, other.status);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    CrawlResponseMessage that = (CrawlResponseMessage) o;
+    return attempt == that.attempt
+        && requestTry == that.requestTry
+        && duration == that.duration
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Arrays.equals(response, that.response)
+        && Objects.equals(recordCount, that.recordCount)
+        && Objects.equals(status, that.status)
+        && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(
-        datasetUuid, attempt, requestTry, Arrays.hashCode(response), duration, recordCount, status);
+    int result = Objects.hash(datasetUuid, attempt, requestTry, duration, recordCount, status, platform);
+    result = 31 * result + Arrays.hashCode(response);
+    return result;
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("datasetUuid", datasetUuid)
-        .add("attempt", attempt)
-        .add("requestTry", requestTry)
-        .add("response", response)
-        .add("duration", duration)
-        .add("recordCount", recordCount)
-        .add("status", status)
+    return new StringJoiner(", ", CrawlResponseMessage.class.getSimpleName() + "[", "]")
+        .add("datasetUuid=" + datasetUuid)
+        .add("attempt=" + attempt)
+        .add("requestTry=" + requestTry)
+        .add("response=" + Arrays.toString(response))
+        .add("duration=" + duration)
+        .add("recordCount=" + recordCount)
+        .add("status='" + status + "'")
+        .add("platform=" + platform)
         .toString();
   }
 }

@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.utils.PreconditionUtils;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
@@ -22,9 +24,6 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** This message indicates that the fragmenter of a dataset has finished. */
 public class PipelinesFragmenterMessage implements PipelineBasedMessage {
@@ -44,8 +43,8 @@ public class PipelinesFragmenterMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("executionId") Long executionId) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    checkArgument(attempt >= 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.executionId = executionId;

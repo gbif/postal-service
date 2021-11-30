@@ -19,12 +19,11 @@ import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
 import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
-
-import com.google.common.collect.ImmutableSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -93,7 +92,7 @@ public class DefaultMessageRegistryTest {
   public void testGetRegisteredMessages() {
     registry.clear();
 
-    ImmutableSet<Class<? extends Message>> messages = registry.getRegisteredMessages();
+    Set<Class<? extends Message>> messages = registry.getRegisteredMessages();
     assertEquals(0, messages.size());
 
     registry.register(TestMessage.class, "foo", "bar");
@@ -104,7 +103,7 @@ public class DefaultMessageRegistryTest {
 
   @Test
   public void testClear() {
-    ImmutableSet<Class<? extends Message>> messages = registry.getRegisteredMessages();
+    Set<Class<? extends Message>> messages = registry.getRegisteredMessages();
     assertTrue(messages.size() > 0);
 
     registry.clear();

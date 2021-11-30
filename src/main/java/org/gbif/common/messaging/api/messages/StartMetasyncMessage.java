@@ -15,14 +15,12 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.api.Message;
 
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** Message to send to request a new metadata synchronisation of an Installation. */
 public class StartMetasyncMessage implements Message {
@@ -32,7 +30,7 @@ public class StartMetasyncMessage implements Message {
 
   @JsonCreator
   public StartMetasyncMessage(@JsonProperty("installationKey") UUID installationKey) {
-    this.installationKey = checkNotNull(installationKey, "installationKey can't be null");
+    this.installationKey = Objects.requireNonNull(installationKey, "installationKey can't be null");
   }
 
   public UUID getInstallationKey() {
@@ -45,25 +43,22 @@ public class StartMetasyncMessage implements Message {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(installationKey);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    StartMetasyncMessage that = (StartMetasyncMessage) o;
+    return Objects.equals(installationKey, that.installationKey);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof StartMetasyncMessage)) {
-      return false;
-    }
-
-    StartMetasyncMessage other = (StartMetasyncMessage) obj;
-    return Objects.equal(this.installationKey, other.installationKey);
+  public int hashCode() {
+    return Objects.hash(installationKey);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("installationKey", installationKey).toString();
+    return new StringJoiner(", ", StartMetasyncMessage.class.getSimpleName() + "[", "]")
+        .add("installationKey=" + installationKey)
+        .toString();
   }
 }

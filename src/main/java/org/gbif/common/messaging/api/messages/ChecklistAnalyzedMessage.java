@@ -13,13 +13,11 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The message sent whenever an entire checklist is analyzed and dataset metrics stored in
@@ -32,7 +30,7 @@ public class ChecklistAnalyzedMessage implements DatasetBasedMessage {
 
   @JsonCreator
   public ChecklistAnalyzedMessage(@JsonProperty("datasetUuid") UUID datasetUuid) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
   }
 
   @Override
@@ -46,19 +44,15 @@ public class ChecklistAnalyzedMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(datasetUuid);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ChecklistAnalyzedMessage that = (ChecklistAnalyzedMessage) o;
+    return Objects.equals(datasetUuid, that.datasetUuid);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final ChecklistAnalyzedMessage other = (ChecklistAnalyzedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid);
+  public int hashCode() {
+    return Objects.hash(datasetUuid);
   }
 }

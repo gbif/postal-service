@@ -13,13 +13,11 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * This message instructs the occurrence deletion service to delete all occurrence records for the
@@ -34,8 +32,8 @@ public class DeleteDatasetOccurrencesMessage implements DatasetBasedMessage {
   public DeleteDatasetOccurrencesMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("deletionReason") OccurrenceDeletionReason deletionReason) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.deletionReason = checkNotNull(deletionReason, "deletionReason can't be null");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    this.deletionReason = Objects.requireNonNull(deletionReason, "deletionReason can't be null");
   }
 
   @Override
@@ -53,19 +51,15 @@ public class DeleteDatasetOccurrencesMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(datasetUuid);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DeleteDatasetOccurrencesMessage that = (DeleteDatasetOccurrencesMessage) o;
+    return Objects.equals(datasetUuid, that.datasetUuid);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final DeleteDatasetOccurrencesMessage other = (DeleteDatasetOccurrencesMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid);
+  public int hashCode() {
+    return Objects.hash(datasetUuid);
   }
 }

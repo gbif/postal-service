@@ -16,18 +16,15 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * We send this every time a darwin core archive has been validated after being downloaded and its
@@ -54,14 +51,14 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
       @JsonProperty("validationReport") DwcaValidationReport validationReport,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("platform") Platform platform) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.datasetType = checkNotNull(datasetType, "datasetType can't be null");
-    this.source = checkNotNull(source, "source can't be null");
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    this.datasetType = Objects.requireNonNull(datasetType, "datasetType can't be null");
+    this.source = Objects.requireNonNull(source, "source can't be null");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.validationReport = checkNotNull(validationReport, "validationReport can't be null");
+    this.validationReport = Objects.requireNonNull(validationReport, "validationReport can't be null");
     this.endpointType = endpointType;
-    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.platform = platform != null ? platform : Platform.ALL;
   }
 
   /** @return dataset uuid */
@@ -104,39 +101,34 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(
-        datasetUuid, datasetType, source, attempt, validationReport, endpointType, platform);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DwcaValidationFinishedMessage that = (DwcaValidationFinishedMessage) o;
+    return attempt == that.attempt 
+        && Objects.equals(datasetUuid, that.datasetUuid) 
+        && datasetType == that.datasetType 
+        && Objects.equals(source, that.source) 
+        && Objects.equals(validationReport, that.validationReport) 
+        && endpointType == that.endpointType 
+        && platform == that.platform;
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    final DwcaValidationFinishedMessage other = (DwcaValidationFinishedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.datasetType, other.datasetType)
-        && Objects.equal(this.source, other.source)
-        && Objects.equal(this.attempt, other.attempt)
-        && Objects.equal(this.validationReport, other.validationReport)
-        && Objects.equal(this.endpointType, other.endpointType)
-        && Objects.equal(this.platform, other.platform);
+  public int hashCode() {
+    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, endpointType, platform);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("datasetUuid", datasetUuid)
-        .add("datasetType", datasetType)
-        .add("source", source)
-        .add("attempt", attempt)
-        .add("validationReport", validationReport)
-        .add("endpointType", endpointType)
-        .add("platform", platform)
+    return new StringJoiner(", ", DwcaValidationFinishedMessage.class.getSimpleName() + "[", "]")
+        .add("datasetUuid=" + datasetUuid)
+        .add("datasetType=" + datasetType)
+        .add("source=" + source)
+        .add("attempt=" + attempt)
+        .add("validationReport=" + validationReport)
+        .add("endpointType=" + endpointType)
+        .add("platform=" + platform)
         .toString();
   }
 }

@@ -14,13 +14,13 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.api.Message;
+import org.gbif.utils.PreconditionUtils;
+
+import java.util.Objects;
+import java.util.StringJoiner;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * This message instructs the processors to parse an occurrence's original fragment into a
@@ -32,7 +32,7 @@ public class ParseFragmentMessage implements Message {
 
   @JsonCreator
   public ParseFragmentMessage(@JsonProperty("occurrenceKey") long occurrenceKey) {
-    checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
+    PreconditionUtils.checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
     this.occurrenceKey = occurrenceKey;
   }
 
@@ -46,24 +46,22 @@ public class ParseFragmentMessage implements Message {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(occurrenceKey);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ParseFragmentMessage that = (ParseFragmentMessage) o;
+    return occurrenceKey == that.occurrenceKey;
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    final ParseFragmentMessage other = (ParseFragmentMessage) obj;
-    return Objects.equal(this.occurrenceKey, other.occurrenceKey);
+  public int hashCode() {
+    return Objects.hash(occurrenceKey);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this).add("occurrenceKey", occurrenceKey).toString();
+    return new StringJoiner(", ", ParseFragmentMessage.class.getSimpleName() + "[", "]")
+        .add("occurrenceKey=" + occurrenceKey)
+        .toString();
   }
 }

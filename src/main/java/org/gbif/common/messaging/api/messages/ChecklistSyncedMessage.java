@@ -13,15 +13,14 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.utils.PreconditionUtils;
+
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** The message sent whenever an entire checklist is imported into checklistbank. */
 public class ChecklistSyncedMessage implements DatasetBasedMessage {
@@ -38,12 +37,12 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
       @JsonProperty("crawlFinished") Date crawlFinished,
       @JsonProperty("recordsSynced") int recordsSynced,
       @JsonProperty("recordsDeleted") int recordsDeleted) {
-    this.crawlFinished = checkNotNull(crawlFinished, "crawlFinished date missing");
-    checkArgument(recordsSynced >= 0);
+    this.crawlFinished = Objects.requireNonNull(crawlFinished, "crawlFinished date missing");
+    PreconditionUtils.checkArgument(recordsSynced >= 0);
     this.recordsSynced = recordsSynced;
-    checkArgument(recordsDeleted >= 0);
+    PreconditionUtils.checkArgument(recordsDeleted >= 0);
     this.recordsDeleted = recordsDeleted;
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
   }
 
   @Override
@@ -69,22 +68,18 @@ public class ChecklistSyncedMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(datasetUuid, crawlFinished, recordsSynced, recordsDeleted);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ChecklistSyncedMessage that = (ChecklistSyncedMessage) o;
+    return recordsSynced == that.recordsSynced
+        && recordsDeleted == that.recordsDeleted
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(crawlFinished, that.crawlFinished);
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final ChecklistSyncedMessage other = (ChecklistSyncedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.crawlFinished, other.crawlFinished)
-        && Objects.equal(this.recordsSynced, other.recordsSynced)
-        && Objects.equal(this.recordsDeleted, other.recordsDeleted);
+  public int hashCode() {
+    return Objects.hash(datasetUuid, crawlFinished, recordsSynced, recordsDeleted);
   }
 }

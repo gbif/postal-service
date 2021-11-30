@@ -16,10 +16,12 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.utils.PreconditionUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -33,17 +35,12 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.google.common.collect.Queues;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.MessageProperties;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** This class can be used to publish messages easily. */
 @ThreadSafe
@@ -60,7 +57,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
    * pool is exhausted, new channels are created. This is unbounded in size and dependent on
    * consumer load (e.g. concurrent threads).
    */
-  private final ConcurrentLinkedQueue<Channel> channelPool = Queues.newConcurrentLinkedQueue();
+  private final ConcurrentLinkedQueue<Channel> channelPool = new ConcurrentLinkedQueue<>();
 
   /**
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link
@@ -84,11 +81,10 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   public DefaultMessagePublisher(
       ConnectionParameters connectionParameters, MessageRegistry registry, ObjectMapper mapper)
       throws IOException {
-    checkNotNull(connectionParameters, "connectionParameters can't be null");
-    this.mapper = checkNotNull(mapper, "mapper can't be null");
-    this.registry = checkNotNull(registry, "registry can't be null");
+    Objects.requireNonNull(connectionParameters, "connectionParameters can't be null");
+    this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
+    this.registry = Objects.requireNonNull(registry, "registry can't be null");
 
-    this.mapper.registerModule(new GuavaModule());
     this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     LOG.info("Connecting to AMQP broker {}", connectionParameters);
@@ -103,10 +99,10 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
   @Override
   public void send(Message message, boolean persistent) throws IOException {
-    checkNotNull(message, "message can't be null");
+    Objects.requireNonNull(message, "message can't be null");
 
     Optional<String> exchange = registry.getExchange(message.getClass());
-    checkArgument(exchange.isPresent(), "No exchange found for Message");
+    PreconditionUtils.checkArgument(exchange.isPresent(), "No exchange found for Message");
     String routingKey = message.getRoutingKey();
 
     send(message, exchange.get(), routingKey, persistent);
@@ -114,8 +110,8 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
   @Override
   public void send(Message message, String exchange) throws IOException {
-    checkNotNull(message, "message can't be null");
-    checkNotNull(exchange, "exchange can't be null");
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(exchange, "exchange can't be null");
 
     String routingKey = message.getRoutingKey();
     send(message, exchange, routingKey);
@@ -129,9 +125,9 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   @Override
   public void send(Object message, String exchange, String routingKey, boolean persistent)
       throws IOException {
-    checkNotNull(message, "message can't be null");
-    checkNotNull(exchange, "exchange can't be null");
-    checkNotNull(routingKey, "routingKey can't be null");
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(exchange, "exchange can't be null");
+    Objects.requireNonNull(routingKey, "routingKey can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(
@@ -166,9 +162,9 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   @Override
   public void replyToQueue(Object message, boolean persistent, String correlationId, String replyTo)
     throws IOException {
-    checkNotNull(message, "message can't be null");
-    checkNotNull(correlationId, "correlationId can't be null");
-    checkNotNull(replyTo, "replyTo can't be null");
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(correlationId, "correlationId can't be null");
+    Objects.requireNonNull(replyTo, "replyTo can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(
@@ -201,7 +197,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
                                  String correlationId)
     throws IOException, InterruptedException {
     Optional<String> exchange = registry.getExchange(message.getClass());
-    checkArgument(exchange.isPresent(), "No exchange found for Message");
+    PreconditionUtils.checkArgument(exchange.isPresent(), "No exchange found for Message");
     return sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId);
   }
 
@@ -209,10 +205,10 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   public <T> T sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
                                  String correlationId)
     throws IOException, InterruptedException {
-    checkNotNull(message, "message can't be null");
-    checkNotNull(exchange, "exchange can't be null");
-    checkNotNull(routingKey, "routingKey can't be null");
-    checkNotNull(correlationId, "correlationId can't be null");
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(exchange, "exchange can't be null");
+    Objects.requireNonNull(routingKey, "routingKey can't be null");
+    Objects.requireNonNull(correlationId, "correlationId can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(

@@ -15,10 +15,11 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.api.Message;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.common.base.Objects;
 
 /**
  * This message will be sent every time an entity in the Registry changes (which includes deletions
@@ -72,24 +73,19 @@ public class RegistryChangeMessage implements Message {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof RegistryChangeMessage)) {
-      return false;
-    }
-
-    RegistryChangeMessage other = (RegistryChangeMessage) obj;
-    return Objects.equal(this.changeType, other.changeType)
-        && Objects.equal(this.objectClass, other.objectClass)
-        && Objects.equal(this.oldObject, other.oldObject)
-        && Objects.equal(this.newObject, other.newObject);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    RegistryChangeMessage that = (RegistryChangeMessage) o;
+    return changeType == that.changeType
+        && Objects.equals(objectClass, that.objectClass)
+        && Objects.equals(oldObject, that.oldObject)
+        && Objects.equals(newObject, that.newObject);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(changeType, objectClass, oldObject, newObject);
+    return Objects.hash(changeType, objectClass, oldObject, newObject);
   }
 
   public enum ChangeType {

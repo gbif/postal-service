@@ -13,16 +13,14 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Message to send to request a new crawl of a dataset.
@@ -54,9 +52,9 @@ public class StartCrawlMessage implements DatasetBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("priority") Integer priority,
       @JsonProperty("platform") Platform platform) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.priority = priority;
-    this.platform = java.util.Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.platform = platform != null ? platform : Platform.ALL;
   }
 
   public StartCrawlMessage(UUID datasetUuid, int priority) {
@@ -93,29 +91,26 @@ public class StartCrawlMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof StartCrawlMessage)) {
-      return false;
-    }
-
-    final StartCrawlMessage other = (StartCrawlMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.priority, other.priority);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    StartCrawlMessage that = (StartCrawlMessage) o;
+    return Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(priority, that.priority)
+        && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, priority);
+    return Objects.hash(datasetUuid, priority, platform);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("datasetUuid", datasetUuid)
-        .add("priority", priority)
+    return new StringJoiner(", ", StartCrawlMessage.class.getSimpleName() + "[", "]")
+        .add("datasetUuid=" + datasetUuid)
+        .add("priority=" + priority)
+        .add("platform=" + platform)
         .toString();
   }
 

@@ -15,20 +15,17 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.FinishReason;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** We send this every time we finish a crawl. */
 public class PipelinesXmlMessage implements PipelineBasedMessage {
@@ -58,14 +55,15 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
       @JsonProperty("platform") Platform platform,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("isValidator") Boolean isValidator) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
+    PreconditionUtils.checkArgument(totalRecordCount >= 0, "totalRecordCount has to be greater than or equal to 0");
     this.totalRecordCount = totalRecordCount;
-    this.reason = checkNotNull(reason, "reason can't be null");
+    this.reason = Objects.requireNonNull(reason, "reason can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
-    this.platform = Optional.ofNullable(platform).orElse(Platform.ALL);
+    this.platform = platform != null ? platform : Platform.ALL;
     this.executionId = executionId;
     if (isValidator != null) {
       this.isValidator = isValidator;

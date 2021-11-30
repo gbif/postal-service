@@ -13,10 +13,11 @@
  */
 package org.gbif.common.messaging;
 
-import com.rabbitmq.client.ConnectionFactory;
+import org.gbif.utils.PreconditionUtils;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Objects;
+
+import com.rabbitmq.client.ConnectionFactory;
 
 /** Encapsulates all connection parameters necessary to connect to RabbitMQ. */
 public class ConnectionParameters {
@@ -34,17 +35,17 @@ public class ConnectionParameters {
       String password, // password
       String virtualHost // virtualhost
       ) {
-    this.host = checkNotNull(host, "host can't be null");
+    this.host = Objects.requireNonNull(host, "host can't be null");
     this.port = port;
-    this.username = checkNotNull(username, "username can't be null");
-    this.password = checkNotNull(password, "password can't be null");
-    this.virtualHost = checkNotNull(virtualHost, "virtualHost can't be null");
+    this.username = Objects.requireNonNull(username, "username can't be null");
+    this.password = Objects.requireNonNull(password, "password can't be null");
+    this.virtualHost = Objects.requireNonNull(virtualHost, "virtualHost can't be null");
 
-    checkArgument(!host.isEmpty(), "host can't be empty");
-    checkArgument(port > 0, "port has to be greater than zero");
-    checkArgument(!username.isEmpty(), "username can't be empty");
-    checkArgument(!password.isEmpty(), "password can't be empty");
-    checkArgument(!virtualHost.isEmpty(), "virtualHost can't be empty");
+    PreconditionUtils.checkArgument(!host.isEmpty(), "host can't be empty");
+    PreconditionUtils.checkArgument(port > 0, "port has to be greater than zero");
+    PreconditionUtils.checkArgument(!username.isEmpty(), "username can't be empty");
+    PreconditionUtils.checkArgument(!password.isEmpty(), "password can't be empty");
+    PreconditionUtils.checkArgument(!virtualHost.isEmpty(), "virtualHost can't be empty");
   }
 
   public String getHost() {

@@ -23,8 +23,6 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * A message to request an update to a DOIs metadata and target URL in DataCite. The DOI can be in
  * any current state (registered, reserved, deleted) or even yet unknown to DataCite.
@@ -48,14 +46,14 @@ public class ChangeDoiMessage implements Message {
       @JsonProperty("doi") DOI doi,
       @JsonProperty("metadata") String metadata,
       @JsonProperty("target") URI target) {
-    this.status = checkNotNull(status, "status can't be null");
-    this.doi = checkNotNull(doi, "doi can't be null");
+    this.status = Objects.requireNonNull(status, "status can't be null");
+    this.doi = Objects.requireNonNull(doi, "doi can't be null");
     if (status != DoiStatus.DELETED) {
-      checkNotNull(metadata, "metadata can't be null");
+      Objects.requireNonNull(metadata, "metadata can't be null");
     }
     this.metadata = metadata;
     if (status == DoiStatus.REGISTERED) {
-      checkNotNull(target, "target URI can't be null");
+      Objects.requireNonNull(target, "target URI can't be null");
     }
     this.target = target;
   }

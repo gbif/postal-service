@@ -14,20 +14,18 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * We send this every time a darwin core archive has been downloaded. This includes cases when the
@@ -54,9 +52,9 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
       @JsonProperty("modified") boolean modified,
       @JsonProperty("endpointType") EndpointType endpointType,
       @Nullable @JsonProperty("platform") Platform platform) {
-    this.datasetUuid = checkNotNull(datasetUuid, "datasetUuid can't be null");
-    this.source = checkNotNull(source, "source can't be null");
-    checkArgument(attempt > 0, "attempt has to be greater than 0");
+    this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    this.source = Objects.requireNonNull(source, "source can't be null");
+   PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.lastModified = lastModified;
     this.modified = modified;
@@ -107,37 +105,34 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof DwcaDownloadFinishedMessage)) {
-      return false;
-    }
-
-    DwcaDownloadFinishedMessage other = (DwcaDownloadFinishedMessage) obj;
-    return Objects.equal(this.datasetUuid, other.datasetUuid)
-        && Objects.equal(this.source, other.source)
-        && Objects.equal(this.attempt, other.attempt)
-        && Objects.equal(this.lastModified, other.lastModified)
-        && Objects.equal(this.modified, other.modified)
-        && Objects.equal(this.endpointType, other.endpointType);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    DwcaDownloadFinishedMessage that = (DwcaDownloadFinishedMessage) o;
+    return attempt == that.attempt
+        && modified == that.modified
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(source, that.source)
+        && Objects.equals(lastModified, that.lastModified)
+        && endpointType == that.endpointType
+        && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(datasetUuid, source, attempt, lastModified, modified, endpointType);
+    return Objects.hash(datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
   }
 
   @Override
   public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("datasetUuid", datasetUuid)
-        .add("source", source)
-        .add("attempt", attempt)
-        .add("lastModified", lastModified)
-        .add("modified", modified)
-        .add("endpointType", endpointType)
+    return new StringJoiner(", ", DwcaDownloadFinishedMessage.class.getSimpleName() + "[", "]")
+        .add("datasetUuid=" + datasetUuid)
+        .add("source=" + source)
+        .add("attempt=" + attempt)
+        .add("lastModified=" + lastModified)
+        .add("modified=" + modified)
+        .add("endpointType=" + endpointType)
+        .add("platform=" + platform)
         .toString();
   }
 }
