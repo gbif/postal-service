@@ -13,7 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.util.PreconditionUtils;
+import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
 import java.util.Objects;

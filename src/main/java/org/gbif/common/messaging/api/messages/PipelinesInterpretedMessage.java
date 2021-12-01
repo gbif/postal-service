@@ -13,9 +13,9 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.util.PreconditionUtils;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
+import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
 import java.util.Collections;
