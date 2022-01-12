@@ -142,49 +142,72 @@ public class DefaultMessageRegistry implements MessageRegistry {
     MESSAGE_TO_EXCHANGE_MAPPING = Collections.unmodifiableMap(messageToExchangeMappingInternal);
 
     Map<Class<? extends Message>, String> messageToRoutingKeyMapping = new HashMap<>();
-    messageToRoutingKeyMapping.put(AbcdaDownloadFinishedMessage.class, AbcdaDownloadFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        AbcdaDownloadFinishedMessage.class, AbcdaDownloadFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(CrawlErrorMessage.class, "crawl.error");
     messageToRoutingKeyMapping.put(CrawlFinishedMessage.class, CrawlFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(CrawlStartedMessage.class, "crawl.started");
     messageToRoutingKeyMapping.put(CrawlRequestMessage.class, "crawl.request");
     messageToRoutingKeyMapping.put(CrawlResponseMessage.class, "crawl.response");
-    messageToRoutingKeyMapping.put(DwcaDownloadFinishedMessage.class, DwcaDownloadFinishedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(DwcaMetasyncFinishedMessage.class, DwcaMetasyncFinishedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(DwcaValidationFinishedMessage.class, DwcaValidationFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        DwcaDownloadFinishedMessage.class, DwcaDownloadFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        DwcaMetasyncFinishedMessage.class, DwcaMetasyncFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        DwcaValidationFinishedMessage.class, DwcaValidationFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(OccurrenceFragmentedMessage.class, "crawler.fragment.new");
     messageToRoutingKeyMapping.put(FragmentPersistedMessage.class, "occurrence.fragment.persisted");
     messageToRoutingKeyMapping.put(VerbatimPersistedMessage.class, "occurrence.verbatim.persisted");
-    messageToRoutingKeyMapping.put(OccurrenceMutatedMessage.class, "occurrence.interpreted.mutated");
+    messageToRoutingKeyMapping.put(
+        OccurrenceMutatedMessage.class, "occurrence.interpreted.mutated");
     messageToRoutingKeyMapping.put(DeleteOccurrenceMessage.class, "occurrence.delete.occurrence");
-    messageToRoutingKeyMapping.put(DeleteDataResourceOccurrencesMessage.class, "occurrence.delete.dataresource");
-    messageToRoutingKeyMapping.put(DeleteDatasetOccurrencesMessage.class, "occurrence.delete.dataset");
+    messageToRoutingKeyMapping.put(
+        DeleteDataResourceOccurrencesMessage.class, "occurrence.delete.dataresource");
+    messageToRoutingKeyMapping.put(
+        DeleteDatasetOccurrencesMessage.class, "occurrence.delete.dataset");
     messageToRoutingKeyMapping.put(ParseFragmentMessage.class, "occurrence.parse.occurrence");
     messageToRoutingKeyMapping.put(ParseDatasetMessage.class, "occurrence.parse.dataset");
-    messageToRoutingKeyMapping.put(InterpretVerbatimMessage.class, "occurrence.interpret.occurrence");
+    messageToRoutingKeyMapping.put(
+        InterpretVerbatimMessage.class, "occurrence.interpret.occurrence");
     messageToRoutingKeyMapping.put(InterpretDatasetMessage.class, "occurrence.interpret.dataset");
     messageToRoutingKeyMapping.put(RegistryChangeMessage.class, "registry.change.#");
     messageToRoutingKeyMapping.put(StartCrawlMessage.class, "crawl.start");
     messageToRoutingKeyMapping.put(StartMetasyncMessage.class, StartMetasyncMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(ChecklistNormalizedMessage.class, ChecklistNormalizedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(ChecklistSyncedMessage.class, ChecklistSyncedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(ChecklistAnalyzedMessage.class, ChecklistAnalyzedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        ChecklistNormalizedMessage.class, ChecklistNormalizedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        ChecklistSyncedMessage.class, ChecklistSyncedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        ChecklistAnalyzedMessage.class, ChecklistAnalyzedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        BackboneChangedMessage.class, BackboneChangedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesDwcaMessage.class, PipelinesDwcaMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesXmlMessage.class, PipelinesXmlMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesAbcdMessage.class, PipelinesAbcdMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesFragmenterMessage.class, PipelinesFragmenterMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesArchiveValidatorMessage.class, PipelinesArchiveValidatorMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesChecklistValidatorMessage.class, PipelinesChecklistValidatorMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesMetricsCollectedMessage.class, PipelinesMetricsCollectedMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesCleanerMessage.class, PipelinesCleanerMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesFragmenterMessage.class, PipelinesFragmenterMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesArchiveValidatorMessage.class, PipelinesArchiveValidatorMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesChecklistValidatorMessage.class, PipelinesChecklistValidatorMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesMetricsCollectedMessage.class, PipelinesMetricsCollectedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesCleanerMessage.class, PipelinesCleanerMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY);
     MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);
   }
 

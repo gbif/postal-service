@@ -54,7 +54,7 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
       @Nullable @JsonProperty("platform") Platform platform) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.source = Objects.requireNonNull(source, "source can't be null");
-   PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.lastModified = lastModified;
     this.modified = modified;
@@ -120,7 +120,8 @@ public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
+    return Objects.hash(
+        datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
   }
 
   @Override

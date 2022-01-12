@@ -85,7 +85,8 @@ public class MessageListener implements AutoCloseable {
     Objects.requireNonNull(connectionParameters, "connectionParameters can't be null");
     this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
     this.registry = Objects.requireNonNull(registry, "registry can't be null");
-    PreconditionUtils.checkArgument(prefetchCount >= 1, "prefetchCount needs to be greater than or equal to 1");
+    PreconditionUtils.checkArgument(
+        prefetchCount >= 1, "prefetchCount needs to be greater than or equal to 1");
     this.prefetchCount = prefetchCount;
 
     this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -112,7 +113,7 @@ public class MessageListener implements AutoCloseable {
     Objects.requireNonNull(callback, "callback can't be null");
 
     Optional<String> routingKey = registry.getGenericRoutingKey(callback.getMessageClass());
-   PreconditionUtils.checkArgument(routingKey.isPresent(), "The message needs to be registered");
+    PreconditionUtils.checkArgument(routingKey.isPresent(), "The message needs to be registered");
 
     listen(queue, routingKey.get(), numberOfThreads, callback);
   }
@@ -134,7 +135,7 @@ public class MessageListener implements AutoCloseable {
     Objects.requireNonNull(callback, "callback can't be null");
 
     Optional<String> exchange = registry.getExchange(callback.getMessageClass());
-   PreconditionUtils.checkArgument(exchange.isPresent(), "The message needs to be registered");
+    PreconditionUtils.checkArgument(exchange.isPresent(), "The message needs to be registered");
 
     listen(queue, routingKey, exchange.get(), numberOfThreads, callback);
   }
@@ -165,7 +166,8 @@ public class MessageListener implements AutoCloseable {
     Objects.requireNonNull(queue, "queue can't be null");
     Objects.requireNonNull(routingKey, "routingKey can't be null");
     Objects.requireNonNull(callback, "callback can't be empty");
-   PreconditionUtils.checkArgument(numberOfThreads >= 1, "numberOfThreads needs to be greater than or equal to 1");
+    PreconditionUtils.checkArgument(
+        numberOfThreads >= 1, "numberOfThreads needs to be greater than or equal to 1");
 
     Connection connection =
         connectionFactory.newConnection(

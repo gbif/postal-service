@@ -32,7 +32,7 @@ public class InterpretVerbatimMessage implements Message {
 
   @JsonCreator
   public InterpretVerbatimMessage(@JsonProperty("occurrenceKey") long occurrenceKey) {
-   PreconditionUtils.checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
+    PreconditionUtils.checkArgument(occurrenceKey > 0, "occurrenceKey must be greater than 0");
     this.occurrenceKey = occurrenceKey;
   }
 

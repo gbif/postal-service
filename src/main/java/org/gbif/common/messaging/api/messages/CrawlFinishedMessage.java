@@ -47,7 +47,8 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    PreconditionUtils.checkArgument(totalRecordCount >= 0, "totalRecordCount has to be greater than or equal to 0");
+    PreconditionUtils.checkArgument(
+        totalRecordCount >= 0, "totalRecordCount has to be greater than or equal to 0");
     this.totalRecordCount = totalRecordCount;
     this.reason = Objects.requireNonNull(reason, "reason can't be null");
     this.endpointType = endpointType;

@@ -58,7 +58,8 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
     PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.constituents = Objects.requireNonNull(constituents, "constituents can't be null");
-    this.validationReport = Objects.requireNonNull(validationReport, "validationReport can't be null");
+    this.validationReport =
+        Objects.requireNonNull(validationReport, "validationReport can't be null");
     this.platform = platform != null ? platform : Platform.ALL;
   }
 
@@ -124,7 +125,8 @@ public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, datasetType, source, attempt, constituents, validationReport, platform);
+    return Objects.hash(
+        datasetUuid, datasetType, source, attempt, constituents, validationReport, platform);
   }
 
   @Override

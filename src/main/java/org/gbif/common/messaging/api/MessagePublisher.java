@@ -64,7 +64,6 @@ public interface MessagePublisher {
   void send(Object message, String exchange, String routingKey, boolean persistent)
       throws IOException;
 
-
   /**
    * Sends a message to a reply queue. Tries to reuse a channel and only opens a new one if the old one was closed.
    *
@@ -74,7 +73,7 @@ public interface MessagePublisher {
    * @param replyTo callback queue
    */
   void replyToQueue(Object message, boolean persistent, String correlationId, String replyTo)
-    throws IOException;
+      throws IOException;
 
   /**
    * Sends and wait for reply of an optionally persistent message to the given exchange with the given routing key. Tries
@@ -87,8 +86,8 @@ public interface MessagePublisher {
    * @param replyTo callback queue
    * @param consumer reply message consumer
    */
-  <T> T sendAndReceive(Message message, String routingKey, boolean persistent,
-                      String correlationId) throws IOException, InterruptedException;
+  <T> T sendAndReceive(Message message, String routingKey, boolean persistent, String correlationId)
+      throws IOException, InterruptedException;
   /**
    * Sends and wait for reply of an optionally persistent message to the given exchange with the given routing key. Tries
    * to reuse a channel and only opens a new one if the old one was closed.
@@ -101,8 +100,9 @@ public interface MessagePublisher {
    * @param replyTo callback queue
    * @param consumer reply message consumer
    */
-  <T> T sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
-                                 String correlationId) throws IOException, InterruptedException;
+  <T> T sendAndReceive(
+      Object message, String exchange, String routingKey, boolean persistent, String correlationId)
+      throws IOException, InterruptedException;
 
   /** Closes any resources used. */
   void close();

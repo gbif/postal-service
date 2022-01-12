@@ -102,7 +102,8 @@ public class OccurrenceFragmentedMessage implements DatasetBasedMessage {
     return attempt == that.attempt
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Arrays.equals(fragment, that.fragment)
-        && schemaType == that.schemaType && endpointType == that.endpointType
+        && schemaType == that.schemaType
+        && endpointType == that.endpointType
         && Objects.equals(validationReport, that.validationReport);
   }
 

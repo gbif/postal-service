@@ -124,7 +124,7 @@ class MessageConsumer<T> extends DefaultConsumer {
     // Handle the message and send a Nack if the Callback throws an Exception
     try {
       if (object instanceof RpcMessage) {
-        setRpcData((RpcMessage)object, properties);
+        setRpcData((RpcMessage) object, properties);
       }
       callback.handleMessage(object);
     } catch (Exception e) {

@@ -84,15 +84,16 @@ public class DeleteOccurrenceMessage implements Message {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     DeleteOccurrenceMessage that = (DeleteOccurrenceMessage) o;
-    return occurrenceKey == that.occurrenceKey 
-        && deletionReason == that.deletionReason 
+    return occurrenceKey == that.occurrenceKey
+        && deletionReason == that.deletionReason
         && Objects.equals(crawlAttemptLastSeen, that.crawlAttemptLastSeen)
         && Objects.equals(latestCrawlAttemptForDataset, that.latestCrawlAttemptForDataset);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(occurrenceKey, deletionReason, crawlAttemptLastSeen, latestCrawlAttemptForDataset);
+    return Objects.hash(
+        occurrenceKey, deletionReason, crawlAttemptLastSeen, latestCrawlAttemptForDataset);
   }
 
   @Override

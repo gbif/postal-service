@@ -87,7 +87,10 @@ public class DefaultMessagePublisherTest {
 
     verify(channel)
         .basicPublish(
-            eq(TEST_EXCHANGE), eq("foobar"), refEq(MessageProperties.TEXT_PLAIN), any(byte[].class));
+            eq(TEST_EXCHANGE),
+            eq("foobar"),
+            refEq(MessageProperties.TEXT_PLAIN),
+            any(byte[].class));
   }
 
   @Test

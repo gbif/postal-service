@@ -161,22 +161,23 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
   @Override
   public void replyToQueue(Object message, boolean persistent, String correlationId, String replyTo)
-    throws IOException {
+      throws IOException {
     Objects.requireNonNull(message, "message can't be null");
     Objects.requireNonNull(correlationId, "correlationId can't be null");
     Objects.requireNonNull(replyTo, "replyTo can't be null");
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(
-      "Sending message of type [{}] to replyTo [{}] using correlationId [{}]",
-      message.getClass().getSimpleName(),
-      replyTo,
-      correlationId);
+        "Sending message of type [{}] to replyTo [{}] using correlationId [{}]",
+        message.getClass().getSimpleName(),
+        replyTo,
+        correlationId);
 
     for (int attempt = 1; attempt <= NUMBER_OF_RETRIES; attempt++) {
       Channel channel = provideChannel();
       try {
-        AMQP.BasicProperties properties = getProperties(persistent).builder().correlationId(correlationId).build();
+        AMQP.BasicProperties properties =
+            getProperties(persistent).builder().correlationId(correlationId).build();
         channel.basicPublish("", replyTo, properties, data);
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
         // exception occurred
@@ -193,18 +194,18 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   }
 
   @Override
-  public <T> T sendAndReceive(Message message, String routingKey, boolean persistent,
-                                 String correlationId)
-    throws IOException, InterruptedException {
+  public <T> T sendAndReceive(
+      Message message, String routingKey, boolean persistent, String correlationId)
+      throws IOException, InterruptedException {
     Optional<String> exchange = registry.getExchange(message.getClass());
     PreconditionUtils.checkArgument(exchange.isPresent(), "No exchange found for Message");
     return sendAndReceive(message, exchange.get(), routingKey, persistent, correlationId);
   }
 
   @Override
-  public <T> T sendAndReceive(Object message, String exchange, String routingKey, boolean persistent,
-                                 String correlationId)
-    throws IOException, InterruptedException {
+  public <T> T sendAndReceive(
+      Object message, String exchange, String routingKey, boolean persistent, String correlationId)
+      throws IOException, InterruptedException {
     Objects.requireNonNull(message, "message can't be null");
     Objects.requireNonNull(exchange, "exchange can't be null");
     Objects.requireNonNull(routingKey, "routingKey can't be null");
@@ -212,10 +213,10 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(
-      "Sending message of type [{}] to exchange [{}] using routing key [{}]",
-      message.getClass().getSimpleName(),
-      exchange,
-      routingKey);
+        "Sending message of type [{}] to exchange [{}] using routing key [{}]",
+        message.getClass().getSimpleName(),
+        exchange,
+        routingKey);
 
     for (int attempt = 1; attempt <= NUMBER_OF_RETRIES; attempt++) {
       Channel channel = provideChannel();
@@ -225,18 +226,23 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         properties.correlationId(correlationId).replyTo(replyTo);
         channel.basicPublish(exchange, routingKey, properties.build(), data);
         final BlockingQueue<byte[]> response = new ArrayBlockingQueue<>(1);
-        String cTag = channel.basicConsume(replyTo, true, new DefaultConsumer(channel) {
-                               @Override
-                               public void handleDelivery(
-                                 String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body
-                               ) throws IOException {
-                                 if (properties.getCorrelationId().equals(correlationId)) {
-                                   response.offer(body);
-                                 }
-                               }
-                             }
-
-        );
+        String cTag =
+            channel.basicConsume(
+                replyTo,
+                true,
+                new DefaultConsumer(channel) {
+                  @Override
+                  public void handleDelivery(
+                      String consumerTag,
+                      Envelope envelope,
+                      AMQP.BasicProperties properties,
+                      byte[] body)
+                      throws IOException {
+                    if (properties.getCorrelationId().equals(correlationId)) {
+                      response.offer(body);
+                    }
+                  }
+                });
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
         // exception occurred
         T result = mapper.readValue(response.take(), new TypeReference<T>() {});
@@ -264,7 +270,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   }
 
   private AMQP.BasicProperties getProperties(boolean persistent) {
-    return persistent? MessageProperties.PERSISTENT_TEXT_PLAIN : MessageProperties.TEXT_PLAIN;
+    return persistent ? MessageProperties.PERSISTENT_TEXT_PLAIN : MessageProperties.TEXT_PLAIN;
   }
 
   /**

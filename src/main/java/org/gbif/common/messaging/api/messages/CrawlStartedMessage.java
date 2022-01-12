@@ -40,7 +40,7 @@ public class CrawlStartedMessage implements DatasetBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("targetUrl") URI targetUrl,
       @JsonProperty("status") String status) {
-   PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
 
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");

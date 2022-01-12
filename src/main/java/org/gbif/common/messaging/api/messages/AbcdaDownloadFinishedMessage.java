@@ -121,7 +121,8 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
+    return Objects.hash(
+        datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
   }
 
   @Override

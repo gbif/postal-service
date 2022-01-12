@@ -56,7 +56,8 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     this.source = Objects.requireNonNull(source, "source can't be null");
     PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.validationReport = Objects.requireNonNull(validationReport, "validationReport can't be null");
+    this.validationReport =
+        Objects.requireNonNull(validationReport, "validationReport can't be null");
     this.endpointType = endpointType;
     this.platform = platform != null ? platform : Platform.ALL;
   }
@@ -105,18 +106,19 @@ public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     DwcaValidationFinishedMessage that = (DwcaValidationFinishedMessage) o;
-    return attempt == that.attempt 
-        && Objects.equals(datasetUuid, that.datasetUuid) 
-        && datasetType == that.datasetType 
-        && Objects.equals(source, that.source) 
-        && Objects.equals(validationReport, that.validationReport) 
-        && endpointType == that.endpointType 
+    return attempt == that.attempt
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && datasetType == that.datasetType
+        && Objects.equals(source, that.source)
+        && Objects.equals(validationReport, that.validationReport)
+        && endpointType == that.endpointType
         && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, datasetType, source, attempt, validationReport, endpointType, platform);
+    return Objects.hash(
+        datasetUuid, datasetType, source, attempt, validationReport, endpointType, platform);
   }
 
   @Override

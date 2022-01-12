@@ -64,12 +64,14 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
     switch (status) {
       case NEW:
         Objects.requireNonNull(newOccurrence, "newOccurrence can't be null");
-        PreconditionUtils.checkArgument(crawlAttempt != null && crawlAttempt > 0, "attempt must be greater than 0");
+        PreconditionUtils.checkArgument(
+            crawlAttempt != null && crawlAttempt > 0, "attempt must be greater than 0");
         break;
       case UPDATED:
         Objects.requireNonNull(newOccurrence, "newOccurrence can't be null for updates");
         Objects.requireNonNull(oldOccurrence, "oldOccurrence can't be null for updates");
-        PreconditionUtils.checkArgument(crawlAttempt != null && crawlAttempt > 0, "attempt must be greater than 0");
+        PreconditionUtils.checkArgument(
+            crawlAttempt != null && crawlAttempt > 0, "attempt must be greater than 0");
         break;
       case DELETED:
         Objects.requireNonNull(oldOccurrence, "oldOccurrence can't be null for deletes");
@@ -192,8 +194,15 @@ public class OccurrenceMutatedMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, crawlAttempt, status, oldOccurrence, newOccurrence, deletionReason,
-        crawlAttemptLastSeen, latestCrawlAttemptForDataset);
+    return Objects.hash(
+        datasetUuid,
+        crawlAttempt,
+        status,
+        oldOccurrence,
+        newOccurrence,
+        deletionReason,
+        crawlAttemptLastSeen,
+        latestCrawlAttemptForDataset);
   }
 
   @Override

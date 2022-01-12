@@ -23,14 +23,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the dataset mutator service to send PipelinesArchiveValidatorMessage for
  * each occurrence in the dataset.
  */
-public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidatorMessage implements RpcMessage{
+public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidatorMessage
+    implements RpcMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.checklist.validator";
 
   private String correlationId;
 
   private String replyTo;
-
 
   public PipelinesChecklistValidatorMessage() {}
 

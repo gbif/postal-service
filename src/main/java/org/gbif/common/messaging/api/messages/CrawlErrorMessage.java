@@ -55,11 +55,11 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
       @Nullable @JsonProperty("throwable") Throwable throwable) {
     this.duration = duration;
     this.datasetUuid = Objects.requireNonNull(datasetUuid);
-   PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
+    PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-   PreconditionUtils.checkArgument(retry > 0, "retry has to be greater than 0");
+    PreconditionUtils.checkArgument(retry > 0, "retry has to be greater than 0");
     this.retry = retry;
-   PreconditionUtils.checkArgument(offset >= 0, "offset has to be greater than or equal to 0");
+    PreconditionUtils.checkArgument(offset >= 0, "offset has to be greater than or equal to 0");
     this.offset = offset;
     this.status = Objects.requireNonNull(status);
     this.errorType = Objects.requireNonNull(errorType);

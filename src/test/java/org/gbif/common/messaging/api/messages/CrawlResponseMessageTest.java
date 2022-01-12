@@ -33,14 +33,7 @@ public class CrawlResponseMessageTest {
   public void testSerDe() throws IOException {
     CrawlResponseMessage message =
         new CrawlResponseMessage(
-            UUID.randomUUID(),
-            1,
-            1,
-            new byte[] {1, 2, 3},
-            1L,
-            1,
-            "status",
-            Platform.ALL);
+            UUID.randomUUID(), 1, 1, new byte[] {1, 2, 3}, 1L, 1, "status", Platform.ALL);
     Util.testSerDe(message, CrawlResponseMessage.class);
   }
 
@@ -48,14 +41,7 @@ public class CrawlResponseMessageTest {
   public void testSerDeNoRecordCount() throws IOException {
     CrawlResponseMessage message =
         new CrawlResponseMessage(
-            UUID.randomUUID(),
-            1,
-            1,
-            new byte[] {1, 2, 3},
-            1L,
-            null,
-            "status",
-            Platform.ALL);
+            UUID.randomUUID(), 1, 1, new byte[] {1, 2, 3}, 1L, null, "status", Platform.ALL);
     Util.testSerDe(message, CrawlResponseMessage.class);
   }
 

@@ -67,7 +67,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.source = Objects.requireNonNull(source, "source can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.validationReport = Objects.requireNonNull(validationReport, "validationReport can't be null");
+    this.validationReport =
+        Objects.requireNonNull(validationReport, "validationReport can't be null");
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
     this.platform = platform != null ? platform : Platform.ALL;

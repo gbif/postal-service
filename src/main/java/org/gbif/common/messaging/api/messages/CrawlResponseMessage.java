@@ -133,7 +133,8 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
 
   @Override
   public int hashCode() {
-    int result = Objects.hash(datasetUuid, attempt, requestTry, duration, recordCount, status, platform);
+    int result =
+        Objects.hash(datasetUuid, attempt, requestTry, duration, recordCount, status, platform);
     result = 31 * result + Arrays.hashCode(response);
     return result;
   }
