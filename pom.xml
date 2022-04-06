@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.gbif</groupId>
     <artifactId>motherpom</artifactId>
-    <version>55</version>
+    <version>56</version>
   </parent>
 
   <groupId>org.gbif.common</groupId>
@@ -28,8 +28,8 @@
 
     <amqp-client.version>3.1.4</amqp-client.version>
     <commons-io.version>2.7</commons-io.version>
-    <gbif-api.version>0.155</gbif-api.version>
-    <gbif-common.version>0.52</gbif-common.version>
+    <gbif-api.version>0.166</gbif-api.version>
+    <gbif-common.version>0.53</gbif-common.version>
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.2</jsr305.version>
