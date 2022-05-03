@@ -13,6 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private String resetPrefix;
   private Long executionId;
   private boolean isValidator = false;
+  private DatasetType datasetType;
 
   public PipelinesVerbatimMessage() {}
 
@@ -59,7 +61,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("isValidator") Boolean isValidator,
+      @JsonProperty("datasetType") DatasetType datasetType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = Objects.requireNonNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -73,6 +76,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     if (isValidator != null) {
       this.isValidator = isValidator;
     }
+    this.datasetType = datasetType;
   }
 
   /** @return datasetUUID for the converted dataset */
@@ -188,6 +192,14 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public DatasetType getDatasetType() {
+    return datasetType;
+  }
+
+  public void setDatasetType(DatasetType datasetType) {
+    this.datasetType = datasetType;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -212,7 +224,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(resetPrefix, that.resetPrefix)
         && Objects.equals(executionId, that.executionId)
-        && isValidator == that.isValidator;
+        && isValidator == that.isValidator
+        && datasetType == that.datasetType;
   }
 
   @Override
@@ -228,7 +241,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         validationResult,
         resetPrefix,
         executionId,
-        isValidator);
+        isValidator,
+        datasetType);
   }
 
   @Override

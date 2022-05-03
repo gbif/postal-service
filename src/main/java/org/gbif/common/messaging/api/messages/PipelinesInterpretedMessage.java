@@ -13,6 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
 import org.gbif.utils.PreconditionUtils;
@@ -48,6 +49,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private ValidationResult validationResult;
   private Set<String> interpretTypes;
   private boolean isValidator = false;
+  private DatasetType datasetType;
 
   public PipelinesInterpretedMessage() {}
 
@@ -65,7 +67,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("isValidator") Boolean isValidator,
+      @JsonProperty("datasetType") DatasetType datasetType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -82,6 +85,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     if (isValidator != null) {
       this.isValidator = isValidator;
     }
+    this.datasetType = datasetType;
   }
 
   @Override
@@ -212,6 +216,14 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public DatasetType getDatasetType() {
+    return datasetType;
+  }
+
+  public void setDatasetType(DatasetType datasetType) {
+    this.datasetType = datasetType;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -238,7 +250,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(numberOfRecords, that.numberOfRecords)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
-        && isValidator == that.isValidator;
+        && isValidator == that.isValidator
+        && datasetType == that.datasetType;
   }
 
   @Override
@@ -256,7 +269,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         endpointType,
         validationResult,
         interpretTypes,
-        isValidator);
+        isValidator,
+        datasetType);
   }
 
   @Override
