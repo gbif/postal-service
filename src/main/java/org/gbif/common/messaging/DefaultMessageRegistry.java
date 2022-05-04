@@ -15,49 +15,7 @@ package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
-import org.gbif.common.messaging.api.messages.AbcdaDownloadFinishedMessage;
-import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
-import org.gbif.common.messaging.api.messages.ChangeDoiMessage;
-import org.gbif.common.messaging.api.messages.ChecklistAnalyzedMessage;
-import org.gbif.common.messaging.api.messages.ChecklistNormalizedMessage;
-import org.gbif.common.messaging.api.messages.ChecklistSyncedMessage;
-import org.gbif.common.messaging.api.messages.CrawlErrorMessage;
-import org.gbif.common.messaging.api.messages.CrawlFinishedMessage;
-import org.gbif.common.messaging.api.messages.CrawlRequestMessage;
-import org.gbif.common.messaging.api.messages.CrawlResponseMessage;
-import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
-import org.gbif.common.messaging.api.messages.DeleteDataResourceOccurrencesMessage;
-import org.gbif.common.messaging.api.messages.DeleteDatasetOccurrencesMessage;
-import org.gbif.common.messaging.api.messages.DeleteOccurrenceMessage;
-import org.gbif.common.messaging.api.messages.DwcaDownloadFinishedMessage;
-import org.gbif.common.messaging.api.messages.DwcaMetasyncFinishedMessage;
-import org.gbif.common.messaging.api.messages.DwcaValidationFinishedMessage;
-import org.gbif.common.messaging.api.messages.FragmentPersistedMessage;
-import org.gbif.common.messaging.api.messages.InterpretDatasetMessage;
-import org.gbif.common.messaging.api.messages.InterpretVerbatimMessage;
-import org.gbif.common.messaging.api.messages.MatchDatasetMessage;
-import org.gbif.common.messaging.api.messages.OccurrenceFragmentedMessage;
-import org.gbif.common.messaging.api.messages.OccurrenceMutatedMessage;
-import org.gbif.common.messaging.api.messages.ParseDatasetMessage;
-import org.gbif.common.messaging.api.messages.ParseFragmentMessage;
-import org.gbif.common.messaging.api.messages.PipelinesAbcdMessage;
-import org.gbif.common.messaging.api.messages.PipelinesArchiveValidatorMessage;
-import org.gbif.common.messaging.api.messages.PipelinesBalancerMessage;
-import org.gbif.common.messaging.api.messages.PipelinesChecklistValidatorMessage;
-import org.gbif.common.messaging.api.messages.PipelinesCleanerMessage;
-import org.gbif.common.messaging.api.messages.PipelinesDwcaMessage;
-import org.gbif.common.messaging.api.messages.PipelinesFragmenterMessage;
-import org.gbif.common.messaging.api.messages.PipelinesHdfsViewBuiltMessage;
-import org.gbif.common.messaging.api.messages.PipelinesIndexedMessage;
-import org.gbif.common.messaging.api.messages.PipelinesInterpretedMessage;
-import org.gbif.common.messaging.api.messages.PipelinesMetricsCollectedMessage;
-import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage;
-import org.gbif.common.messaging.api.messages.PipelinesXmlMessage;
-import org.gbif.common.messaging.api.messages.RegistryChangeMessage;
-import org.gbif.common.messaging.api.messages.StartCrawlMessage;
-import org.gbif.common.messaging.api.messages.StartMetasyncMessage;
-import org.gbif.common.messaging.api.messages.VerbatimPersistedMessage;
-import org.gbif.common.messaging.api.messages.VocabularyReleasedMessage;
+import org.gbif.common.messaging.api.messages.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -138,6 +96,9 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(PipelinesChecklistValidatorMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesMetricsCollectedMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesCleanerMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesEventsMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesEventsInterpretedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesEventsIndexedMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(VocabularyReleasedMessage.class, "vocabulary");
     MESSAGE_TO_EXCHANGE_MAPPING = Collections.unmodifiableMap(messageToExchangeMappingInternal);
 
@@ -208,6 +169,12 @@ public class DefaultMessageRegistry implements MessageRegistry {
         PipelinesCleanerMessage.class, PipelinesCleanerMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         VocabularyReleasedMessage.class, VocabularyReleasedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesEventsMessage.class, PipelinesEventsMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesEventsInterpretedMessage.class, PipelinesEventsInterpretedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesEventsIndexedMessage.class, PipelinesEventsIndexedMessage.ROUTING_KEY);
     MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);
   }
 
