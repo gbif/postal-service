@@ -52,8 +52,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("endpointType") EndpointType endpointType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;

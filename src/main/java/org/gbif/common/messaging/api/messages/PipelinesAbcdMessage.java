@@ -27,6 +27,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_ABCD_TO_VERBATIM;
+
 /**
  * We send this every time an ABCD archive has been downloaded. This includes cases when the archive
  * hasn't been modified since we last downloaded it.
@@ -42,7 +44,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private EndpointType endpointType;
   private Long executionId;
-  private boolean isValidator = false;
 
   @JsonCreator
   public PipelinesAbcdMessage(
@@ -52,8 +53,7 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
       @JsonProperty("modified") boolean modified,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.source = Objects.requireNonNull(source, "source can't be null");
     PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -62,9 +62,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
     this.executionId = executionId;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   /** @return dataset uuid */
@@ -108,8 +105,8 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
+    if (pipelineSteps.contains(VALIDATOR_ABCD_TO_VERBATIM.name())) {
+      key = key + ".validator";
     }
     return key;
   }
@@ -144,15 +141,6 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public boolean isValidator() {
-    return isValidator;
-  }
-
-  public PipelinesAbcdMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -172,14 +160,13 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(source, that.source)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && endpointType == that.endpointType
-        && isValidator == that.isValidator;
+        && endpointType == that.endpointType;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid, source, attempt, modified, pipelineSteps, endpointType, isValidator);
+        datasetUuid, source, attempt, modified, pipelineSteps, endpointType);
   }
 
   @Override
