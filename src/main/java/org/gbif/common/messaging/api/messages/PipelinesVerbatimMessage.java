@@ -25,6 +25,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
+import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
+
 /**
  * Message is published when the conversion from of dataset from various formats(DwC or Xml) to
  * avro(ExtendedRecord) is done.
@@ -43,7 +46,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private ValidationResult validationResult;
   private String resetPrefix;
   private Long executionId;
-  private boolean isValidator = false;
 
   public PipelinesVerbatimMessage() {}
 
@@ -58,8 +60,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("extraPath") String extraPath,
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = Objects.requireNonNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -70,9 +71,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.validationResult = validationResult;
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   /** @return datasetUUID for the converted dataset */
@@ -105,8 +103,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
+    if (pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
+      key = key + ".validator";
+    }
+    if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
+      key = key + ".identifier";
     }
     if (runner != null && !runner.isEmpty()) {
       key = key + "." + runner.toLowerCase();
@@ -179,15 +180,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public boolean isValidator() {
-    return isValidator;
-  }
-
-  public PipelinesVerbatimMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -211,8 +203,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         && Objects.equals(extraPath, that.extraPath)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(executionId, that.executionId)
-        && isValidator == that.isValidator;
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
@@ -227,8 +218,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         extraPath,
         validationResult,
         resetPrefix,
-        executionId,
-        isValidator);
+        executionId);
   }
 
   @Override

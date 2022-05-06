@@ -26,6 +26,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_COLLECT_METRICS;
+
 /**
  * This message instructs the dataset mutator service to send IndexDatasetMessage for each
  * occurrence in the dataset.
@@ -40,7 +42,6 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   private String runner;
   private Long executionId;
   private EndpointType endpointType;
-  private boolean isValidator = false;
 
   public PipelinesIndexedMessage() {}
 
@@ -60,9 +61,6 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     this.runner = runner;
     this.executionId = executionId;
     this.endpointType = endpointType;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   @Override
@@ -88,8 +86,8 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
+    if (pipelineSteps.contains(VALIDATOR_COLLECT_METRICS.name())) {
+      key = key + ".validator";
     }
     if (runner != null && !runner.isEmpty()) {
       key = key + "." + runner.toLowerCase();
@@ -121,15 +119,6 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public boolean isValidator() {
-    return isValidator;
-  }
-
-  public PipelinesIndexedMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -158,14 +147,13 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(runner, that.runner)
         && Objects.equals(executionId, that.executionId)
-        && Objects.equals(endpointType, that.endpointType)
-        && isValidator == that.isValidator;
+        && Objects.equals(endpointType, that.endpointType);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid, attempt, pipelineSteps, runner, executionId, endpointType, isValidator);
+        datasetUuid, attempt, pipelineSteps, runner, executionId, endpointType);
   }
 
   @Override
