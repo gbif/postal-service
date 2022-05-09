@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_DWCA_TO_VERBATIM;
+
 /**
  * We send this every time a darwin core archive has been validated after being downloaded and its
  * metadata has been synchronized.
@@ -46,7 +48,6 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
   private Platform platform;
   private Long executionId;
-  private boolean isValidator = false;
 
   public PipelinesDwcaMessage() {}
 
@@ -60,8 +61,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("platform") Platform platform,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.datasetType = Objects.requireNonNull(datasetType, "datasetType can't be null");
     this.source = Objects.requireNonNull(source, "source can't be null");
@@ -73,9 +73,6 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.platform = platform != null ? platform : Platform.ALL;
     this.executionId = executionId;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   /** @return dataset uuid */
@@ -125,8 +122,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
+    if (pipelineSteps.contains(VALIDATOR_DWCA_TO_VERBATIM.name())) {
+      key = key + ".validator";
     }
     return key;
   }
@@ -171,15 +168,6 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public boolean isValidator() {
-    return isValidator;
-  }
-
-  public PipelinesDwcaMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -201,8 +189,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
         && Objects.equals(validationReport, that.validationReport)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(endpointType, that.endpointType)
-        && Objects.equals(executionId, that.executionId)
-        && isValidator == that.isValidator;
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override

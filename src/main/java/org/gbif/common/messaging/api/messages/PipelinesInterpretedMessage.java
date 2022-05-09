@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_INTERPRETED_TO_INDEX;
+
 /**
  * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
  * occurrence in the dataset.
@@ -49,7 +51,6 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
   private ValidationResult validationResult;
   private Set<String> interpretTypes;
-  private boolean isValidator = false;
   private DatasetType datasetType;
 
   public PipelinesInterpretedMessage() {}
@@ -69,7 +70,6 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
-      @JsonProperty("isValidator") Boolean isValidator,
       @JsonProperty("datasetType") DatasetType datasetType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
@@ -85,9 +85,6 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.validationResult = validationResult;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
     this.datasetType = datasetType;
   }
 
@@ -114,8 +111,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
+    if (pipelineSteps.contains(VALIDATOR_INTERPRETED_TO_INDEX.name())) {
+      key = key + ".validator";
     }
     if (runner != null && !runner.isEmpty()) {
       key = key + "." + runner.toLowerCase();
@@ -157,10 +154,6 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
 
   public Set<String> getInterpretTypes() {
     return interpretTypes;
-  }
-
-  public boolean isValidator() {
-    return isValidator;
   }
 
   public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
@@ -223,11 +216,6 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesInterpretedMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   public DatasetType getDatasetType() {
     return datasetType;
   }
@@ -261,10 +249,9 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfRecords, that.numberOfRecords)
-           && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
+        && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
-        && isValidator == that.isValidator
         && datasetType == that.datasetType;
   }
 
@@ -284,7 +271,6 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         endpointType,
         validationResult,
         interpretTypes,
-        isValidator,
         datasetType);
   }
 

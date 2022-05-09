@@ -25,6 +25,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VALIDATE_ARCHIVE;
+
 /**
  * This message is used trigger Checklists validations.
  */
@@ -37,7 +39,6 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private Long executionId;
   private String fileFormat;
-  private boolean isValidator = false;
 
   public PipelinesArchiveValidatorMessage() {}
 
@@ -47,7 +48,6 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("isValidator") Boolean isValidator,
       @JsonProperty("fileFormat") String fileFormat) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
@@ -55,9 +55,6 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.executionId = executionId;
     this.fileFormat = fileFormat;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   @Override
@@ -88,18 +85,14 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
+    if (pipelineSteps.contains(VALIDATOR_VALIDATE_ARCHIVE.name())) {
+      key = key + ".validator";
     }
     return key;
   }
 
   public String getFileFormat() {
     return fileFormat;
-  }
-
-  public boolean isValidator() {
-    return isValidator;
   }
 
   public PipelinesArchiveValidatorMessage setDatasetUuid(UUID datasetUuid) {
@@ -114,11 +107,6 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
   public PipelinesArchiveValidatorMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
-    return this;
-  }
-
-  public PipelinesArchiveValidatorMessage setValidator(boolean validator) {
-    isValidator = validator;
     return this;
   }
 
@@ -140,13 +128,12 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(fileFormat, that.fileFormat)
-        && Objects.equals(executionId, that.executionId)
-        && isValidator == that.isValidator;
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, fileFormat, executionId, isValidator);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, fileFormat, executionId);
   }
 
   @Override

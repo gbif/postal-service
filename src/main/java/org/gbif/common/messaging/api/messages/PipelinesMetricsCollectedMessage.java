@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 /**
  * This message instructs the dataset mutator service to send PipelinesMetricsCollectedMessage for each
  * occurrence in the dataset.
@@ -37,7 +38,6 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
   private int attempt;
   private Set<String> pipelineSteps;
   private Long executionId;
-  private boolean isValidator = false;
 
   public PipelinesMetricsCollectedMessage() {}
 
@@ -46,16 +46,12 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.executionId = executionId;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   @Override
@@ -80,11 +76,7 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
-    }
-    return key;
+    return ROUTING_KEY + ".validator";
   }
 
   public PipelinesMetricsCollectedMessage setDatasetUuid(UUID datasetUuid) {
@@ -99,15 +91,6 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
 
   public PipelinesMetricsCollectedMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
-    return this;
-  }
-
-  public boolean isValidator() {
-    return isValidator;
-  }
-
-  public PipelinesMetricsCollectedMessage setValidator(boolean validator) {
-    isValidator = validator;
     return this;
   }
 
@@ -128,13 +111,12 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
     return attempt == that.attempt
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(executionId, that.executionId)
-        && isValidator == that.isValidator;
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, executionId, isValidator);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, executionId);
   }
 
   @Override
