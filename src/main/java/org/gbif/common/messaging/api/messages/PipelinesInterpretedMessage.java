@@ -104,7 +104,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps.contains(VALIDATOR_INTERPRETED_TO_INDEX.name())) {
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_INTERPRETED_TO_INDEX.name())) {
       key = key + ".validator";
     }
     if (runner != null && !runner.isEmpty()) {

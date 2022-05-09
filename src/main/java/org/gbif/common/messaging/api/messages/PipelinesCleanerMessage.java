@@ -60,7 +60,7 @@ public class PipelinesCleanerMessage implements DatasetBasedMessage {
   public String getRoutingKey() {
     String key = ROUTING_KEY;
     if (isValidator) {
-      key = key + "." + "validator";
+      key = key + ".validator";
     }
     return key;
   }
