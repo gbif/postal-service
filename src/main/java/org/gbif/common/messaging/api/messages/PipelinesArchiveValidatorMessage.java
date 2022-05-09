@@ -85,7 +85,7 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps.contains(VALIDATOR_VALIDATE_ARCHIVE.name())) {
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VALIDATE_ARCHIVE.name())) {
       key = key + ".validator";
     }
     return key;

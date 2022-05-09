@@ -105,7 +105,7 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps.contains(VALIDATOR_ABCD_TO_VERBATIM.name())) {
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_ABCD_TO_VERBATIM.name())) {
       key = key + ".validator";
     }
     return key;

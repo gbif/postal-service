@@ -85,7 +85,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps.contains(VALIDATOR_COLLECT_METRICS.name())) {
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_COLLECT_METRICS.name())) {
       key = key + ".validator";
     }
     if (runner != null && !runner.isEmpty()) {

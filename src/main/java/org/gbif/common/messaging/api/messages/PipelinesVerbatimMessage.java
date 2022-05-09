@@ -107,10 +107,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
       key = key + ".validator";
     }
-    if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
+    if (pipelineSteps != null && pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
       key = key + ".identifier";
     }
     if (runner != null && !runner.isEmpty()) {
