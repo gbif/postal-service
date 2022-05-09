@@ -41,6 +41,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private String runner;
   private Long numberOfRecords;
+  private Long numberOfEventRecords;
   private boolean repeatAttempt;
   private String resetPrefix;
   private String onlyForStep;
@@ -59,6 +60,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("numberOfRecords") Long numberOfRecords,
+      @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
       @JsonProperty("runner") String runner,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
       @JsonProperty("resetPrefix") String resetPrefix,
@@ -75,6 +77,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.numberOfRecords = numberOfRecords;
+    this.numberOfEventRecords = numberOfEventRecords;
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
     this.onlyForStep = onlyForStep;
@@ -122,6 +125,10 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
 
   public Long getNumberOfRecords() {
     return numberOfRecords;
+  }
+
+  public Long getNumberOfEventRecords() {
+    return numberOfEventRecords;
   }
 
   public String getRunner() {
@@ -176,6 +183,11 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesInterpretedMessage setNumberOfEventRecords(Long numberOfEventRecords) {
+    this.numberOfEventRecords = numberOfEventRecords;
+    return this;
+  }
+
   public PipelinesInterpretedMessage setRunner(String runner) {
     this.runner = runner;
     return this;
@@ -220,8 +232,9 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return datasetType;
   }
 
-  public void setDatasetType(DatasetType datasetType) {
+  public PipelinesInterpretedMessage setDatasetType(DatasetType datasetType) {
     this.datasetType = datasetType;
+    return this;
   }
 
   @Override
@@ -248,6 +261,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfRecords, that.numberOfRecords)
+           && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
         && isValidator == that.isValidator
@@ -266,6 +280,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         onlyForStep,
         executionId,
         numberOfRecords,
+        numberOfEventRecords,
         endpointType,
         validationResult,
         interpretTypes,

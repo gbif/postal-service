@@ -35,14 +35,15 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
-  // TODO: remove numberOfRecords??
-  private Long numberOfRecords;
+  private Long numberOfOccurrenceRecords;
+  private Long numberOfEventRecords;
   private String resetPrefix;
   private Long executionId;
   private EndpointType endpointType;
   private ValidationResult validationResult;
-
+  private Set<String> interpretTypes;
   private boolean repeatAttempt;
+  private String runner;
   private boolean isValidator = false;
 
   public PipelinesEventsInterpretedMessage() {}
@@ -52,23 +53,29 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("numberOfRecords") Long numberOfRecords,
+      @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
+      @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("validationResult") ValidationResult validationResult,
+      @JsonProperty("interpretTypes") Set<String> interpretTypes,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
+      @JsonProperty("runner") String runner,
       @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
-    this.numberOfRecords = numberOfRecords;
+    this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
+    this.numberOfEventRecords = numberOfEventRecords;
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
     this.endpointType = endpointType;
     this.validationResult = validationResult;
+    this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
     this.repeatAttempt = repeatAttempt;
+    this.runner = runner;
     if (isValidator != null) {
       this.isValidator = isValidator;
     }
@@ -103,8 +110,12 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return key;
   }
 
-  public Long getNumberOfRecords() {
-    return numberOfRecords;
+  public Long getNumberOfOccurrenceRecords() {
+    return numberOfOccurrenceRecords;
+  }
+
+  public Long getNumberOfEventRecords() {
+    return numberOfEventRecords;
   }
 
   public String getResetPrefix() {
@@ -119,8 +130,16 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return validationResult;
   }
 
+  public Set<String> getInterpretTypes() {
+    return interpretTypes;
+  }
+
   public boolean isRepeatAttempt() {
     return repeatAttempt;
+  }
+
+  public String getRunner() {
+    return runner;
   }
 
   public boolean isValidator() {
@@ -142,8 +161,13 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesEventsInterpretedMessage setNumberOfRecords(Long numberOfRecords) {
-    this.numberOfRecords = numberOfRecords;
+  public PipelinesEventsInterpretedMessage setNumberOfOccurrenceRecords(Long numberOfOccurrenceRecords) {
+    this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
+    return this;
+  }
+
+  public PipelinesEventsInterpretedMessage setNumberOfEventRecords(Long numberOfEventRecords) {
+    this.numberOfEventRecords = numberOfEventRecords;
     return this;
   }
 
@@ -162,8 +186,19 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public void setRepeatAttempt(boolean repeatAttempt) {
+  public PipelinesEventsInterpretedMessage setInterpretTypes(Set<String> interpretTypes) {
+    this.interpretTypes = interpretTypes;
+    return this;
+  }
+
+  public PipelinesEventsInterpretedMessage setRepeatAttempt(boolean repeatAttempt) {
     this.repeatAttempt = repeatAttempt;
+    return this;
+  }
+
+  public PipelinesEventsInterpretedMessage setRunner(String runner) {
+    this.runner = runner;
+    return this;
   }
 
   public PipelinesEventsInterpretedMessage setValidator(boolean validator) {
@@ -191,9 +226,12 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(resetPrefix, that.resetPrefix)
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
-        && Objects.equals(numberOfRecords, that.numberOfRecords)
+        && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
+           && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
         && Objects.equals(validationResult, that.validationResult)
+        && Objects.equals(interpretTypes, that.interpretTypes)
         && repeatAttempt == that.repeatAttempt
+        && Objects.equals(runner, that.runner)
         && isValidator == that.isValidator;
   }
 
@@ -205,10 +243,13 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         pipelineSteps,
         resetPrefix,
         executionId,
-        numberOfRecords,
+        numberOfOccurrenceRecords,
+        numberOfEventRecords,
         endpointType,
         validationResult,
+        interpretTypes,
         repeatAttempt,
+        runner,
         isValidator);
   }
 

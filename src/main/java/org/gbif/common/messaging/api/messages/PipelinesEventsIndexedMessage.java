@@ -13,8 +13,6 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.vocabulary.EndpointType;
-import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
 import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
@@ -27,9 +25,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/**
- * This message indicates that the events of a dataset have been indexed.
- */
+/** This message indicates that the events of a dataset have been indexed. */
 public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.events.indexed";
@@ -37,12 +33,9 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
-  // TODO: remove numberOfRecords??
-  private Long numberOfRecords;
+  private String runner;
   private String resetPrefix;
   private Long executionId;
-  private EndpointType endpointType;
-  private ValidationResult validationResult;
   private boolean isValidator = false;
 
   public PipelinesEventsIndexedMessage() {}
@@ -52,21 +45,17 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("numberOfRecords") Long numberOfRecords,
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("validationResult") ValidationResult validationResult,
+      @JsonProperty("runner") String runner,
       @JsonProperty("isValidator") Boolean isValidator) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
-    this.numberOfRecords = numberOfRecords;
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
-    this.endpointType = endpointType;
-    this.validationResult = validationResult;
+    this.runner = runner;
     if (isValidator != null) {
       this.isValidator = isValidator;
     }
@@ -101,20 +90,12 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
     return key;
   }
 
-  public Long getNumberOfRecords() {
-    return numberOfRecords;
-  }
-
   public String getResetPrefix() {
     return resetPrefix;
   }
 
-  public EndpointType getEndpointType() {
-    return endpointType;
-  }
-
-  public ValidationResult getValidationResult() {
-    return validationResult;
+  public String getRunner() {
+    return runner;
   }
 
   public boolean isValidator() {
@@ -136,23 +117,13 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesEventsIndexedMessage setNumberOfRecords(Long numberOfRecords) {
-    this.numberOfRecords = numberOfRecords;
-    return this;
-  }
-
   public PipelinesEventsIndexedMessage setResetPrefix(String resetPrefix) {
     this.resetPrefix = resetPrefix;
     return this;
   }
 
-  public PipelinesEventsIndexedMessage setEndpointType(EndpointType endpointType) {
-    this.endpointType = endpointType;
-    return this;
-  }
-
-  public PipelinesEventsIndexedMessage setValidationResult(ValidationResult validationResult) {
-    this.validationResult = validationResult;
+  public PipelinesEventsIndexedMessage setRunner(String runner) {
+    this.runner = runner;
     return this;
   }
 
@@ -180,24 +151,14 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(resetPrefix, that.resetPrefix)
         && Objects.equals(executionId, that.executionId)
-        && Objects.equals(endpointType, that.endpointType)
-        && Objects.equals(numberOfRecords, that.numberOfRecords)
-        && Objects.equals(validationResult, that.validationResult)
+        && Objects.equals(runner, that.runner)
         && isValidator == that.isValidator;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid,
-        attempt,
-        pipelineSteps,
-        resetPrefix,
-        executionId,
-        numberOfRecords,
-        endpointType,
-        validationResult,
-        isValidator);
+        datasetUuid, attempt, pipelineSteps, resetPrefix, executionId, runner, isValidator);
   }
 
   @Override

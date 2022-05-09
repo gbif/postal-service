@@ -196,8 +196,9 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return datasetType;
   }
 
-  public void setDatasetType(DatasetType datasetType) {
+  public PipelinesVerbatimMessage setDatasetType(DatasetType datasetType) {
     this.datasetType = datasetType;
+    return this;
   }
 
   @Override
@@ -262,6 +263,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     private boolean occurrenceIdValid;
     private Boolean useExtendedRecordId;
     private Long numberOfRecords;
+    private Long numberOfEventRecords;
 
     public ValidationResult() {}
 
@@ -270,11 +272,13 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
         @JsonProperty("tripletValid") boolean tripletValid,
         @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
         @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId,
-        @JsonProperty("numberOfRecords") Long numberOfRecords) {
+        @JsonProperty("numberOfRecords") Long numberOfRecords,
+        @JsonProperty("numberOfEventRecords") Long numberOfEventRecords) {
       this.tripletValid = tripletValid;
       this.occurrenceIdValid = occurrenceIdValid;
       this.useExtendedRecordId = useExtendedRecordId;
       this.numberOfRecords = numberOfRecords;
+      this.numberOfEventRecords = numberOfEventRecords;
     }
 
     public ValidationResult setTripletValid(boolean tripletValid) {
@@ -297,6 +301,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return this;
     }
 
+    public void setNumberOfEventRecords(Long numberOfEventRecords) {
+      this.numberOfEventRecords = numberOfEventRecords;
+    }
+
     public boolean isTripletValid() {
       return tripletValid;
     }
@@ -311,6 +319,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
     public Long getNumberOfRecords() {
       return numberOfRecords;
+    }
+
+    public Long getNumberOfEventRecords() {
+      return numberOfEventRecords;
     }
   }
 }
