@@ -44,7 +44,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
   private Set<String> interpretTypes;
   private boolean repeatAttempt;
   private String runner;
-  private boolean isValidator = false;
 
   public PipelinesEventsInterpretedMessage() {}
 
@@ -61,8 +60,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
-      @JsonProperty("runner") String runner,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("runner") String runner) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -76,9 +74,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
     this.repeatAttempt = repeatAttempt;
     this.runner = runner;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   @Override
@@ -103,11 +98,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
-    }
-    return key;
+    return ROUTING_KEY;
   }
 
   public Long getNumberOfOccurrenceRecords() {
@@ -140,10 +131,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
 
   public String getRunner() {
     return runner;
-  }
-
-  public boolean isValidator() {
-    return isValidator;
   }
 
   public PipelinesEventsInterpretedMessage setDatasetUuid(UUID datasetUuid) {
@@ -201,11 +188,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesEventsInterpretedMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -231,8 +213,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
         && repeatAttempt == that.repeatAttempt
-        && Objects.equals(runner, that.runner)
-        && isValidator == that.isValidator;
+        && Objects.equals(runner, that.runner);
   }
 
   @Override
@@ -249,8 +230,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         validationResult,
         interpretTypes,
         repeatAttempt,
-        runner,
-        isValidator);
+        runner);
   }
 
   @Override

@@ -36,7 +36,6 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
   private String runner;
   private String resetPrefix;
   private Long executionId;
-  private boolean isValidator = false;
 
   public PipelinesEventsIndexedMessage() {}
 
@@ -47,8 +46,7 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("runner") String runner,
-      @JsonProperty("isValidator") Boolean isValidator) {
+      @JsonProperty("runner") String runner) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -56,9 +54,6 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
     this.runner = runner;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
   }
 
   @Override
@@ -83,11 +78,7 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
-    }
-    return key;
+    return ROUTING_KEY;
   }
 
   public String getResetPrefix() {
@@ -96,10 +87,6 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
 
   public String getRunner() {
     return runner;
-  }
-
-  public boolean isValidator() {
-    return isValidator;
   }
 
   public PipelinesEventsIndexedMessage setDatasetUuid(UUID datasetUuid) {
@@ -127,11 +114,6 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesEventsIndexedMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -151,14 +133,13 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(resetPrefix, that.resetPrefix)
         && Objects.equals(executionId, that.executionId)
-        && Objects.equals(runner, that.runner)
-        && isValidator == that.isValidator;
+        && Objects.equals(runner, that.runner);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid, attempt, pipelineSteps, resetPrefix, executionId, runner, isValidator);
+        datasetUuid, attempt, pipelineSteps, resetPrefix, executionId, runner);
   }
 
   @Override

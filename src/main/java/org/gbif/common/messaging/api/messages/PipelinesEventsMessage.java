@@ -48,7 +48,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
   private EndpointType endpointType;
   private ValidationResult validationResult;
   private Set<String> interpretTypes;
-  private boolean isValidator = false;
   private DatasetType datasetType;
 
   public PipelinesEventsMessage() {}
@@ -68,7 +67,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
-      @JsonProperty("isValidator") Boolean isValidator,
       @JsonProperty("datasetType") DatasetType datasetType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
@@ -84,9 +82,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.validationResult = validationResult;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
-    if (isValidator != null) {
-      this.isValidator = isValidator;
-    }
     this.datasetType = datasetType;
   }
 
@@ -113,9 +108,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (isValidator) {
-      key = key + "." + "validator";
-    }
     if (runner != null && !runner.isEmpty()) {
       key = key + "." + runner.toLowerCase();
     }
@@ -156,10 +148,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
 
   public Set<String> getInterpretTypes() {
     return interpretTypes;
-  }
-
-  public boolean isValidator() {
-    return isValidator;
   }
 
   public DatasetType getDatasetType() {
@@ -226,11 +214,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesEventsMessage setValidator(boolean validator) {
-    isValidator = validator;
-    return this;
-  }
-
   public PipelinesEventsMessage setDatasetType(DatasetType datasetType) {
     this.datasetType = datasetType;
     return this;
@@ -263,7 +246,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
            && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
-        && isValidator == that.isValidator
         && datasetType == that.datasetType;
   }
 
@@ -283,7 +265,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
         endpointType,
         validationResult,
         interpretTypes,
-        isValidator,
         datasetType);
   }
 
