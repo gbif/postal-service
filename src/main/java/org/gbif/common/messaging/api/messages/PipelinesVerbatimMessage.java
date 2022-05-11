@@ -46,6 +46,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private ValidationResult validationResult;
   private String resetPrefix;
   private Long executionId;
+  private boolean validateIds;
 
   public PipelinesVerbatimMessage() {}
 
@@ -60,7 +61,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("extraPath") String extraPath,
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("executionId") Long executionId) {
+      @JsonProperty("executionId") Long executionId,
+      @JsonProperty("validateIds") boolean validateIds) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = Objects.requireNonNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -71,6 +73,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.validationResult = validationResult;
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
+    this.validateIds = validateIds;
   }
 
   /** @return datasetUUID for the converted dataset */
@@ -106,7 +109,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
       key = key + ".validator";
     }
-    if (pipelineSteps != null && pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
+    if (pipelineSteps != null && pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name()) && validateIds) {
       key = key + ".identifier";
     }
     if (runner != null && !runner.isEmpty()) {
@@ -133,6 +136,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
   public String getResetPrefix() {
     return resetPrefix;
+  }
+
+  public boolean isValidateIds() {
+    return validateIds;
   }
 
   public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
@@ -195,30 +202,32 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     }
     PipelinesVerbatimMessage that = (PipelinesVerbatimMessage) o;
     return Objects.equals(datasetUuid, that.datasetUuid)
-        && Objects.equals(attempt, that.attempt)
-        && Objects.equals(interpretTypes, that.interpretTypes)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(runner, that.runner)
-        && endpointType == that.endpointType
-        && Objects.equals(extraPath, that.extraPath)
-        && Objects.equals(validationResult, that.validationResult)
-        && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(executionId, that.executionId);
+      && Objects.equals(attempt, that.attempt)
+      && Objects.equals(interpretTypes, that.interpretTypes)
+      && Objects.equals(pipelineSteps, that.pipelineSteps)
+      && Objects.equals(runner, that.runner)
+      && endpointType == that.endpointType
+      && Objects.equals(extraPath, that.extraPath)
+      && Objects.equals(validationResult, that.validationResult)
+      && Objects.equals(resetPrefix, that.resetPrefix)
+      && Objects.equals(executionId, that.executionId)
+      && Objects.equals(validateIds, that.validateIds);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid,
-        attempt,
-        interpretTypes,
-        pipelineSteps,
-        runner,
-        endpointType,
-        extraPath,
-        validationResult,
-        resetPrefix,
-        executionId);
+      datasetUuid,
+      attempt,
+      interpretTypes,
+      pipelineSteps,
+      runner,
+      endpointType,
+      extraPath,
+      validationResult,
+      resetPrefix,
+      executionId,
+      validateIds);
   }
 
   @Override
@@ -243,10 +252,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
     @JsonCreator
     public ValidationResult(
-        @JsonProperty("tripletValid") boolean tripletValid,
-        @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
-        @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId,
-        @JsonProperty("numberOfRecords") Long numberOfRecords) {
+      @JsonProperty("tripletValid") boolean tripletValid,
+      @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
+      @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId,
+      @JsonProperty("numberOfRecords") Long numberOfRecords) {
       this.tripletValid = tripletValid;
       this.occurrenceIdValid = occurrenceIdValid;
       this.useExtendedRecordId = useExtendedRecordId;
