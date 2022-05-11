@@ -14,7 +14,6 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.EndpointType;
-import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
 import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
@@ -40,7 +39,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
   private String resetPrefix;
   private Long executionId;
   private EndpointType endpointType;
-  private ValidationResult validationResult;
   private Set<String> interpretTypes;
   private boolean repeatAttempt;
   private String runner;
@@ -57,7 +55,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
       @JsonProperty("runner") String runner) {
@@ -70,7 +67,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
     this.endpointType = endpointType;
-    this.validationResult = validationResult;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
     this.repeatAttempt = repeatAttempt;
     this.runner = runner;
@@ -115,10 +111,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
 
   public EndpointType getEndpointType() {
     return endpointType;
-  }
-
-  public ValidationResult getValidationResult() {
-    return validationResult;
   }
 
   public Set<String> getInterpretTypes() {
@@ -168,11 +160,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
-  public PipelinesEventsInterpretedMessage setValidationResult(ValidationResult validationResult) {
-    this.validationResult = validationResult;
-    return this;
-  }
-
   public PipelinesEventsInterpretedMessage setInterpretTypes(Set<String> interpretTypes) {
     this.interpretTypes = interpretTypes;
     return this;
@@ -210,7 +197,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
            && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
-        && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
         && repeatAttempt == that.repeatAttempt
         && Objects.equals(runner, that.runner);
@@ -227,7 +213,6 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         numberOfOccurrenceRecords,
         numberOfEventRecords,
         endpointType,
-        validationResult,
         interpretTypes,
         repeatAttempt,
         runner);
