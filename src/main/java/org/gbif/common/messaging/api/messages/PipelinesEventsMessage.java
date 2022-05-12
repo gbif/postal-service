@@ -28,21 +28,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.gbif.api.model.pipelines.StepType.VALIDATOR_INTERPRETED_TO_INDEX;
-
 /**
- * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
- * occurrence in the dataset.
+ * This message is used to start the processing of events datasets.
  */
-public class PipelinesInterpretedMessage implements PipelineBasedMessage {
+public class PipelinesEventsMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.events";
 
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
-  private Long numberOfRecords;
+  private Long numberOfOccurrenceRecords;
   private Long numberOfEventRecords;
   private boolean repeatAttempt;
   private String resetPrefix;
@@ -53,15 +50,15 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   private Set<String> interpretTypes;
   private DatasetType datasetType;
 
-  public PipelinesInterpretedMessage() {}
+  public PipelinesEventsMessage() {}
 
   @JsonCreator
-  public PipelinesInterpretedMessage(
+  public PipelinesEventsMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("numberOfRecords") Long numberOfRecords,
       @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
+      @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
       @JsonProperty("runner") String runner,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
       @JsonProperty("resetPrefix") String resetPrefix,
@@ -76,8 +73,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
-    this.numberOfRecords = numberOfRecords;
     this.numberOfEventRecords = numberOfEventRecords;
+    this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
     this.onlyForStep = onlyForStep;
@@ -111,17 +108,14 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_INTERPRETED_TO_INDEX.name())) {
-      key = key + ".validator";
-    }
     if (runner != null && !runner.isEmpty()) {
       key = key + "." + runner.toLowerCase();
     }
     return key;
   }
 
-  public Long getNumberOfRecords() {
-    return numberOfRecords;
+  public Long getNumberOfOccurrenceRecords() {
+    return numberOfOccurrenceRecords;
   }
 
   public Long getNumberOfEventRecords() {
@@ -156,71 +150,71 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     return interpretTypes;
   }
 
-  public PipelinesInterpretedMessage setDatasetUuid(UUID datasetUuid) {
-    this.datasetUuid = datasetUuid;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setAttempt(int attempt) {
-    this.attempt = attempt;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setPipelineSteps(Set<String> pipelineSteps) {
-    this.pipelineSteps = pipelineSteps;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setNumberOfRecords(Long numberOfRecords) {
-    this.numberOfRecords = numberOfRecords;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setNumberOfEventRecords(Long numberOfEventRecords) {
-    this.numberOfEventRecords = numberOfEventRecords;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setRunner(String runner) {
-    this.runner = runner;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setRepeatAttempt(boolean repeatAttempt) {
-    this.repeatAttempt = repeatAttempt;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setResetPrefix(String resetPrefix) {
-    this.resetPrefix = resetPrefix;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setOnlyForStep(String onlyForStep) {
-    this.onlyForStep = onlyForStep;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setEndpointType(EndpointType endpointType) {
-    this.endpointType = endpointType;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setValidationResult(ValidationResult validationResult) {
-    this.validationResult = validationResult;
-    return this;
-  }
-
-  public PipelinesInterpretedMessage setInterpretTypes(Set<String> interpretTypes) {
-    this.interpretTypes = interpretTypes;
-    return this;
-  }
-
   public DatasetType getDatasetType() {
     return datasetType;
   }
 
-  public PipelinesInterpretedMessage setDatasetType(DatasetType datasetType) {
+  public PipelinesEventsMessage setNumberOfOccurrenceRecords(Long numberOfOccurrenceRecords) {
+    this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
+    return this;
+  }
+
+  public PipelinesEventsMessage setNumberOfEventRecords(Long numberOfEventRecords) {
+    this.numberOfEventRecords = numberOfEventRecords;
+    return this;
+  }
+
+  public PipelinesEventsMessage setDatasetUuid(UUID datasetUuid) {
+    this.datasetUuid = datasetUuid;
+    return this;
+  }
+
+  public PipelinesEventsMessage setAttempt(int attempt) {
+    this.attempt = attempt;
+    return this;
+  }
+
+  public PipelinesEventsMessage setPipelineSteps(Set<String> pipelineSteps) {
+    this.pipelineSteps = pipelineSteps;
+    return this;
+  }
+
+  public PipelinesEventsMessage setRunner(String runner) {
+    this.runner = runner;
+    return this;
+  }
+
+  public PipelinesEventsMessage setRepeatAttempt(boolean repeatAttempt) {
+    this.repeatAttempt = repeatAttempt;
+    return this;
+  }
+
+  public PipelinesEventsMessage setResetPrefix(String resetPrefix) {
+    this.resetPrefix = resetPrefix;
+    return this;
+  }
+
+  public PipelinesEventsMessage setOnlyForStep(String onlyForStep) {
+    this.onlyForStep = onlyForStep;
+    return this;
+  }
+
+  public PipelinesEventsMessage setEndpointType(EndpointType endpointType) {
+    this.endpointType = endpointType;
+    return this;
+  }
+
+  public PipelinesEventsMessage setValidationResult(ValidationResult validationResult) {
+    this.validationResult = validationResult;
+    return this;
+  }
+
+  public PipelinesEventsMessage setInterpretTypes(Set<String> interpretTypes) {
+    this.interpretTypes = interpretTypes;
+    return this;
+  }
+
+  public PipelinesEventsMessage setDatasetType(DatasetType datasetType) {
     this.datasetType = datasetType;
     return this;
   }
@@ -238,7 +232,7 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PipelinesInterpretedMessage that = (PipelinesInterpretedMessage) o;
+    PipelinesEventsMessage that = (PipelinesEventsMessage) o;
     return attempt == that.attempt
         && repeatAttempt == that.repeatAttempt
         && Objects.equals(datasetUuid, that.datasetUuid)
@@ -248,8 +242,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(onlyForStep, that.onlyForStep)
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
-        && Objects.equals(numberOfRecords, that.numberOfRecords)
         && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
+           && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
         && datasetType == that.datasetType;
@@ -266,8 +260,8 @@ public class PipelinesInterpretedMessage implements PipelineBasedMessage {
         resetPrefix,
         onlyForStep,
         executionId,
-        numberOfRecords,
         numberOfEventRecords,
+        numberOfOccurrenceRecords,
         endpointType,
         validationResult,
         interpretTypes,

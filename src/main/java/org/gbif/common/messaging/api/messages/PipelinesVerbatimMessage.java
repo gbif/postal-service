@@ -13,6 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private ValidationResult validationResult;
   private String resetPrefix;
   private Long executionId;
+  private DatasetType datasetType;
   private boolean validateIds;
 
   public PipelinesVerbatimMessage() {}
@@ -62,6 +64,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
+      @JsonProperty("datasetType") DatasetType datasetType,
       @JsonProperty("validateIds") boolean validateIds) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = Objects.requireNonNull(interpretTypes, "interpretTypes can't be null");
@@ -73,6 +76,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.validationResult = validationResult;
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
+    this.datasetType = datasetType;
     this.validateIds = validateIds;
   }
 
@@ -187,6 +191,15 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public DatasetType getDatasetType() {
+    return datasetType;
+  }
+
+  public PipelinesVerbatimMessage setDatasetType(DatasetType datasetType) {
+    this.datasetType = datasetType;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -211,6 +224,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       && Objects.equals(validationResult, that.validationResult)
       && Objects.equals(resetPrefix, that.resetPrefix)
       && Objects.equals(executionId, that.executionId)
+      && datasetType == that.datasetType
       && Objects.equals(validateIds, that.validateIds);
   }
 
@@ -227,6 +241,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       validationResult,
       resetPrefix,
       executionId,
+      datasetType,
       validateIds);
   }
 
@@ -247,19 +262,22 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     private boolean occurrenceIdValid;
     private Boolean useExtendedRecordId;
     private Long numberOfRecords;
+    private Long numberOfEventRecords;
 
     public ValidationResult() {}
 
     @JsonCreator
     public ValidationResult(
-      @JsonProperty("tripletValid") boolean tripletValid,
-      @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
-      @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId,
-      @JsonProperty("numberOfRecords") Long numberOfRecords) {
+        @JsonProperty("tripletValid") boolean tripletValid,
+        @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
+        @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId,
+        @JsonProperty("numberOfRecords") Long numberOfRecords,
+        @JsonProperty("numberOfEventRecords") Long numberOfEventRecords) {
       this.tripletValid = tripletValid;
       this.occurrenceIdValid = occurrenceIdValid;
       this.useExtendedRecordId = useExtendedRecordId;
       this.numberOfRecords = numberOfRecords;
+      this.numberOfEventRecords = numberOfEventRecords;
     }
 
     public ValidationResult setTripletValid(boolean tripletValid) {
@@ -282,6 +300,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return this;
     }
 
+    public void setNumberOfEventRecords(Long numberOfEventRecords) {
+      this.numberOfEventRecords = numberOfEventRecords;
+    }
+
     public boolean isTripletValid() {
       return tripletValid;
     }
@@ -296,6 +318,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
     public Long getNumberOfRecords() {
       return numberOfRecords;
+    }
+
+    public Long getNumberOfEventRecords() {
+      return numberOfEventRecords;
     }
   }
 }
