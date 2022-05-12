@@ -48,7 +48,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
   private String resetPrefix;
   private Long executionId;
   private DatasetType datasetType;
-  private boolean validateIds;
 
   public PipelinesVerbatimMessage() {}
 
