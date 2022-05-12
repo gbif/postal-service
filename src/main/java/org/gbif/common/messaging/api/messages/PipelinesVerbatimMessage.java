@@ -64,8 +64,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       @JsonProperty("validationResult") ValidationResult validationResult,
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("datasetType") DatasetType datasetType,
-      @JsonProperty("validateIds") boolean validateIds) {
+      @JsonProperty("datasetType") DatasetType datasetType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = Objects.requireNonNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -77,7 +76,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
     this.datasetType = datasetType;
-    this.validateIds = validateIds;
   }
 
   /** @return datasetUUID for the converted dataset */
@@ -113,7 +111,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
       key = key + ".validator";
     }
-    if (pipelineSteps != null && pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name()) && validateIds) {
+    if (pipelineSteps != null && pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
       key = key + ".identifier";
     }
     if (runner != null && !runner.isEmpty()) {
@@ -140,10 +138,6 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
 
   public String getResetPrefix() {
     return resetPrefix;
-  }
-
-  public boolean isValidateIds() {
-    return validateIds;
   }
 
   public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
@@ -224,8 +218,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       && Objects.equals(validationResult, that.validationResult)
       && Objects.equals(resetPrefix, that.resetPrefix)
       && Objects.equals(executionId, that.executionId)
-      && datasetType == that.datasetType
-      && Objects.equals(validateIds, that.validateIds);
+      && datasetType == that.datasetType;
   }
 
   @Override
@@ -241,8 +234,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       validationResult,
       resetPrefix,
       executionId,
-      datasetType,
-      validateIds);
+      datasetType);
   }
 
   @Override
