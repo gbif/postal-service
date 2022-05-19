@@ -291,8 +291,9 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
       return this;
     }
 
-    public void setNumberOfEventRecords(Long numberOfEventRecords) {
+    public ValidationResult setNumberOfEventRecords(Long numberOfEventRecords) {
       this.numberOfEventRecords = numberOfEventRecords;
+      return this;
     }
 
     public boolean isTripletValid() {
