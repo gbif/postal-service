@@ -94,7 +94,11 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return ROUTING_KEY;
+    String key = ROUTING_KEY;
+    if (runner != null && !runner.isEmpty()) {
+      key = key + "." + runner.toLowerCase();
+    }
+    return key;
   }
 
   public Long getNumberOfOccurrenceRecords() {
