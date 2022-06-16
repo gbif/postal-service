@@ -122,6 +122,7 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
     return numberOfEventRecords;
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }

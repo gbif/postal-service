@@ -19,6 +19,7 @@ import org.gbif.utils.PreconditionUtils;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** This message indicates that the events of a dataset have been interpreted. */
-public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
+public class PipelinesEventsInterpretedMessage implements PipelinesInterpretationMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.events.interpreted";
 
@@ -37,6 +38,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
   private Long numberOfOccurrenceRecords;
   private Long numberOfEventRecords;
   private String resetPrefix;
+  private String onlyForStep;
   private Long executionId;
   private EndpointType endpointType;
   private Set<String> interpretTypes;
@@ -53,6 +55,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
       @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
       @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
       @JsonProperty("resetPrefix") String resetPrefix,
+      @JsonProperty("onlyForStep") String onlyForStep,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
@@ -65,6 +68,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
     this.numberOfEventRecords = numberOfEventRecords;
     this.resetPrefix = resetPrefix;
+    this.onlyForStep = onlyForStep;
     this.executionId = executionId;
     this.endpointType = endpointType;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
@@ -109,6 +113,11 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return numberOfEventRecords;
   }
 
+  @Override
+  public Long getNumberOfInterpretationRecords() {
+    return Optional.ofNullable(getNumberOfEventRecords()).orElse(0L) + Optional.ofNullable(getNumberOfOccurrenceRecords()).orElse(0L);
+  }
+
   public String getResetPrefix() {
     return resetPrefix;
   }
@@ -117,14 +126,21 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return endpointType;
   }
 
+  @Override
   public Set<String> getInterpretTypes() {
     return interpretTypes;
+  }
+
+  @Override
+  public String getOnlyForStep() {
+    return onlyForStep;
   }
 
   public boolean isRepeatAttempt() {
     return repeatAttempt;
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }
@@ -159,14 +175,21 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesEventsInterpretedMessage setOnlyForStep(String onlyForStep) {
+    this.onlyForStep = onlyForStep;
+    return this;
+  }
+
+
+
   public PipelinesEventsInterpretedMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
   }
 
-  public PipelinesEventsInterpretedMessage setInterpretTypes(Set<String> interpretTypes) {
+  @Override
+  public void setInterpretTypes(Set<String> interpretTypes) {
     this.interpretTypes = interpretTypes;
-    return this;
   }
 
   public PipelinesEventsInterpretedMessage setRepeatAttempt(boolean repeatAttempt) {
@@ -197,6 +220,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(resetPrefix, that.resetPrefix)
+        && Objects.equals(onlyForStep, that.onlyForStep)
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
@@ -213,6 +237,7 @@ public class PipelinesEventsInterpretedMessage implements PipelineBasedMessage {
         attempt,
         pipelineSteps,
         resetPrefix,
+        onlyForStep,
         executionId,
         numberOfOccurrenceRecords,
         numberOfEventRecords,

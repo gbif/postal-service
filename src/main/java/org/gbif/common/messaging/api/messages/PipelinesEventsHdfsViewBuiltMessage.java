@@ -13,7 +13,6 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
@@ -26,40 +25,36 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.gbif.api.model.pipelines.StepType.VALIDATOR_COLLECT_METRICS;
+/** This message indicates that the Event HDFS view of a dataset has finished. */
+public class PipelinesEventsHdfsViewBuiltMessage implements PipelineBasedMessage {
 
-/**
- * This message instructs the dataset mutator service to send IndexDatasetMessage for each
- * occurrence in the dataset.
- */
-public class PipelinesIndexedMessage implements PipelineBasedMessage {
-
-  public static final String ROUTING_KEY = "occurrence.pipelines.indexing.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.events.hdfsview.finished";
 
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
   private Long executionId;
-  private EndpointType endpointType;
 
-  public PipelinesIndexedMessage() {}
+  public PipelinesEventsHdfsViewBuiltMessage() {}
 
   @JsonCreator
-  public PipelinesIndexedMessage(
+  public PipelinesEventsHdfsViewBuiltMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("runner") String runner,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("endpointType") EndpointType endpointType) {
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.runner = runner;
     this.executionId = executionId;
-    this.endpointType = endpointType;
+  }
+
+  public PipelinesEventsHdfsViewBuiltMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
+    this(datasetUuid, attempt, pipelineSteps, null, null);
   }
 
   @Override
@@ -85,11 +80,8 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_COLLECT_METRICS.name())) {
-      key = key + ".validator";
-    }
     if (runner != null && !runner.isEmpty()) {
-      key = key + "." + runner.toLowerCase();
+      return key + "." + runner.toLowerCase();
     }
     return key;
   }
@@ -99,22 +91,22 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     return runner;
   }
 
-  public PipelinesIndexedMessage setDatasetUuid(UUID datasetUuid) {
+  public PipelinesEventsHdfsViewBuiltMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
   }
 
-  public PipelinesIndexedMessage setAttempt(int attempt) {
+  public PipelinesEventsHdfsViewBuiltMessage setAttempt(int attempt) {
     this.attempt = attempt;
     return this;
   }
 
-  public PipelinesIndexedMessage setPipelineSteps(Set<String> pipelineSteps) {
+  public PipelinesEventsHdfsViewBuiltMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
     return this;
   }
 
-  public PipelinesIndexedMessage setRunner(String runner) {
+  public PipelinesEventsHdfsViewBuiltMessage setRunner(String runner) {
     this.runner = runner;
     return this;
   }
@@ -122,15 +114,6 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
-  }
-
-  public EndpointType getEndpointType() {
-    return endpointType;
-  }
-
-  public PipelinesIndexedMessage setEndpointType(EndpointType endpointType) {
-    this.endpointType = endpointType;
-    return this;
   }
 
   @Override
@@ -141,19 +124,17 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PipelinesIndexedMessage that = (PipelinesIndexedMessage) o;
+    PipelinesEventsHdfsViewBuiltMessage that = (PipelinesEventsHdfsViewBuiltMessage) o;
     return attempt == that.attempt
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(runner, that.runner)
-        && Objects.equals(executionId, that.executionId)
-        && Objects.equals(endpointType, that.endpointType);
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        datasetUuid, attempt, pipelineSteps, runner, executionId, endpointType);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, runner, executionId);
   }
 
   @Override

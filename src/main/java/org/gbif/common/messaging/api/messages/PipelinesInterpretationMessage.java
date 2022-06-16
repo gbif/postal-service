@@ -13,24 +13,18 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.pipelines.StepRunner;
-
 import java.util.Set;
 
-public interface PipelineBasedMessage extends DatasetBasedMessage {
+/**
+ * Pipelines message that allows specifying the execution runner for a pipeline process.
+ */
+public interface PipelinesInterpretationMessage extends PipelineBasedMessage {
 
-  Integer getAttempt();
+  Set<String> getInterpretTypes();
 
-  Set<String> getPipelineSteps();
+  String getOnlyForStep();
 
-  Long getExecutionId();
+  Long getNumberOfInterpretationRecords();
 
-  void setExecutionId(Long executionId);
-
-  /**
-   * Execution runner: Standalone, Distributed, Unknown.
-   */
-  default String getRunner() {
-    return StepRunner.STANDALONE.name();
-  }
+  void setInterpretTypes(Set<String> interpretTypes);
 }
