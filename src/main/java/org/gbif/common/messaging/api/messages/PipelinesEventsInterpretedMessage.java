@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -113,6 +114,7 @@ public class PipelinesEventsInterpretedMessage implements PipelinesInterpretatio
     return numberOfEventRecords;
   }
 
+  @JsonIgnore
   @Override
   public Long getNumberOfInterpretationRecords() {
     return Optional.ofNullable(getNumberOfEventRecords()).orElse(0L) + Optional.ofNullable(getNumberOfOccurrenceRecords()).orElse(0L);
