@@ -244,7 +244,7 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
-           && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
+        && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
         && datasetType == that.datasetType;

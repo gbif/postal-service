@@ -117,7 +117,8 @@ public class PipelinesEventsInterpretedMessage implements PipelinesInterpretatio
   @JsonIgnore
   @Override
   public Long getNumberOfInterpretationRecords() {
-    return Optional.ofNullable(getNumberOfEventRecords()).orElse(0L) + Optional.ofNullable(getNumberOfOccurrenceRecords()).orElse(0L);
+    return Optional.ofNullable(getNumberOfEventRecords()).orElse(0L)
+        + Optional.ofNullable(getNumberOfOccurrenceRecords()).orElse(0L);
   }
 
   public String getResetPrefix() {
@@ -162,7 +163,8 @@ public class PipelinesEventsInterpretedMessage implements PipelinesInterpretatio
     return this;
   }
 
-  public PipelinesEventsInterpretedMessage setNumberOfOccurrenceRecords(Long numberOfOccurrenceRecords) {
+  public PipelinesEventsInterpretedMessage setNumberOfOccurrenceRecords(
+      Long numberOfOccurrenceRecords) {
     this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
     return this;
   }
@@ -181,8 +183,6 @@ public class PipelinesEventsInterpretedMessage implements PipelinesInterpretatio
     this.onlyForStep = onlyForStep;
     return this;
   }
-
-
 
   public PipelinesEventsInterpretedMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
@@ -226,7 +226,7 @@ public class PipelinesEventsInterpretedMessage implements PipelinesInterpretatio
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
-           && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
+        && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
         && Objects.equals(interpretTypes, that.interpretTypes)
         && repeatAttempt == that.repeatAttempt
         && Objects.equals(runner, that.runner);

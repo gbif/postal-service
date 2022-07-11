@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 /**
  * This message instructs the dataset mutator service to send PipelinesMetricsCollectedMessage for each
  * occurrence in the dataset.
