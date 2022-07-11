@@ -53,7 +53,8 @@ public class PipelinesEventsHdfsViewBuiltMessage implements PipelineBasedMessage
     this.executionId = executionId;
   }
 
-  public PipelinesEventsHdfsViewBuiltMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
+  public PipelinesEventsHdfsViewBuiltMessage(
+      UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
     this(datasetUuid, attempt, pipelineSteps, null, null);
   }
 

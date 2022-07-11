@@ -209,32 +209,32 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     }
     PipelinesVerbatimMessage that = (PipelinesVerbatimMessage) o;
     return Objects.equals(datasetUuid, that.datasetUuid)
-      && Objects.equals(attempt, that.attempt)
-      && Objects.equals(interpretTypes, that.interpretTypes)
-      && Objects.equals(pipelineSteps, that.pipelineSteps)
-      && Objects.equals(runner, that.runner)
-      && endpointType == that.endpointType
-      && Objects.equals(extraPath, that.extraPath)
-      && Objects.equals(validationResult, that.validationResult)
-      && Objects.equals(resetPrefix, that.resetPrefix)
-      && Objects.equals(executionId, that.executionId)
-      && datasetType == that.datasetType;
+        && Objects.equals(attempt, that.attempt)
+        && Objects.equals(interpretTypes, that.interpretTypes)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && endpointType == that.endpointType
+        && Objects.equals(extraPath, that.extraPath)
+        && Objects.equals(validationResult, that.validationResult)
+        && Objects.equals(resetPrefix, that.resetPrefix)
+        && Objects.equals(executionId, that.executionId)
+        && datasetType == that.datasetType;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-      datasetUuid,
-      attempt,
-      interpretTypes,
-      pipelineSteps,
-      runner,
-      endpointType,
-      extraPath,
-      validationResult,
-      resetPrefix,
-      executionId,
-      datasetType);
+        datasetUuid,
+        attempt,
+        interpretTypes,
+        pipelineSteps,
+        runner,
+        endpointType,
+        extraPath,
+        validationResult,
+        resetPrefix,
+        executionId,
+        datasetType);
   }
 
   @Override

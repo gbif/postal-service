@@ -174,13 +174,7 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid,
-        attempt,
-        totalRecordCount,
-        reason,
-        pipelineSteps,
-        endpointType,
-        executionId);
+        datasetUuid, attempt, totalRecordCount, reason, pipelineSteps, endpointType, executionId);
   }
 
   @Override

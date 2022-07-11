@@ -165,8 +165,7 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        datasetUuid, source, attempt, modified, pipelineSteps, endpointType);
+    return Objects.hash(datasetUuid, source, attempt, modified, pipelineSteps, endpointType);
   }
 
   @Override

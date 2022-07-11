@@ -143,8 +143,7 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        datasetUuid, attempt, pipelineSteps, resetPrefix, executionId, runner);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, resetPrefix, executionId, runner);
   }
 
   @Override

@@ -177,7 +177,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToRoutingKeyMapping.put(
         PipelinesEventsIndexedMessage.class, PipelinesEventsIndexedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
-      PipelinesEventsHdfsViewBuiltMessage.class, PipelinesEventsHdfsViewBuiltMessage.ROUTING_KEY);
+        PipelinesEventsHdfsViewBuiltMessage.class, PipelinesEventsHdfsViewBuiltMessage.ROUTING_KEY);
     MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);
   }
 
