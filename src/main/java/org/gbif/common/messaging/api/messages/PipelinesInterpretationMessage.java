@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * Pipelines message that allows specifying the execution runner for a pipeline process.
  */
-public interface PipelinesInterpretationMessage extends PipelineBasedMessage {
+public interface PipelinesInterpretationMessage extends PipelineBasedMessage, PipelinesRunnerMessage {
 
   Set<String> getInterpretTypes();
 
