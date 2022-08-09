@@ -89,7 +89,6 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
     return resetPrefix;
   }
 
-  @Override
   public String getRunner() {
     return runner;
   }

@@ -86,7 +86,6 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
     return key;
   }
 
-  @Override
   public String getRunner() {
     return runner;
   }

@@ -94,7 +94,6 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     return key;
   }
 
-  @Override
   public String getRunner() {
     return runner;
   }

@@ -13,8 +13,6 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.pipelines.StepRunner;
-
 import java.util.Set;
 
 public interface PipelineBasedMessage extends DatasetBasedMessage {
@@ -26,11 +24,4 @@ public interface PipelineBasedMessage extends DatasetBasedMessage {
   Long getExecutionId();
 
   void setExecutionId(Long executionId);
-
-  /**
-   * Execution runner: Standalone, Distributed, Unknown.
-   */
-  default String getRunner() {
-    return StepRunner.STANDALONE.name();
-  }
 }

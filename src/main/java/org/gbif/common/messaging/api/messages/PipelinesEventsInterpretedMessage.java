@@ -143,7 +143,6 @@ public class PipelinesEventsInterpretedMessage implements PipelinesInterpretatio
     return repeatAttempt;
   }
 
-  @Override
   public String getRunner() {
     return runner;
   }
