@@ -27,4 +27,6 @@ public interface PipelinesInterpretationMessage extends PipelineBasedMessage {
   Long getNumberOfInterpretationRecords();
 
   void setInterpretTypes(Set<String> interpretTypes);
+
+  String getRunner();
 }

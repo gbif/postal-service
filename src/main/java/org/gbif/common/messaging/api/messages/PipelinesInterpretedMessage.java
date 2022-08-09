@@ -135,6 +135,7 @@ public class PipelinesInterpretedMessage implements PipelinesInterpretationMessa
     return getNumberOfRecords();
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }
