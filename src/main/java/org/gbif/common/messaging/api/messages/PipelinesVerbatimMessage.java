@@ -33,7 +33,7 @@ import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
  * Message is published when the conversion from of dataset from various formats(DwC or Xml) to
  * avro(ExtendedRecord) is done.
  */
-public class PipelinesVerbatimMessage implements PipelineBasedMessage {
+public class PipelinesVerbatimMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished";
 
@@ -119,6 +119,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage {
     return key;
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }

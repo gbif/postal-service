@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * This message is used to start the processing of events datasets.
  */
-public class PipelinesEventsMessage implements PipelineBasedMessage {
+public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.events";
 
@@ -122,6 +122,7 @@ public class PipelinesEventsMessage implements PipelineBasedMessage {
     return numberOfEventRecords;
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }

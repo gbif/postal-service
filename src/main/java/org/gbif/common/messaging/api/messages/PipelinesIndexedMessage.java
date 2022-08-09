@@ -32,7 +32,7 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_COLLECT_METRICS;
  * This message instructs the dataset mutator service to send IndexDatasetMessage for each
  * occurrence in the dataset.
  */
-public class PipelinesIndexedMessage implements PipelineBasedMessage {
+public class PipelinesIndexedMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.indexing.finished";
 
@@ -94,6 +94,7 @@ public class PipelinesIndexedMessage implements PipelineBasedMessage {
     return key;
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }

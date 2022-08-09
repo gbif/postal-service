@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** This message indicates that the events of a dataset have been interpreted. */
-public class PipelinesEventsInterpretedMessage implements PipelinesInterpretationMessage {
+public class PipelinesEventsInterpretedMessage implements PipelinesInterpretationMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.events.interpreted";
 

@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** This message indicates that the HDFS view of a dataset has finished. */
-public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
+public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.hdfsview.finished";
 
@@ -86,6 +86,7 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage {
     return key;
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }

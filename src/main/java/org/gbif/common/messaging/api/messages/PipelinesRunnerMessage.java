@@ -13,18 +13,9 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import java.util.Set;
-
 /**
- * Pipelines message that allows specifying the execution runner for a pipeline process.
+ * Runner interface for messages that can use two runners.
  */
-public interface PipelinesInterpretationMessage extends PipelineBasedMessage {
-
-  Set<String> getInterpretTypes();
-
-  String getOnlyForStep();
-
-  Long getNumberOfInterpretationRecords();
-
-  void setInterpretTypes(Set<String> interpretTypes);
+public interface PipelinesRunnerMessage {
+  String getRunner();
 }

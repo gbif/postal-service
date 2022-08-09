@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** This message indicates that the events of a dataset have been indexed. */
-public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
+public class PipelinesEventsIndexedMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.events.indexed";
 
@@ -89,6 +89,7 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage {
     return resetPrefix;
   }
 
+  @Override
   public String getRunner() {
     return runner;
   }
