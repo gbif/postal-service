@@ -35,7 +35,8 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_INTERPRETED_TO_IND
  * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
  * occurrence in the dataset.
  */
-public class PipelinesInterpretedMessage implements PipelinesInterpretationMessage, PipelinesRunnerMessage {
+public class PipelinesInterpretedMessage
+    implements PipelinesInterpretationMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished";
 
