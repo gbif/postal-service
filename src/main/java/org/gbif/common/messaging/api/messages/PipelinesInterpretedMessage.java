@@ -130,12 +130,6 @@ public class PipelinesInterpretedMessage
     return numberOfEventRecords;
   }
 
-  @JsonIgnore
-  @Override
-  public Long getNumberOfInterpretationRecords() {
-    return getNumberOfRecords();
-  }
-
   @Override
   public String getRunner() {
     return runner;

@@ -25,7 +25,5 @@ public interface PipelinesInterpretationMessage
 
   String getOnlyForStep();
 
-  Long getNumberOfInterpretationRecords();
-
   void setInterpretTypes(Set<String> interpretTypes);
 }

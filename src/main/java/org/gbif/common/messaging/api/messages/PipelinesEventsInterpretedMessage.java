@@ -19,12 +19,10 @@ import org.gbif.utils.PreconditionUtils;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -113,13 +111,6 @@ public class PipelinesEventsInterpretedMessage
 
   public Long getNumberOfEventRecords() {
     return numberOfEventRecords;
-  }
-
-  @JsonIgnore
-  @Override
-  public Long getNumberOfInterpretationRecords() {
-    return Optional.ofNullable(getNumberOfEventRecords()).orElse(0L)
-        + Optional.ofNullable(getNumberOfOccurrenceRecords()).orElse(0L);
   }
 
   public String getResetPrefix() {
