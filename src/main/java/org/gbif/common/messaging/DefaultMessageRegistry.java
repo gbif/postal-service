@@ -180,7 +180,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToRoutingKeyMapping.put(
         PipelinesEventsHdfsViewBuiltMessage.class, PipelinesEventsHdfsViewBuiltMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
-      CamtrapDpDownloadFinishedMessage.class, CamtrapDpDownloadFinishedMessage.ROUTING_KEY);
+        CamtrapDpDownloadFinishedMessage.class, CamtrapDpDownloadFinishedMessage.ROUTING_KEY);
     MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);
   }
 
