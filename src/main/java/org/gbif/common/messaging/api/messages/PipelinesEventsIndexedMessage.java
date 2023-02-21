@@ -45,14 +45,14 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage, Pipe
 
   @JsonCreator
   public PipelinesEventsIndexedMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-    @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
-    @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
-    @JsonProperty("resetPrefix") String resetPrefix,
-    @JsonProperty("executionId") Long executionId,
-    @JsonProperty("runner") String runner) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
+      @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
+      @JsonProperty("resetPrefix") String resetPrefix,
+      @JsonProperty("executionId") Long executionId,
+      @JsonProperty("runner") String runner) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -66,8 +66,10 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage, Pipe
 
   @Override
   public DatasetInfo getDatasetInfo() {
-    boolean containsOccurrences = Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
-    boolean containsEvents = Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
+    boolean containsOccurrences =
+        Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
+    boolean containsEvents =
+        Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
     return new DatasetInfo(DatasetType.SAMPLING_EVENT, containsOccurrences, containsEvents);
   }
 
@@ -149,11 +151,11 @@ public class PipelinesEventsIndexedMessage implements PipelineBasedMessage, Pipe
     }
     PipelinesEventsIndexedMessage that = (PipelinesEventsIndexedMessage) o;
     return attempt == that.attempt
-      && Objects.equals(datasetUuid, that.datasetUuid)
-      && Objects.equals(pipelineSteps, that.pipelineSteps)
-      && Objects.equals(resetPrefix, that.resetPrefix)
-      && Objects.equals(executionId, that.executionId)
-      && Objects.equals(runner, that.runner);
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(resetPrefix, that.resetPrefix)
+        && Objects.equals(executionId, that.executionId)
+        && Objects.equals(runner, that.runner);
   }
 
   @Override

@@ -77,8 +77,10 @@ public class PipelinesEventsInterpretedMessage
 
   @Override
   public DatasetInfo getDatasetInfo() {
-    boolean containsOccurrences = Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
-    boolean containsEvents = Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
+    boolean containsOccurrences =
+        Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
+    boolean containsEvents =
+        Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
     return new DatasetInfo(DatasetType.SAMPLING_EVENT, containsOccurrences, containsEvents);
   }
 

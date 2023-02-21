@@ -38,7 +38,8 @@ public interface PipelineBasedMessage extends DatasetBasedMessage {
     boolean containsOccurrences;
     boolean containsEvents;
 
-    public DatasetInfo(DatasetType datasetType, boolean containsOccurrences, boolean containsEvents) {
+    public DatasetInfo(
+        DatasetType datasetType, boolean containsOccurrences, boolean containsEvents) {
       this.datasetType = datasetType;
       this.containsOccurrences = containsOccurrences;
       this.containsEvents = containsEvents;

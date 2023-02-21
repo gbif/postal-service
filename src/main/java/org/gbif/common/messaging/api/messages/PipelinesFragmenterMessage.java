@@ -40,10 +40,10 @@ public class PipelinesFragmenterMessage implements PipelineBasedMessage {
 
   @JsonCreator
   public PipelinesFragmenterMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-    @JsonProperty("executionId") Long executionId) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -115,9 +115,9 @@ public class PipelinesFragmenterMessage implements PipelineBasedMessage {
     }
     PipelinesFragmenterMessage that = (PipelinesFragmenterMessage) o;
     return attempt == that.attempt
-      && Objects.equals(datasetUuid, that.datasetUuid)
-      && Objects.equals(pipelineSteps, that.pipelineSteps)
-      && Objects.equals(executionId, that.executionId);
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override

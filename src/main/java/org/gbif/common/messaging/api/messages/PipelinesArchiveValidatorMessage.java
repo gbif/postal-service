@@ -64,7 +64,7 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
   @Override
   public DatasetInfo getDatasetInfo() {
-      throw new UnsupportedOperationException("The method is not implemented!");
+    throw new UnsupportedOperationException("The method is not implemented!");
   }
 
   @Override

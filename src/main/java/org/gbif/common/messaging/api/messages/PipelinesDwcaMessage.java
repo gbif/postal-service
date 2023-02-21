@@ -80,16 +80,18 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   @Override
   public DatasetInfo getDatasetInfo() {
-    boolean containsOccurrences = Optional.ofNullable(validationReport)
-      .map(DwcaValidationReport::getOccurrenceReport)
-      .map(OccurrenceValidationReport::getUniqueOccurrenceIds)
-      .map(count-> count > 0)
-      .orElse(false);
-    boolean containsEvents = Optional.ofNullable(validationReport)
-      .map(DwcaValidationReport::getGenericReport)
-      .map(GenericValidationReport::getCheckedRecords)
-      .map(count-> count > 0)
-      .orElse(false);
+    boolean containsOccurrences =
+        Optional.ofNullable(validationReport)
+            .map(DwcaValidationReport::getOccurrenceReport)
+            .map(OccurrenceValidationReport::getUniqueOccurrenceIds)
+            .map(count -> count > 0)
+            .orElse(false);
+    boolean containsEvents =
+        Optional.ofNullable(validationReport)
+            .map(DwcaValidationReport::getGenericReport)
+            .map(GenericValidationReport::getCheckedRecords)
+            .map(count -> count > 0)
+            .orElse(false);
     return new DatasetInfo(datasetType, containsOccurrences, containsEvents);
   }
 

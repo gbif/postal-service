@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** This message indicates that the Event HDFS view of a dataset has finished. */
 public class PipelinesEventsHdfsViewMessage
-  implements PipelineBasedMessage, PipelinesRunnerMessage {
+    implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.events.hdfsview.finished";
 
@@ -45,13 +45,13 @@ public class PipelinesEventsHdfsViewMessage
 
   @JsonCreator
   public PipelinesEventsHdfsViewMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-    @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
-    @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
-    @JsonProperty("runner") String runner,
-    @JsonProperty("executionId") Long executionId) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
+      @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
+      @JsonProperty("runner") String runner,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -64,8 +64,10 @@ public class PipelinesEventsHdfsViewMessage
 
   @Override
   public DatasetInfo getDatasetInfo() {
-    boolean containsOccurrences = Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
-    boolean containsEvents = Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
+    boolean containsOccurrences =
+        Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
+    boolean containsEvents =
+        Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
     return new DatasetInfo(DatasetType.SAMPLING_EVENT, containsOccurrences, containsEvents);
   }
 
@@ -138,10 +140,10 @@ public class PipelinesEventsHdfsViewMessage
     }
     PipelinesEventsHdfsViewMessage that = (PipelinesEventsHdfsViewMessage) o;
     return attempt == that.attempt
-      && Objects.equals(datasetUuid, that.datasetUuid)
-      && Objects.equals(pipelineSteps, that.pipelineSteps)
-      && Objects.equals(runner, that.runner)
-      && Objects.equals(executionId, that.executionId);
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override

@@ -41,11 +41,11 @@ public class PipelinesHdfsViewMessage implements PipelineBasedMessage, Pipelines
 
   @JsonCreator
   public PipelinesHdfsViewMessage(
-    @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt,
-    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-    @JsonProperty("runner") String runner,
-    @JsonProperty("executionId") Long executionId) {
+      @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("attempt") int attempt,
+      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+      @JsonProperty("runner") String runner,
+      @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -128,10 +128,10 @@ public class PipelinesHdfsViewMessage implements PipelineBasedMessage, Pipelines
     }
     PipelinesHdfsViewMessage that = (PipelinesHdfsViewMessage) o;
     return attempt == that.attempt
-      && Objects.equals(datasetUuid, that.datasetUuid)
-      && Objects.equals(pipelineSteps, that.pipelineSteps)
-      && Objects.equals(runner, that.runner)
-      && Objects.equals(executionId, that.executionId);
+        && Objects.equals(datasetUuid, that.datasetUuid)
+        && Objects.equals(pipelineSteps, that.pipelineSteps)
+        && Objects.equals(runner, that.runner)
+        && Objects.equals(executionId, that.executionId);
   }
 
   @Override

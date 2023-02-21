@@ -80,14 +80,16 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
 
   @Override
   public DatasetInfo getDatasetInfo() {
-    boolean containsOccurrences = Optional.ofNullable(validationResult)
-      .map(ValidationResult::getNumberOfRecords)
-      .map(count-> count > 0)
-      .orElse(false);
-    boolean containsEvents = Optional.ofNullable(validationResult)
-      .map(ValidationResult::getNumberOfEventRecords)
-      .map(count-> count > 0)
-      .orElse(false);
+    boolean containsOccurrences =
+        Optional.ofNullable(validationResult)
+            .map(ValidationResult::getNumberOfRecords)
+            .map(count -> count > 0)
+            .orElse(false);
+    boolean containsEvents =
+        Optional.ofNullable(validationResult)
+            .map(ValidationResult::getNumberOfEventRecords)
+            .map(count -> count > 0)
+            .orElse(false);
     return new DatasetInfo(datasetType, containsOccurrences, containsEvents);
   }
 
