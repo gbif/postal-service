@@ -13,11 +13,13 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,36 +27,46 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/** This message indicates that the HDFS view of a dataset has finished. */
-public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
+/** This message indicates that the Event HDFS view of a dataset has finished. */
+public class PipelinesEventsHdfsViewMessage
+  implements PipelineBasedMessage, PipelinesRunnerMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.hdfsview.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.events.hdfsview.finished";
 
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
   private String runner;
   private Long executionId;
+  private Long numberOfOccurrenceRecords;
+  private Long numberOfEventRecords;
 
-  public PipelinesHdfsViewBuiltMessage() {}
+  public PipelinesEventsHdfsViewMessage() {}
 
   @JsonCreator
-  public PipelinesHdfsViewBuiltMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner,
-      @JsonProperty("executionId") Long executionId) {
+  public PipelinesEventsHdfsViewMessage(
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") int attempt,
+    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+    @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
+    @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
+    @JsonProperty("runner") String runner,
+    @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
+    this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
+    this.numberOfEventRecords = numberOfEventRecords;
     this.runner = runner;
     this.executionId = executionId;
   }
 
-  public PipelinesHdfsViewBuiltMessage(UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
-    this(datasetUuid, attempt, pipelineSteps, null, null);
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    boolean containsOccurrences = Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
+    boolean containsEvents = Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
+    return new DatasetInfo(DatasetType.SAMPLING_EVENT, containsOccurrences, containsEvents);
   }
 
   @Override
@@ -91,22 +103,22 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage, Pipe
     return runner;
   }
 
-  public PipelinesHdfsViewBuiltMessage setDatasetUuid(UUID datasetUuid) {
+  public PipelinesEventsHdfsViewMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
   }
 
-  public PipelinesHdfsViewBuiltMessage setAttempt(int attempt) {
+  public PipelinesEventsHdfsViewMessage setAttempt(int attempt) {
     this.attempt = attempt;
     return this;
   }
 
-  public PipelinesHdfsViewBuiltMessage setPipelineSteps(Set<String> pipelineSteps) {
+  public PipelinesEventsHdfsViewMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
     return this;
   }
 
-  public PipelinesHdfsViewBuiltMessage setRunner(String runner) {
+  public PipelinesEventsHdfsViewMessage setRunner(String runner) {
     this.runner = runner;
     return this;
   }
@@ -124,12 +136,12 @@ public class PipelinesHdfsViewBuiltMessage implements PipelineBasedMessage, Pipe
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PipelinesHdfsViewBuiltMessage that = (PipelinesHdfsViewBuiltMessage) o;
+    PipelinesEventsHdfsViewMessage that = (PipelinesEventsHdfsViewMessage) o;
     return attempt == that.attempt
-        && Objects.equals(datasetUuid, that.datasetUuid)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(runner, that.runner)
-        && Objects.equals(executionId, that.executionId);
+      && Objects.equals(datasetUuid, that.datasetUuid)
+      && Objects.equals(pipelineSteps, that.pipelineSteps)
+      && Objects.equals(runner, that.runner)
+      && Objects.equals(executionId, that.executionId);
   }
 
   @Override

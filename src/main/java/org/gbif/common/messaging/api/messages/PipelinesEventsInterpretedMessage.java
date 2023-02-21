@@ -13,12 +13,14 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,7 +40,6 @@ public class PipelinesEventsInterpretedMessage
   private Long numberOfOccurrenceRecords;
   private Long numberOfEventRecords;
   private String resetPrefix;
-  private String onlyForStep;
   private Long executionId;
   private EndpointType endpointType;
   private Set<String> interpretTypes;
@@ -55,7 +56,6 @@ public class PipelinesEventsInterpretedMessage
       @JsonProperty("numberOfOccurrenceRecords") Long numberOfOccurrenceRecords,
       @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
       @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("onlyForStep") String onlyForStep,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
@@ -68,12 +68,18 @@ public class PipelinesEventsInterpretedMessage
     this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
     this.numberOfEventRecords = numberOfEventRecords;
     this.resetPrefix = resetPrefix;
-    this.onlyForStep = onlyForStep;
     this.executionId = executionId;
     this.endpointType = endpointType;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
     this.repeatAttempt = repeatAttempt;
     this.runner = runner;
+  }
+
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    boolean containsOccurrences = Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
+    boolean containsEvents = Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
+    return new DatasetInfo(DatasetType.SAMPLING_EVENT, containsOccurrences, containsEvents);
   }
 
   @Override
@@ -126,11 +132,6 @@ public class PipelinesEventsInterpretedMessage
     return interpretTypes;
   }
 
-  @Override
-  public String getOnlyForStep() {
-    return onlyForStep;
-  }
-
   public boolean isRepeatAttempt() {
     return repeatAttempt;
   }
@@ -168,11 +169,6 @@ public class PipelinesEventsInterpretedMessage
 
   public PipelinesEventsInterpretedMessage setResetPrefix(String resetPrefix) {
     this.resetPrefix = resetPrefix;
-    return this;
-  }
-
-  public PipelinesEventsInterpretedMessage setOnlyForStep(String onlyForStep) {
-    this.onlyForStep = onlyForStep;
     return this;
   }
 
@@ -214,7 +210,6 @@ public class PipelinesEventsInterpretedMessage
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(onlyForStep, that.onlyForStep)
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfOccurrenceRecords, that.numberOfOccurrenceRecords)
@@ -231,7 +226,6 @@ public class PipelinesEventsInterpretedMessage
         attempt,
         pipelineSteps,
         resetPrefix,
-        onlyForStep,
         executionId,
         numberOfOccurrenceRecords,
         numberOfEventRecords,

@@ -21,6 +21,7 @@ import org.gbif.utils.PreconditionUtils;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -43,7 +44,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRu
   private Long numberOfEventRecords;
   private boolean repeatAttempt;
   private String resetPrefix;
-  private String onlyForStep;
   private Long executionId;
   private EndpointType endpointType;
   private ValidationResult validationResult;
@@ -62,7 +62,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRu
       @JsonProperty("runner") String runner,
       @JsonProperty("repeatAttempt") boolean repeatAttempt,
       @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("onlyForStep") String onlyForStep,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("endpointType") EndpointType endpointType,
       @JsonProperty("validationResult") ValidationResult validationResult,
@@ -77,12 +76,18 @@ public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRu
     this.numberOfOccurrenceRecords = numberOfOccurrenceRecords;
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
-    this.onlyForStep = onlyForStep;
     this.executionId = executionId;
     this.endpointType = endpointType;
     this.validationResult = validationResult;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
     this.datasetType = datasetType;
+  }
+
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    boolean containsOccurrences = Optional.ofNullable(numberOfOccurrenceRecords).map(count -> count > 0).orElse(false);
+    boolean containsEvents = Optional.ofNullable(numberOfEventRecords).map(count -> count > 0).orElse(false);
+    return new DatasetInfo(DatasetType.SAMPLING_EVENT, containsOccurrences, containsEvents);
   }
 
   @Override
@@ -133,10 +138,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRu
 
   public String getResetPrefix() {
     return resetPrefix;
-  }
-
-  public String getOnlyForStep() {
-    return onlyForStep;
   }
 
   public EndpointType getEndpointType() {
@@ -195,11 +196,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRu
     return this;
   }
 
-  public PipelinesEventsMessage setOnlyForStep(String onlyForStep) {
-    this.onlyForStep = onlyForStep;
-    return this;
-  }
-
   public PipelinesEventsMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
@@ -240,7 +236,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRu
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(runner, that.runner)
         && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(onlyForStep, that.onlyForStep)
         && Objects.equals(executionId, that.executionId)
         && Objects.equals(endpointType, that.endpointType)
         && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
@@ -259,7 +254,6 @@ public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRu
         runner,
         repeatAttempt,
         resetPrefix,
-        onlyForStep,
         executionId,
         numberOfEventRecords,
         numberOfOccurrenceRecords,

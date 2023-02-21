@@ -14,6 +14,8 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
+import org.gbif.api.model.crawler.GenericValidationReport;
+import org.gbif.api.model.crawler.OccurrenceValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -73,6 +76,21 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.platform = platform != null ? platform : Platform.ALL;
     this.executionId = executionId;
+  }
+
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    boolean containsOccurrences = Optional.ofNullable(validationReport)
+      .map(DwcaValidationReport::getOccurrenceReport)
+      .map(OccurrenceValidationReport::getUniqueOccurrenceIds)
+      .map(count-> count > 0)
+      .orElse(false);
+    boolean containsEvents = Optional.ofNullable(validationReport)
+      .map(DwcaValidationReport::getGenericReport)
+      .map(GenericValidationReport::getCheckedRecords)
+      .map(count-> count > 0)
+      .orElse(false);
+    return new DatasetInfo(datasetType, containsOccurrences, containsEvents);
   }
 
   /** @return dataset uuid */

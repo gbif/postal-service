@@ -19,6 +19,7 @@ import org.gbif.api.vocabulary.EndpointType;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -75,6 +76,19 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
     this.datasetType = datasetType;
+  }
+
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    boolean containsOccurrences = Optional.ofNullable(validationResult)
+      .map(ValidationResult::getNumberOfRecords)
+      .map(count-> count > 0)
+      .orElse(false);
+    boolean containsEvents = Optional.ofNullable(validationResult)
+      .map(ValidationResult::getNumberOfEventRecords)
+      .map(count-> count > 0)
+      .orElse(false);
+    return new DatasetInfo(datasetType, containsOccurrences, containsEvents);
   }
 
   /** @return datasetUUID for the converted dataset */

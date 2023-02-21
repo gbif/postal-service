@@ -13,6 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
 
@@ -144,6 +145,11 @@ public class PipelinesAbcdMessage implements PipelineBasedMessage {
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
+  }
+
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    return new DatasetInfo(DatasetType.OCCURRENCE, true, false);
   }
 
   @Override

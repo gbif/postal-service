@@ -23,7 +23,5 @@ public interface PipelinesInterpretationMessage
 
   Set<String> getInterpretTypes();
 
-  String getOnlyForStep();
-
   void setInterpretTypes(Set<String> interpretTypes);
 }

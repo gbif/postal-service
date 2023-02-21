@@ -99,6 +99,11 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
   }
 
   @Override
+  public DatasetInfo getDatasetInfo() {
+    throw new UnsupportedOperationException("The method is not implemented!");
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;

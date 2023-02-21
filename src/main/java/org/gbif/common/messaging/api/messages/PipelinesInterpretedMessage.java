@@ -21,6 +21,7 @@ import org.gbif.utils.PreconditionUtils;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_INTERPRETED_TO_IND
  * occurrence in the dataset.
  */
 public class PipelinesInterpretedMessage
-    implements PipelinesInterpretationMessage, PipelinesRunnerMessage {
+  implements PipelinesInterpretationMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished";
 
@@ -47,7 +48,6 @@ public class PipelinesInterpretedMessage
   private Long numberOfEventRecords;
   private boolean repeatAttempt;
   private String resetPrefix;
-  private String onlyForStep;
   private Long executionId;
   private EndpointType endpointType;
   private ValidationResult validationResult;
@@ -58,20 +58,19 @@ public class PipelinesInterpretedMessage
 
   @JsonCreator
   public PipelinesInterpretedMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("numberOfRecords") Long numberOfRecords,
-      @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
-      @JsonProperty("runner") String runner,
-      @JsonProperty("repeatAttempt") boolean repeatAttempt,
-      @JsonProperty("resetPrefix") String resetPrefix,
-      @JsonProperty("onlyForStep") String onlyForStep,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("validationResult") ValidationResult validationResult,
-      @JsonProperty("interpretTypes") Set<String> interpretTypes,
-      @JsonProperty("datasetType") DatasetType datasetType) {
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") int attempt,
+    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+    @JsonProperty("numberOfRecords") Long numberOfRecords,
+    @JsonProperty("numberOfEventRecords") Long numberOfEventRecords,
+    @JsonProperty("runner") String runner,
+    @JsonProperty("repeatAttempt") boolean repeatAttempt,
+    @JsonProperty("resetPrefix") String resetPrefix,
+    @JsonProperty("executionId") Long executionId,
+    @JsonProperty("endpointType") EndpointType endpointType,
+    @JsonProperty("validationResult") ValidationResult validationResult,
+    @JsonProperty("interpretTypes") Set<String> interpretTypes,
+    @JsonProperty("datasetType") DatasetType datasetType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -81,12 +80,24 @@ public class PipelinesInterpretedMessage
     this.numberOfEventRecords = numberOfEventRecords;
     this.repeatAttempt = repeatAttempt;
     this.resetPrefix = resetPrefix;
-    this.onlyForStep = onlyForStep;
     this.executionId = executionId;
     this.endpointType = endpointType;
     this.validationResult = validationResult;
     this.interpretTypes = interpretTypes == null ? Collections.emptySet() : interpretTypes;
     this.datasetType = datasetType;
+  }
+
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    boolean containsOccurrences = Optional.ofNullable(validationResult)
+      .map(ValidationResult::getNumberOfRecords)
+      .map(count -> count > 0)
+      .orElse(false);
+    boolean containsEvents = Optional.ofNullable(validationResult)
+      .map(ValidationResult::getNumberOfEventRecords)
+      .map(count -> count > 0)
+      .orElse(false);
+    return new DatasetInfo(datasetType, containsOccurrences, containsEvents);
   }
 
   @Override
@@ -141,12 +152,6 @@ public class PipelinesInterpretedMessage
   public String getResetPrefix() {
     return resetPrefix;
   }
-
-  @Override
-  public String getOnlyForStep() {
-    return onlyForStep;
-  }
-
   public EndpointType getEndpointType() {
     return endpointType;
   }
@@ -200,11 +205,6 @@ public class PipelinesInterpretedMessage
     return this;
   }
 
-  public PipelinesInterpretedMessage setOnlyForStep(String onlyForStep) {
-    this.onlyForStep = onlyForStep;
-    return this;
-  }
-
   public PipelinesInterpretedMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
@@ -244,38 +244,36 @@ public class PipelinesInterpretedMessage
     }
     PipelinesInterpretedMessage that = (PipelinesInterpretedMessage) o;
     return attempt == that.attempt
-        && repeatAttempt == that.repeatAttempt
-        && Objects.equals(datasetUuid, that.datasetUuid)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(runner, that.runner)
-        && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(onlyForStep, that.onlyForStep)
-        && Objects.equals(executionId, that.executionId)
-        && Objects.equals(endpointType, that.endpointType)
-        && Objects.equals(numberOfRecords, that.numberOfRecords)
-        && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
-        && Objects.equals(validationResult, that.validationResult)
-        && Objects.equals(interpretTypes, that.interpretTypes)
-        && datasetType == that.datasetType;
+      && repeatAttempt == that.repeatAttempt
+      && Objects.equals(datasetUuid, that.datasetUuid)
+      && Objects.equals(pipelineSteps, that.pipelineSteps)
+      && Objects.equals(runner, that.runner)
+      && Objects.equals(resetPrefix, that.resetPrefix)
+      && Objects.equals(executionId, that.executionId)
+      && Objects.equals(endpointType, that.endpointType)
+      && Objects.equals(numberOfRecords, that.numberOfRecords)
+      && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
+      && Objects.equals(validationResult, that.validationResult)
+      && Objects.equals(interpretTypes, that.interpretTypes)
+      && datasetType == that.datasetType;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid,
-        attempt,
-        pipelineSteps,
-        runner,
-        repeatAttempt,
-        resetPrefix,
-        onlyForStep,
-        executionId,
-        numberOfRecords,
-        numberOfEventRecords,
-        endpointType,
-        validationResult,
-        interpretTypes,
-        datasetType);
+      datasetUuid,
+      attempt,
+      pipelineSteps,
+      runner,
+      repeatAttempt,
+      resetPrefix,
+      executionId,
+      numberOfRecords,
+      numberOfEventRecords,
+      endpointType,
+      validationResult,
+      interpretTypes,
+      datasetType);
   }
 
   @Override

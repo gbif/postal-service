@@ -14,6 +14,7 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.FinishReason;
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
 
@@ -66,6 +67,11 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
     this.endpointType = endpointType;
     this.platform = platform != null ? platform : Platform.ALL;
     this.executionId = executionId;
+  }
+
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    return new DatasetInfo(DatasetType.OCCURRENCE, true, false);
   }
 
   @Override

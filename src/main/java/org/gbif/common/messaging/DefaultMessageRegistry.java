@@ -89,7 +89,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(PipelinesVerbatimMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesInterpretedMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesIndexedMessage.class, "occurrence");
-    messageToExchangeMappingInternal.put(PipelinesHdfsViewBuiltMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesHdfsViewMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesBalancerMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesFragmenterMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesArchiveValidatorMessage.class, "occurrence");
@@ -99,7 +99,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(PipelinesEventsMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesEventsInterpretedMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesEventsIndexedMessage.class, "occurrence");
-    messageToExchangeMappingInternal.put(PipelinesEventsHdfsViewBuiltMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesEventsHdfsViewMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(VocabularyReleasedMessage.class, "vocabulary");
     messageToExchangeMappingInternal.put(CamtrapDpDownloadFinishedMessage.class, "crawler");
     MESSAGE_TO_EXCHANGE_MAPPING = Collections.unmodifiableMap(messageToExchangeMappingInternal);
@@ -156,7 +156,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToRoutingKeyMapping.put(
         PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
-        PipelinesHdfsViewBuiltMessage.class, PipelinesHdfsViewBuiltMessage.ROUTING_KEY);
+        PipelinesHdfsViewMessage.class, PipelinesHdfsViewMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         PipelinesBalancerMessage.class, PipelinesBalancerMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
@@ -178,7 +178,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToRoutingKeyMapping.put(
         PipelinesEventsIndexedMessage.class, PipelinesEventsIndexedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
-        PipelinesEventsHdfsViewBuiltMessage.class, PipelinesEventsHdfsViewBuiltMessage.ROUTING_KEY);
+        PipelinesEventsHdfsViewMessage.class, PipelinesEventsHdfsViewMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         CamtrapDpDownloadFinishedMessage.class, CamtrapDpDownloadFinishedMessage.ROUTING_KEY);
     MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);

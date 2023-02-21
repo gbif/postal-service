@@ -13,6 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.utils.PreconditionUtils;
 
 import java.io.IOException;
@@ -25,11 +26,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-/** This message indicates that the Event HDFS view of a dataset has finished. */
-public class PipelinesEventsHdfsViewBuiltMessage
-    implements PipelineBasedMessage, PipelinesRunnerMessage {
+/** This message indicates that the HDFS view of a dataset has finished. */
+public class PipelinesHdfsViewMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.events.hdfsview.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.hdfsview.finished";
 
   private UUID datasetUuid;
   private int attempt;
@@ -37,15 +37,15 @@ public class PipelinesEventsHdfsViewBuiltMessage
   private String runner;
   private Long executionId;
 
-  public PipelinesEventsHdfsViewBuiltMessage() {}
+  public PipelinesHdfsViewMessage() {}
 
   @JsonCreator
-  public PipelinesEventsHdfsViewBuiltMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("runner") String runner,
-      @JsonProperty("executionId") Long executionId) {
+  public PipelinesHdfsViewMessage(
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") int attempt,
+    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+    @JsonProperty("runner") String runner,
+    @JsonProperty("executionId") Long executionId) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -54,9 +54,9 @@ public class PipelinesEventsHdfsViewBuiltMessage
     this.executionId = executionId;
   }
 
-  public PipelinesEventsHdfsViewBuiltMessage(
-      UUID datasetUuid, int attempt, Set<String> pipelineSteps) {
-    this(datasetUuid, attempt, pipelineSteps, null, null);
+  @Override
+  public DatasetInfo getDatasetInfo() {
+    return new DatasetInfo(DatasetType.OCCURRENCE, true, false);
   }
 
   @Override
@@ -93,22 +93,22 @@ public class PipelinesEventsHdfsViewBuiltMessage
     return runner;
   }
 
-  public PipelinesEventsHdfsViewBuiltMessage setDatasetUuid(UUID datasetUuid) {
+  public PipelinesHdfsViewMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
   }
 
-  public PipelinesEventsHdfsViewBuiltMessage setAttempt(int attempt) {
+  public PipelinesHdfsViewMessage setAttempt(int attempt) {
     this.attempt = attempt;
     return this;
   }
 
-  public PipelinesEventsHdfsViewBuiltMessage setPipelineSteps(Set<String> pipelineSteps) {
+  public PipelinesHdfsViewMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
     return this;
   }
 
-  public PipelinesEventsHdfsViewBuiltMessage setRunner(String runner) {
+  public PipelinesHdfsViewMessage setRunner(String runner) {
     this.runner = runner;
     return this;
   }
@@ -126,12 +126,12 @@ public class PipelinesEventsHdfsViewBuiltMessage
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PipelinesEventsHdfsViewBuiltMessage that = (PipelinesEventsHdfsViewBuiltMessage) o;
+    PipelinesHdfsViewMessage that = (PipelinesHdfsViewMessage) o;
     return attempt == that.attempt
-        && Objects.equals(datasetUuid, that.datasetUuid)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(runner, that.runner)
-        && Objects.equals(executionId, that.executionId);
+      && Objects.equals(datasetUuid, that.datasetUuid)
+      && Objects.equals(pipelineSteps, that.pipelineSteps)
+      && Objects.equals(runner, that.runner)
+      && Objects.equals(executionId, that.executionId);
   }
 
   @Override

@@ -13,7 +13,11 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
+
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public interface PipelineBasedMessage extends DatasetBasedMessage {
 
@@ -24,4 +28,32 @@ public interface PipelineBasedMessage extends DatasetBasedMessage {
   Long getExecutionId();
 
   void setExecutionId(Long executionId);
+
+  @JsonIgnore
+  DatasetInfo getDatasetInfo();
+
+  class DatasetInfo {
+
+    DatasetType datasetType;
+    boolean containsOccurrences;
+    boolean containsEvents;
+
+    public DatasetInfo(DatasetType datasetType, boolean containsOccurrences, boolean containsEvents) {
+      this.datasetType = datasetType;
+      this.containsOccurrences = containsOccurrences;
+      this.containsEvents = containsEvents;
+    }
+
+    public DatasetType getDatasetType() {
+      return datasetType;
+    }
+
+    public boolean isContainsOccurrences() {
+      return containsOccurrences;
+    }
+
+    public boolean isContainsEvents() {
+      return containsEvents;
+    }
+  }
 }
