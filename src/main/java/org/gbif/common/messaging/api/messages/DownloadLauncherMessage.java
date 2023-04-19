@@ -13,7 +13,7 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import java.io.Serializable;
+import org.gbif.common.messaging.api.Message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class DownloadLauncherMessage implements Serializable {
+public class DownloadLauncherMessage implements Message {
+
+  public static final String ROUTING_KEY = "occurrence.download.launch";
 
   private final String jobId;
 
@@ -30,4 +32,8 @@ public class DownloadLauncherMessage implements Serializable {
     this.jobId = jobId;
   }
 
+  @Override
+  public String getRoutingKey() {
+    return ROUTING_KEY;
+  }
 }
