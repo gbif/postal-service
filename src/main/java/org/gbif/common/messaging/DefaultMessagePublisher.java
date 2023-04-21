@@ -36,6 +36,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
@@ -51,6 +52,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   private final Connection connection;
   private final MessageRegistry registry;
   private final ObjectMapper mapper;
+  protected String customContentType = null;
 
   /**
    * The pool of channels available for use. Clients will reuse available channels, but when the
@@ -143,7 +145,11 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         if (persistent) {
           channel.basicPublish(exchange, routingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, data);
         } else {
-          channel.basicPublish(exchange, routingKey, MessageProperties.TEXT_PLAIN, data);
+          BasicProperties properties = MessageProperties.TEXT_PLAIN;
+          if (customContentType != null) {
+            properties.setContentType(customContentType);
+          }
+          channel.basicPublish(exchange, routingKey, properties, data);
         }
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
         // exception occurred
