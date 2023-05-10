@@ -13,7 +13,6 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.occurrence.DownloadRequest;
 import org.gbif.common.messaging.api.Message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -22,18 +21,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class DownloadLauncherMessage implements Message {
+public class DownloadCancelMessage implements Message {
 
-  public static final String ROUTING_KEY = "occurrence.download.launch";
+  public static final String ROUTING_KEY = "occurrence.download.cancel";
 
   private final String downloadId;
-  private final DownloadRequest downloadRequest;
 
   @JsonCreator
-  public DownloadLauncherMessage(@JsonProperty("downloadId") String downloadId,
-    @JsonProperty("downloadRequest") DownloadRequest downloadRequest) {
+  public DownloadCancelMessage(@JsonProperty("downloadId") String downloadId) {
     this.downloadId = downloadId;
-    this.downloadRequest = downloadRequest;
   }
 
   @Override
