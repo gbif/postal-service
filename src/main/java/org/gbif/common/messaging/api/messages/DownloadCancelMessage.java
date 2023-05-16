@@ -25,11 +25,11 @@ public class DownloadCancelMessage implements Message {
 
   public static final String ROUTING_KEY = "occurrence.download.cancel";
 
-  private final String downloadId;
+  private final String downloadKey;
 
   @JsonCreator
-  public DownloadCancelMessage(@JsonProperty("downloadId") String downloadId) {
-    this.downloadId = downloadId;
+  public DownloadCancelMessage(@JsonProperty("downloadKey") String downloadKey) {
+    this.downloadKey = downloadKey;
   }
 
   @Override

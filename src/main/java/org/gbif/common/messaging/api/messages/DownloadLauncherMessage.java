@@ -26,13 +26,13 @@ public class DownloadLauncherMessage implements Message {
 
   public static final String ROUTING_KEY = "occurrence.download.launch";
 
-  private final String downloadId;
+  private final String downloadKey;
   private final DownloadRequest downloadRequest;
 
   @JsonCreator
-  public DownloadLauncherMessage(@JsonProperty("downloadId") String downloadId,
+  public DownloadLauncherMessage(@JsonProperty("downloadKey") String downloadKey,
     @JsonProperty("downloadRequest") DownloadRequest downloadRequest) {
-    this.downloadId = downloadId;
+    this.downloadKey = downloadKey;
     this.downloadRequest = downloadRequest;
   }
 
