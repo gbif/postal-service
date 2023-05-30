@@ -30,8 +30,9 @@ public class DownloadLauncherMessage implements Message {
   private final DownloadRequest downloadRequest;
 
   @JsonCreator
-  public DownloadLauncherMessage(@JsonProperty("downloadKey") String downloadKey,
-    @JsonProperty("downloadRequest") DownloadRequest downloadRequest) {
+  public DownloadLauncherMessage(
+      @JsonProperty("downloadKey") String downloadKey,
+      @JsonProperty("downloadRequest") DownloadRequest downloadRequest) {
     this.downloadKey = downloadKey;
     this.downloadRequest = downloadRequest;
   }

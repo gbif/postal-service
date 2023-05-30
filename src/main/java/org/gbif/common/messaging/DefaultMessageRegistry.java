@@ -185,8 +185,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
         CamtrapDpDownloadFinishedMessage.class, CamtrapDpDownloadFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         DownloadLauncherMessage.class, DownloadLauncherMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(
-        DownloadCancelMessage.class, DownloadCancelMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(DownloadCancelMessage.class, DownloadCancelMessage.ROUTING_KEY);
     MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);
   }
 
