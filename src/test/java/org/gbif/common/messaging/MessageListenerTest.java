@@ -17,6 +17,7 @@ import org.gbif.common.messaging.api.MessageRegistry;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class MessageListenerTest {
   private static final String QUEUE = "queue";
 
   @BeforeEach
-  public void setup() throws IOException {
+  public void setup() throws IOException, TimeoutException {
     MessageRegistry registry = new DefaultMessageRegistry();
     registry.register(TestMessage.class, DEFAULT_EXCHANGE, DEFAULT_ROUTINGKEY);
     when(connection.createChannel()).thenReturn(channel);
