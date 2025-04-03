@@ -10,7 +10,7 @@
 
   <groupId>org.gbif.common</groupId>
   <artifactId>gbif-postal-service</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
+  <version>2.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>GBIF Postal service</name>
@@ -20,15 +20,14 @@
     <connection>scm:git:git@github.com:gbif/postal-service.git</connection>
     <url>https://github.com/gbif/postal-service</url>
     <developerConnection>scm:git:git@github.com:gbif/postal-service.git</developerConnection>
-    <tag>gbif-postal-service-2.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
     <spotless.check.skip>false</spotless.check.skip>
-
-    <amqp-client.version>3.1.4</amqp-client.version>
+    <amqp-client.version>5.22.0</amqp-client.version>
     <commons-io.version>2.7</commons-io.version>
-    <gbif-api.version>2.0.0</gbif-api.version>
+    <gbif-api.version>2.2.0-SNAPSHOT</gbif-api.version>
     <gbif-common.version>0.53</gbif-common.version>
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
@@ -39,6 +38,12 @@
     <slf4j.version>1.7.30</slf4j.version>
     <reflections.version>0.9.10</reflections.version>
     <validation-api.version>2.0.1.Final</validation-api.version>
+
+    <!-- JaCoCo -->
+    <coverage.dir>${project.basedir}/target/coverage</coverage.dir>
+    <coverage.report.it.dir>${project.basedir}/target/site/jacoco-it</coverage.report.it.dir>
+    <coverage.report.ut.dir>${project.basedir}/target/site/jacoco-ut</coverage.report.ut.dir>
+    <sonar.coverage.jacoco.xmlReportPaths>${coverage.report.ut.dir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
   <repositories>
@@ -163,6 +168,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

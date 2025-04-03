@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +95,12 @@ public class MessageListener implements AutoCloseable {
     LOG.info("Connecting to AMQP broker {}", connectionParameters);
     connectionFactory = connectionParameters.getConnectionFactory();
     // This ensures that the connection is valid, otherwise it'd throw an exception now
-    Connection connection = connectionFactory.newConnection();
+    Connection connection = null;
+    try {
+      connection = connectionFactory.newConnection();
+    } catch (TimeoutException e) {
+      throw new IOException(e);
+    }
     connection.close(); // we don't store this or reuse it
   }
 
@@ -169,14 +175,19 @@ public class MessageListener implements AutoCloseable {
     PreconditionUtils.checkArgument(
         numberOfThreads >= 1, "numberOfThreads needs to be greater than or equal to 1");
 
-    Connection connection =
-        connectionFactory.newConnection(
-            Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue)));
-    Channel channel = connection.createChannel();
-    channel.exchangeDeclare(exchange, "topic", true);
-    channel.queueDeclare(queue, true, false, false, null);
-    channel.queueBind(queue, exchange, routingKey);
-    channel.close();
+    Connection connection = null;
+    Channel channel = null;
+    try {
+      connection = connectionFactory.newConnection(
+          Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue)));
+      channel = connection.createChannel();
+      channel.exchangeDeclare(exchange, "topic", true);
+      channel.queueDeclare(queue, true, false, false, null);
+      channel.queueBind(queue, exchange, routingKey);
+      channel.close();
+    } catch (TimeoutException e) {
+      throw new IOException(e);
+    }
 
     LOG.debug(
         "Starting to listen on exchange [{}], queue [{}] and routing key [{}] for messages of type [{}]",
