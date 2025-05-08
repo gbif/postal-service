@@ -104,6 +104,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(CamtrapDpDownloadFinishedMessage.class, "crawler");
     messageToExchangeMappingInternal.put(DownloadLauncherMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(DownloadCancelMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(DataWarehouseMessage.class, "occurrence");
     MESSAGE_TO_EXCHANGE_MAPPING = Collections.unmodifiableMap(messageToExchangeMappingInternal);
 
     Map<Class<? extends Message>, String> messageToRoutingKeyMapping = new HashMap<>();
@@ -185,8 +186,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
         CamtrapDpDownloadFinishedMessage.class, CamtrapDpDownloadFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         DownloadLauncherMessage.class, DownloadLauncherMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(
-        DownloadCancelMessage.class, DownloadCancelMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(DownloadCancelMessage.class, DownloadCancelMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(DataWarehouseMessage.class, DataWarehouseMessage.ROUTING_KEY);
     MESSAGE_TO_ROUTING_KEY_MAPPING = Collections.unmodifiableMap(messageToRoutingKeyMapping);
   }
 
