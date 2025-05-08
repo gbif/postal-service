@@ -83,7 +83,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     boolean containsOccurrences =
         Optional.ofNullable(validationReport)
             .map(DwcaValidationReport::getOccurrenceReport)
-            .map(OccurrenceValidationReport::getUniqueOccurrenceIds)
+            .map(vr -> Math.max(vr.getUniqueOccurrenceIds(), vr.getUniqueTriplets()))
             .map(count -> count > 0)
             .orElse(false);
     boolean containsEvents =
