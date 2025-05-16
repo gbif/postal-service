@@ -15,7 +15,6 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.model.crawler.GenericValidationReport;
-import org.gbif.api.model.crawler.OccurrenceValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
