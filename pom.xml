@@ -46,15 +46,45 @@
     <sonar.coverage.jacoco.xmlReportPaths>${coverage.report.ut.dir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
+  <distributionManagement>
+    <site>
+      <id>gh-pages</id>
+      <url>http://gbif.github.io/occurrence/</url>
+    </site>
+    <repository>
+      <id>gbif-release</id>
+      <url>https://repository.gbif.org/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>gbif-deploy</id>
+      <url>https://repository.gbif.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <repositories>
     <repository>
       <id>gbif-all</id>
-      <url>https://repository.gbif.org/content/groups/gbif/</url>
+      <url>https://repository.gbif.org/content/groups/gbif</url>
     </repository>
     <repository>
-      <!-- for JCommander -->
+      <id>gbif-central</id>
+      <url>https://repository.gbif.org/repository/central/</url>
+    </repository>
+    <repository>
+      <id>gbif-release</id>
+      <url>https://repository.gbif.org/repository/releases/</url>
+    </repository>
+    <repository>
+      <id>gbif-snapshot</id>
+      <url>https://repository.gbif.org/repository/snapshots/</url>
+    </repository>
+    <repository>
       <id>gbif-thirdparty</id>
-      <url>https://repository.gbif.org/content/repositories/thirdparty</url>
+      <url>https://repository.gbif.org/repository/thirdparty/</url>
+    </repository>
+    <repository>
+      <id>gbif-thirdparty-snapshot</id>
+      <url>https://repository.gbif.org/repository/thirdparty-snapshot/</url>
     </repository>
   </repositories>
 
