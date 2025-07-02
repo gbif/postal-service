@@ -154,8 +154,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
 
           BasicProperties properties = null;
           if (customContentType != null) {
-            properties =
-              new BasicProperties.Builder().contentType(customContentType).build();
+            properties = new BasicProperties.Builder().contentType(customContentType).build();
           } else {
             properties = MessageProperties.TEXT_PLAIN;
           }

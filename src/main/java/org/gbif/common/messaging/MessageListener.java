@@ -178,8 +178,9 @@ public class MessageListener implements AutoCloseable {
     Connection connection = null;
     Channel channel = null;
     try {
-      connection = connectionFactory.newConnection(
-          Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue)));
+      connection =
+          connectionFactory.newConnection(
+              Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue)));
       channel = connection.createChannel();
       channel.exchangeDeclare(exchange, "topic", true);
       channel.queueDeclare(queue, true, false, false, null);

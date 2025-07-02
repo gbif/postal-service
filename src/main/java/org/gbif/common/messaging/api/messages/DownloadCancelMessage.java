@@ -13,28 +13,32 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 import org.gbif.api.model.occurrence.DownloadType;
 import org.gbif.common.messaging.api.Message;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
 
 @Data
 public class DownloadCancelMessage implements Message {
 
-    public static final String ROUTING_KEY = "occurrence.download.cancel";
+  public static final String ROUTING_KEY = "occurrence.download.cancel";
 
-    private final String downloadKey;
-    private final DownloadType downloadType;
+  private final String downloadKey;
+  private final DownloadType downloadType;
 
-    @JsonCreator
-    public DownloadCancelMessage(@JsonProperty("downloadKey") String downloadKey, @JsonProperty("downloadType") DownloadType downloadType) {
-        this.downloadKey = downloadKey;
-        this.downloadType = downloadType;
-    }
+  @JsonCreator
+  public DownloadCancelMessage(
+      @JsonProperty("downloadKey") String downloadKey,
+      @JsonProperty("downloadType") DownloadType downloadType) {
+    this.downloadKey = downloadKey;
+    this.downloadType = downloadType;
+  }
 
-    @Override
-    public String getRoutingKey() {
-        return ROUTING_KEY;
-    }
+  @Override
+  public String getRoutingKey() {
+    return ROUTING_KEY;
+  }
 }
