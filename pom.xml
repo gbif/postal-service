@@ -29,7 +29,7 @@
     <commons-io.version>2.7</commons-io.version>
     <gbif-api.version>2.1.9</gbif-api.version>
     <gbif-common.version>0.53</gbif-common.version>
-    <jackson.version>2.11.3</jackson.version>
+    <jackson.version>2.12.6.1</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.2</jsr305.version>
     <junit.version>5.8.1</junit.version>
