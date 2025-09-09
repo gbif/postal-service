@@ -27,7 +27,7 @@
     <spotless.check.skip>false</spotless.check.skip>
     <amqp-client.version>5.22.0</amqp-client.version>
     <commons-io.version>2.7</commons-io.version>
-    <gbif-api.version>2.1.9</gbif-api.version>
+    <gbif-api.version>2.1.16-SNAPSHOT</gbif-api.version>
     <gbif-common.version>0.53</gbif-common.version>
     <jackson.version>2.11.3</jackson.version>
     <jcommander.version>1.48</jcommander.version>
