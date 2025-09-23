@@ -41,6 +41,7 @@ public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
   private final Date lastModified;
   private final boolean modified;
   private final EndpointType endpointType;
+  private final Integer endpointKey;
   private final Platform platform;
 
   @JsonCreator
@@ -51,6 +52,7 @@ public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
       @Nullable @JsonProperty("lastModified") Date lastModified,
       @JsonProperty("modified") boolean modified,
       @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("endpointKey") Integer endpointKey,
       @JsonProperty("platform") Platform platform) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.source = Objects.requireNonNull(source, "source can't be null");
@@ -59,6 +61,7 @@ public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
     this.lastModified = lastModified;
     this.modified = modified;
     this.endpointType = endpointType;
+    this.endpointKey = endpointKey;
     this.platform = platform != null ? platform : Platform.ALL;
   }
 
@@ -100,6 +103,12 @@ public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
     return platform;
   }
 
+
+  /**Endpoint key used to crawl the dataset.*/
+  public Integer getEndpointKey() {
+    return endpointKey;
+  }
+
   @Override
   public String getRoutingKey() {
     return ROUTING_KEY;
@@ -116,13 +125,14 @@ public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
         && Objects.equals(source, that.source)
         && Objects.equals(lastModified, that.lastModified)
         && endpointType == that.endpointType
+        && Objects.equals(endpointKey, that.endpointKey)
         && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
+        datasetUuid, source, attempt, lastModified, modified, endpointType, endpointKey, platform);
   }
 
   @Override
@@ -134,6 +144,7 @@ public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
         .add("lastModified=" + lastModified)
         .add("modified=" + modified)
         .add("endpointType=" + endpointType)
+        .add("endpointKey=" + endpointKey)
         .add("platform=" + platform)
         .toString();
   }
