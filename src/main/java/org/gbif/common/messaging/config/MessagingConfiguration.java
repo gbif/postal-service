@@ -18,7 +18,7 @@ import org.gbif.common.messaging.ConnectionParameters;
 import java.io.IOException;
 import java.util.StringJoiner;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import com.beust.jcommander.Parameter;
 import com.rabbitmq.client.AMQP;

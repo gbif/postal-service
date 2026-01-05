@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import java.net.URI;
 import java.util.Date;

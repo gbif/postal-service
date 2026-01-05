@@ -19,7 +19,7 @@ import org.gbif.utils.PreconditionUtils;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
