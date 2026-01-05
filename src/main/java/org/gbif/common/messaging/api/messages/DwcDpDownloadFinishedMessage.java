@@ -13,8 +13,13 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
+
+import jakarta.annotation.Nullable;
 
 import java.net.URI;
 import java.util.Date;
@@ -22,18 +27,13 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
-import jakarta.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
- * We send this every time an CamtrapDP archive has been downloaded. This includes cases when the archive
+ * We send this every time an DwcDp archive has been downloaded. This includes cases when the archive
  * hasn't been modified since we last downloaded it.
  */
-public class CamtrapDpDownloadFinishedMessage implements DatasetBasedMessage {
+public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
 
-  public static final String ROUTING_KEY = "crawl.camtrapdp.download.finished";
+  public static final String ROUTING_KEY = "crawl.dwcdp.download.finished";
 
   private final UUID datasetUuid;
   private final URI source;
@@ -41,16 +41,18 @@ public class CamtrapDpDownloadFinishedMessage implements DatasetBasedMessage {
   private final Date lastModified;
   private final boolean modified;
   private final EndpointType endpointType;
+  private final Integer endpointKey;
   private final Platform platform;
 
   @JsonCreator
-  public CamtrapDpDownloadFinishedMessage(
+  public DwcDpDownloadFinishedMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("source") URI source,
       @JsonProperty("attempt") int attempt,
       @Nullable @JsonProperty("lastModified") Date lastModified,
       @JsonProperty("modified") boolean modified,
       @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("endpointKey") Integer endpointKey,
       @JsonProperty("platform") Platform platform) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.source = Objects.requireNonNull(source, "source can't be null");
@@ -59,6 +61,7 @@ public class CamtrapDpDownloadFinishedMessage implements DatasetBasedMessage {
     this.lastModified = lastModified;
     this.modified = modified;
     this.endpointType = endpointType;
+    this.endpointKey = endpointKey;
     this.platform = platform != null ? platform : Platform.ALL;
   }
 
@@ -100,6 +103,12 @@ public class CamtrapDpDownloadFinishedMessage implements DatasetBasedMessage {
     return platform;
   }
 
+
+  /**Endpoint key used to crawl the dataset.*/
+  public Integer getEndpointKey() {
+    return endpointKey;
+  }
+
   @Override
   public String getRoutingKey() {
     return ROUTING_KEY;
@@ -109,31 +118,33 @@ public class CamtrapDpDownloadFinishedMessage implements DatasetBasedMessage {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    CamtrapDpDownloadFinishedMessage that = (CamtrapDpDownloadFinishedMessage) o;
+    DwcDpDownloadFinishedMessage that = (DwcDpDownloadFinishedMessage) o;
     return attempt == that.attempt
         && modified == that.modified
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(source, that.source)
         && Objects.equals(lastModified, that.lastModified)
         && endpointType == that.endpointType
+        && Objects.equals(endpointKey, that.endpointKey)
         && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
+        datasetUuid, source, attempt, lastModified, modified, endpointType, endpointKey, platform);
   }
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", CamtrapDpDownloadFinishedMessage.class.getSimpleName() + "[", "]")
+    return new StringJoiner(", ", DwcDpDownloadFinishedMessage.class.getSimpleName() + "[", "]")
         .add("datasetUuid=" + datasetUuid)
         .add("source=" + source)
         .add("attempt=" + attempt)
         .add("lastModified=" + lastModified)
         .add("modified=" + modified)
         .add("endpointType=" + endpointType)
+        .add("endpointKey=" + endpointKey)
         .add("platform=" + platform)
         .toString();
   }
