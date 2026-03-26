@@ -102,6 +102,7 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(PipelinesEventsHdfsViewMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(VocabularyReleasedMessage.class, "vocabulary");
     messageToExchangeMappingInternal.put(CamtrapDpDownloadFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(ColDpDownloadFinishedMessage.class, "crawler");
     messageToExchangeMappingInternal.put(DwcDpDownloadFinishedMessage.class, "crawler");
     messageToExchangeMappingInternal.put(DownloadLauncherMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(DownloadCancelMessage.class, "occurrence");
@@ -185,6 +186,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
         PipelinesEventsHdfsViewMessage.class, PipelinesEventsHdfsViewMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         CamtrapDpDownloadFinishedMessage.class, CamtrapDpDownloadFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        ColDpDownloadFinishedMessage.class, ColDpDownloadFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
       DwcDpDownloadFinishedMessage.class, DwcDpDownloadFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
