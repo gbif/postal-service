@@ -227,8 +227,14 @@ public class MessageListener implements AutoCloseable {
               new MessageConsumer<T>(callback.getMessageClass(), channel, mapper, callback));
       // track consumer tag so the queue can be paused/resumed without closing the listener
       consumerTagToChannel.put(consumerTag, channel);
-      queueToConsumerTags.computeIfAbsent(queue, k -> Collections.synchronizedList(new ArrayList<>()))
-          .add(consumerTag);
+      synchronized (queueToConsumerTags) {
+        List<String> consumerTags = queueToConsumerTags.get(queue);
+        if (consumerTags == null) {
+          consumerTags = Collections.synchronizedList(new ArrayList<>());
+          queueToConsumerTags.put(queue, consumerTags);
+        }
+        consumerTags.add(consumerTag);
+      }
     }
   }
 
