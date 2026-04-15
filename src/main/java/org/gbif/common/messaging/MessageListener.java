@@ -238,6 +238,7 @@ public class MessageListener implements AutoCloseable {
    * executors in place so the queue can be resumed later.
    */
   public void pauseQueue(String queue) {
+    LOG.debug("Pausing queue {}", queue);
     List<String> tags = queueToConsumerTags.remove(queue);
     if (tags == null || tags.isEmpty()) {
       LOG.debug("No consumers found for queue {} to pause", queue);
