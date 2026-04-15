@@ -355,7 +355,11 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     for (Channel c : channelPool) {
       try {
         c.waitForConfirmsOrDie();
-      } catch (IOException | InterruptedException | IllegalStateException e) {
+      } catch (IllegalStateException e) {
+        LOG.warn("IllegalStateException waiting for confirms. This is expected if confirms not enabled: "
+          + e.getMessage());
+        LOG.debug(e.getMessage(), e);
+      } catch (IOException | InterruptedException e) {
         LOG.warn("Exception waiting for confirms", e);
       }
     }
