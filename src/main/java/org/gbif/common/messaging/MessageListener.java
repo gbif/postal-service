@@ -20,8 +20,14 @@ import org.gbif.utils.PreconditionUtils;
 import org.gbif.utils.concurrent.NamedThreadFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
@@ -42,6 +48,16 @@ public class MessageListener implements AutoCloseable {
   private final ConnectionFactory connectionFactory;
   private final MessageRegistry registry;
   private final ObjectMapper mapper;
+  // Keep track of connections/channels/executors created by listen(...) so we can close them
+  private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
+  private final List<Channel> channels = Collections.synchronizedList(new ArrayList<>());
+  private final List<ExecutorService> executors = Collections.synchronizedList(new ArrayList<>());
+  // Map consumerTag -> Channel so consumers can be cancelled without closing the whole listener
+  private final Map<String, Channel> consumerTagToChannel =
+      Collections.synchronizedMap(new HashMap<>());
+  // Map queue -> list of consumerTags so we can pause/resume per-queue
+  private final Map<String, List<String>> queueToConsumerTags =
+      Collections.synchronizedMap(new HashMap<>());
 
   /**
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link
@@ -177,17 +193,28 @@ public class MessageListener implements AutoCloseable {
 
     Connection connection = null;
     Channel channel = null;
+    // Create and track the executor before connecting so it is always cleaned up on failure
+    ExecutorService executor =
+        Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue));
+    executors.add(executor);
+    boolean connectionSucceeded = false;
     try {
-      connection =
-          connectionFactory.newConnection(
-              Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue)));
+      connection = connectionFactory.newConnection(executor);
+      // track the connection for shutdown
+      connections.add(connection);
       channel = connection.createChannel();
       channel.exchangeDeclare(exchange, "topic", true);
       channel.queueDeclare(queue, true, false, false, null);
       channel.queueBind(queue, exchange, routingKey);
       channel.close();
+      connectionSucceeded = true;
     } catch (TimeoutException e) {
       throw new IOException(e);
+    } finally {
+      if (!connectionSucceeded) {
+        executors.remove(executor);
+        executor.shutdownNow();
+      }
     }
 
     LOG.debug(
@@ -199,15 +226,104 @@ public class MessageListener implements AutoCloseable {
 
     for (int i = 0; i < numberOfThreads; i++) {
       channel = connection.createChannel();
+      // track the channel so it can be closed on shutdown
+      channels.add(channel);
       channel.basicQos(prefetchCount);
-      channel.basicConsume(
-          queue,
-          false, // autoAck disabled -> we have to manually acknowledge messages
-          new MessageConsumer<T>(callback.getMessageClass(), channel, mapper, callback));
+      String consumerTag =
+          channel.basicConsume(
+              queue,
+              false, // autoAck disabled -> we have to manually acknowledge messages
+              new MessageConsumer<T>(callback.getMessageClass(), channel, mapper, callback));
+      // track consumer tag so the queue can be paused without closing the listener
+      consumerTagToChannel.put(consumerTag, channel);
+      synchronized (queueToConsumerTags) {
+        List<String> consumerTags = queueToConsumerTags.get(queue);
+        if (consumerTags == null) {
+          consumerTags = Collections.synchronizedList(new ArrayList<>());
+          queueToConsumerTags.put(queue, consumerTags);
+        }
+        consumerTags.add(consumerTag);
+      }
     }
   }
 
-  /** Does nothing, but adding for potential future use. */
+  /**
+   * Pause consumption from a given queue without closing the listener. This cancels the
+   * consumers for that queue (they will stop receiving deliveries) but leaves connections and
+   * executors in place so the queue can be resumed later.
+   */
+  public void pauseQueue(String queue) {
+    LOG.debug("Pausing queue {}", queue);
+    List<String> tags = queueToConsumerTags.remove(queue);
+    if (tags == null || tags.isEmpty()) {
+      LOG.debug("No consumers found for queue {} to pause", queue);
+      return;
+    }
+    for (String tag : tags) {
+      Channel ch = consumerTagToChannel.remove(tag);
+      if (ch != null && ch.isOpen()) {
+        try {
+          ch.basicCancel(tag);
+          LOG.info("Paused consumers for queue {} (consumerTag={})", queue, tag);
+        } catch (Exception e) {
+          LOG.warn("Failed to cancel consumer {} for queue {}", tag, queue, e);
+        }
+      }
+    }
+  }
+
+  /**
+   * Shut down the listener.
+   */
   @Override
-  public void close() {}
+  public void close() {
+    // Close channels
+    synchronized (channels) {
+      for (Channel ch : channels) {
+        if (ch != null && ch.isOpen()) {
+          try {
+            ch.close();
+          } catch (Exception e) {
+            LOG.warn("Error closing channel", e);
+          }
+        }
+      }
+      channels.clear();
+    }
+
+    // Close connections
+    synchronized (connections) {
+      for (Connection conn : connections) {
+        if (conn != null && conn.isOpen()) {
+          try {
+            conn.close();
+          } catch (Exception e) {
+            LOG.warn("Error closing connection", e);
+          }
+        }
+      }
+      connections.clear();
+    }
+
+    // Shutdown executors
+    synchronized (executors) {
+      for (ExecutorService ex : executors) {
+        try {
+          ex.shutdownNow();
+        } catch (Exception e) {
+          LOG.warn("Error shutting down executor", e);
+        }
+      }
+      executors.clear();
+    }
+
+    // Clear consumer tracking state so this listener does not retain stale references.
+    // Synchronize on both maps together (always in the same order) to clear them atomically.
+    synchronized (consumerTagToChannel) {
+      synchronized (queueToConsumerTags) {
+        consumerTagToChannel.clear();
+        queueToConsumerTags.clear();
+      }
+    }
+  }
 }
