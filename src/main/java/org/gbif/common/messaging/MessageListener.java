@@ -258,22 +258,6 @@ public class MessageListener implements AutoCloseable {
   }
 
   /**
-   * Resume consumption for a queue by creating new consumer(s). This re-creates channels and
-   * consumers and registers them with the listener for later shutdown/pause.
-   *
-   * Note: you must provide the same callback (or a compatible one) that was used to originally
-   * listen to the queue.
-   */
-  public <T> void resumeQueue(
-      String queue, String routingKey, String exchange, int numberOfThreads, MessageCallback<T> callback)
-      throws IOException {
-    // Delegate to the existing listen implementation which will create a new connection/executor
-    // and register channels/consumers with the listener's tracking lists.
-    listen(queue, routingKey, exchange, numberOfThreads, callback);
-    LOG.info("Resumed listening on queue {} (threads={})", queue, numberOfThreads);
-  }
-
-  /**
    * Shut down the listener.
    */
   @Override
