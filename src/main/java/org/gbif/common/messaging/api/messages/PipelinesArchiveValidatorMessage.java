@@ -32,13 +32,21 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VALIDATE_ARCHIVE;
  */
 public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.archive.validator";
+  public static final String ROUTING_KEY = "validator.occurrence.pipelines.archive.validation";
+  private static final String STANDALONE_SUFFIX = ".standalone";
+  private static final String DISTRIBUTED_SUFFIX = ".distributed";
+
+  public enum RunnerType {
+    STANDALONE,
+    DISTRIBUTED
+  }
 
   private UUID datasetUuid;
   private int attempt;
   private Set<String> pipelineSteps;
   private Long executionId;
   private String fileFormat;
+  private RunnerType runnerType;
 
   public PipelinesArchiveValidatorMessage() {}
 
@@ -48,13 +56,15 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("fileFormat") String fileFormat) {
+      @JsonProperty("fileFormat") String fileFormat,
+      @JsonProperty("runnerType") RunnerType runnerType) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.executionId = executionId;
     this.fileFormat = fileFormat;
+    this.runnerType = runnerType;
   }
 
   @Override
@@ -90,14 +100,21 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VALIDATE_ARCHIVE.name())) {
-      key = key + ".validator";
+    if (runnerType == RunnerType.STANDALONE) {
+      return key + STANDALONE_SUFFIX;
+    }
+    if (runnerType == RunnerType.DISTRIBUTED) {
+      return key + DISTRIBUTED_SUFFIX;
     }
     return key;
   }
 
   public String getFileFormat() {
     return fileFormat;
+  }
+
+  public RunnerType getRunnerType() {
+    return runnerType;
   }
 
   public PipelinesArchiveValidatorMessage setDatasetUuid(UUID datasetUuid) {
@@ -120,6 +137,11 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public PipelinesArchiveValidatorMessage setRunnerType(RunnerType runnerType) {
+    this.runnerType = runnerType;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -133,12 +155,13 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
         && Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(fileFormat, that.fileFormat)
-        && Objects.equals(executionId, that.executionId);
+        && Objects.equals(executionId, that.executionId)
+        && Objects.equals(runnerType, that.runnerType);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, fileFormat, executionId);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, fileFormat, executionId, runnerType);
   }
 
   @Override
