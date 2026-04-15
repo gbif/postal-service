@@ -22,6 +22,10 @@ import org.gbif.utils.concurrent.NamedThreadFactory;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
@@ -42,6 +46,16 @@ public class MessageListener implements AutoCloseable {
   private final ConnectionFactory connectionFactory;
   private final MessageRegistry registry;
   private final ObjectMapper mapper;
+  // Keep track of connections/channels/executors created by listen(...) so we can close them
+  private final List<Connection> connections = Collections.synchronizedList(new ArrayList<>());
+  private final List<Channel> channels = Collections.synchronizedList(new ArrayList<>());
+  private final List<ExecutorService> executors = Collections.synchronizedList(new ArrayList<>());
+  // Map consumerTag -> Channel so consumers can be cancelled without closing the whole listener
+  private final java.util.Map<String, Channel> consumerTagToChannel =
+      Collections.synchronizedMap(new java.util.HashMap<>());
+  // Map queue -> list of consumerTags so we can pause/resume per-queue
+  private final java.util.Map<String, List<String>> queueToConsumerTags =
+      Collections.synchronizedMap(new java.util.HashMap<>());
 
   /**
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link
@@ -178,9 +192,13 @@ public class MessageListener implements AutoCloseable {
     Connection connection = null;
     Channel channel = null;
     try {
-      connection =
-          connectionFactory.newConnection(
-              Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue)));
+      // create an executor for the connection threads and track it for shutdown
+      ExecutorService executor =
+          Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue));
+      connection = connectionFactory.newConnection(executor);
+      executors.add(executor);
+      // track the connection for shutdown
+      connections.add(connection);
       channel = connection.createChannel();
       channel.exchangeDeclare(exchange, "topic", true);
       channel.queueDeclare(queue, true, false, false, null);
@@ -199,15 +217,106 @@ public class MessageListener implements AutoCloseable {
 
     for (int i = 0; i < numberOfThreads; i++) {
       channel = connection.createChannel();
+      // track the channel so it can be closed on shutdown
+      channels.add(channel);
       channel.basicQos(prefetchCount);
-      channel.basicConsume(
-          queue,
-          false, // autoAck disabled -> we have to manually acknowledge messages
-          new MessageConsumer<T>(callback.getMessageClass(), channel, mapper, callback));
+      String consumerTag =
+          channel.basicConsume(
+              queue,
+              false, // autoAck disabled -> we have to manually acknowledge messages
+              new MessageConsumer<T>(callback.getMessageClass(), channel, mapper, callback));
+      // track consumer tag so the queue can be paused/resumed without closing the listener
+      consumerTagToChannel.put(consumerTag, channel);
+      queueToConsumerTags.computeIfAbsent(queue, k -> Collections.synchronizedList(new ArrayList<>()))
+          .add(consumerTag);
     }
   }
 
-  /** Does nothing, but adding for potential future use. */
+  /**
+   * Pause consumption from a given queue without closing the listener. This cancels the
+   * consumers for that queue (they will stop receiving deliveries) but leaves connections and
+   * executors in place so the queue can be resumed later.
+   */
+  public void pauseQueue(String queue) {
+    List<String> tags = queueToConsumerTags.remove(queue);
+    if (tags == null || tags.isEmpty()) {
+      LOG.debug("No consumers found for queue {} to pause", queue);
+      return;
+    }
+    for (String tag : tags) {
+      Channel ch = consumerTagToChannel.remove(tag);
+      if (ch != null && ch.isOpen()) {
+        try {
+          ch.basicCancel(tag);
+          LOG.info("Paused consumers for queue {} (consumerTag={})", queue, tag);
+        } catch (Exception e) {
+          LOG.warn("Failed to cancel consumer {} for queue {}", tag, queue, e);
+        }
+      }
+    }
+  }
+
+  /**
+   * Resume consumption for a queue by creating new consumer(s). This re-creates channels and
+   * consumers and registers them with the listener for later shutdown/pause.
+   *
+   * Note: you must provide the same callback (or a compatible one) that was used to originally
+   * listen to the queue.
+   */
+  public <T> void resumeQueue(
+      String queue, String routingKey, String exchange, int numberOfThreads, MessageCallback<T> callback)
+      throws IOException {
+    // Delegate to the existing listen implementation which will create a new connection/executor
+    // and register channels/consumers with the listener's tracking lists.
+    listen(queue, routingKey, exchange, numberOfThreads, callback);
+    LOG.info("Resumed listening on queue {} (threads={})", queue, numberOfThreads);
+  }
+
+  /**
+   * Shut down the listener.
+   */
   @Override
-  public void close() {}
+  public void close() {
+    // Close channels
+    synchronized (channels) {
+      for (Channel ch : channels) {
+        if (ch != null && ch.isOpen()) {
+          try {
+            ch.close();
+          } catch (Exception e) {
+            LOG.warn("Error closing channel", e);
+          }
+        }
+      }
+      channels.clear();
+    }
+
+    // Close connections
+    synchronized (connections) {
+      for (Connection conn : connections) {
+        if (conn != null && conn.isOpen()) {
+          try {
+            conn.close();
+          } catch (Exception e) {
+            LOG.warn("Error closing connection", e);
+          }
+        }
+      }
+      connections.clear();
+    }
+
+    // Shutdown executors
+    synchronized (executors) {
+      for (ExecutorService ex : executors) {
+        try {
+          ex.shutdownNow();
+        } catch (Exception e) {
+          LOG.warn("Error shutting down executor", e);
+        }
+      }
+      executors.clear();
+    }
+  }
 }
+
+
