@@ -20,11 +20,13 @@ import org.gbif.utils.PreconditionUtils;
 import org.gbif.utils.concurrent.NamedThreadFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
@@ -51,11 +53,11 @@ public class MessageListener implements AutoCloseable {
   private final List<Channel> channels = Collections.synchronizedList(new ArrayList<>());
   private final List<ExecutorService> executors = Collections.synchronizedList(new ArrayList<>());
   // Map consumerTag -> Channel so consumers can be cancelled without closing the whole listener
-  private final java.util.Map<String, Channel> consumerTagToChannel =
-      Collections.synchronizedMap(new java.util.HashMap<>());
+  private final Map<String, Channel> consumerTagToChannel =
+      Collections.synchronizedMap(new HashMap<>());
   // Map queue -> list of consumerTags so we can pause/resume per-queue
-  private final java.util.Map<String, List<String>> queueToConsumerTags =
-      Collections.synchronizedMap(new java.util.HashMap<>());
+  private final Map<String, List<String>> queueToConsumerTags =
+      Collections.synchronizedMap(new HashMap<>());
 
   /**
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link
@@ -191,12 +193,13 @@ public class MessageListener implements AutoCloseable {
 
     Connection connection = null;
     Channel channel = null;
+    // Create and track the executor before connecting so it is always cleaned up on failure
+    ExecutorService executor =
+        Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue));
+    executors.add(executor);
+    boolean connectionSucceeded = false;
     try {
-      // create an executor for the connection threads and track it for shutdown
-      ExecutorService executor =
-          Executors.newFixedThreadPool(numberOfThreads, new NamedThreadFactory(queue));
       connection = connectionFactory.newConnection(executor);
-      executors.add(executor);
       // track the connection for shutdown
       connections.add(connection);
       channel = connection.createChannel();
@@ -204,8 +207,14 @@ public class MessageListener implements AutoCloseable {
       channel.queueDeclare(queue, true, false, false, null);
       channel.queueBind(queue, exchange, routingKey);
       channel.close();
+      connectionSucceeded = true;
     } catch (TimeoutException e) {
       throw new IOException(e);
+    } finally {
+      if (!connectionSucceeded) {
+        executors.remove(executor);
+        executor.shutdownNow();
+      }
     }
 
     LOG.debug(
@@ -307,7 +316,14 @@ public class MessageListener implements AutoCloseable {
       }
       executors.clear();
     }
+
+    // Clear consumer tracking state so this listener does not retain stale references.
+    // Synchronize on both maps together (always in the same order) to clear them atomically.
+    synchronized (consumerTagToChannel) {
+      synchronized (queueToConsumerTags) {
+        consumerTagToChannel.clear();
+        queueToConsumerTags.clear();
+      }
+    }
   }
 }
-
-
