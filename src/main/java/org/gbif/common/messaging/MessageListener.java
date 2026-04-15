@@ -234,7 +234,7 @@ public class MessageListener implements AutoCloseable {
               queue,
               false, // autoAck disabled -> we have to manually acknowledge messages
               new MessageConsumer<T>(callback.getMessageClass(), channel, mapper, callback));
-      // track consumer tag so the queue can be paused/resumed without closing the listener
+      // track consumer tag so the queue can be paused without closing the listener
       consumerTagToChannel.put(consumerTag, channel);
       synchronized (queueToConsumerTags) {
         List<String> consumerTags = queueToConsumerTags.get(queue);
