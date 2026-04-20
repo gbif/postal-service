@@ -15,7 +15,7 @@ import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.utils.PreconditionUtils;
 
 public class ColDpDownloadFinishedMessage implements DatasetBasedMessage {
-  public static final String ROUTING_KEY = "crawl.camtrapdp.download.finished";
+  public static final String ROUTING_KEY = "crawl.coldp.download.finished";
 
   private final UUID datasetUuid;
   private final URI source;
