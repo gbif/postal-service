@@ -40,9 +40,8 @@ public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidato
       @JsonProperty("attempt") int attempt,
       @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
       @JsonProperty("executionId") Long executionId,
-      @JsonProperty("fileFormat") String fileFormat,
-      @JsonProperty("runnerType") RunnerType runnerType) {
-    super(datasetUuid, attempt, pipelineSteps, executionId, fileFormat, runnerType);
+      @JsonProperty("fileFormat") String fileFormat) {
+    super(datasetUuid, attempt, pipelineSteps, executionId, fileFormat);
   }
 
   @Override
