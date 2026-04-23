@@ -109,7 +109,7 @@ public class ColDpDownloadFinishedMessage implements DatasetBasedMessage {
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", CamtrapDpDownloadFinishedMessage.class.getSimpleName() + "[", "]")
+    return new StringJoiner(", ", ColDpDownloadFinishedMessage.class.getSimpleName() + "[", "]")
       .add("datasetUuid=" + datasetUuid)
       .add("source=" + source)
       .add("attempt=" + attempt)
