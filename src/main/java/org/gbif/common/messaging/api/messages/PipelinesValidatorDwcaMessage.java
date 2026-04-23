@@ -31,15 +31,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.gbif.api.model.pipelines.StepType.VALIDATOR_DWCA_TO_VERBATIM;
-
 /**
- * We send this every time a darwin core archive has been validated after being downloaded and its
- * metadata has been synchronized.
+ * Similar to {@link PipelinesDwcaMessage} but specifically for the Pipelines DwC-A Validator.
  */
-public class PipelinesDwcaMessage implements PipelineBasedMessage {
+public class PipelinesValidatorDwcaMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = DwcaValidationFinishedMessage.ROUTING_KEY;
+  public static final String ROUTING_KEY = "crawl.dwca.validation.finished.validator";
 
   private UUID datasetUuid;
   private DatasetType datasetType;
@@ -51,10 +48,10 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private Platform platform;
   private Long executionId;
 
-  public PipelinesDwcaMessage() {}
+  public PipelinesValidatorDwcaMessage() {}
 
   @JsonCreator
-  public PipelinesDwcaMessage(
+  public PipelinesValidatorDwcaMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("datasetType") DatasetType datasetType,
       @JsonProperty("source") URI source,
@@ -143,42 +140,42 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return ROUTING_KEY;
   }
 
-  public PipelinesDwcaMessage setDatasetUuid(UUID datasetUuid) {
+  public PipelinesValidatorDwcaMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
   }
 
-  public PipelinesDwcaMessage setDatasetType(DatasetType datasetType) {
+  public PipelinesValidatorDwcaMessage setDatasetType(DatasetType datasetType) {
     this.datasetType = datasetType;
     return this;
   }
 
-  public PipelinesDwcaMessage setSource(URI source) {
+  public PipelinesValidatorDwcaMessage setSource(URI source) {
     this.source = source;
     return this;
   }
 
-  public PipelinesDwcaMessage setAttempt(int attempt) {
+  public PipelinesValidatorDwcaMessage setAttempt(int attempt) {
     this.attempt = attempt;
     return this;
   }
 
-  public PipelinesDwcaMessage setValidationReport(DwcaValidationReport validationReport) {
+  public PipelinesValidatorDwcaMessage setValidationReport(DwcaValidationReport validationReport) {
     this.validationReport = validationReport;
     return this;
   }
 
-  public PipelinesDwcaMessage setPipelineSteps(Set<String> pipelineSteps) {
+  public PipelinesValidatorDwcaMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
     return this;
   }
 
-  public PipelinesDwcaMessage setEndpointType(EndpointType endpointType) {
+  public PipelinesValidatorDwcaMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
   }
 
-  public PipelinesDwcaMessage setPlatform(Platform platform) {
+  public PipelinesValidatorDwcaMessage setPlatform(Platform platform) {
     this.platform = platform;
     return this;
   }
@@ -196,7 +193,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PipelinesDwcaMessage that = (PipelinesDwcaMessage) o;
+    PipelinesValidatorDwcaMessage that = (PipelinesValidatorDwcaMessage) o;
     return attempt == that.attempt
         && Objects.equals(datasetUuid, that.datasetUuid)
         && datasetType == that.datasetType
