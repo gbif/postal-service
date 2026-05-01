@@ -105,6 +105,8 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(CamtrapDpDownloadFinishedMessage.class, "crawler");
     messageToExchangeMappingInternal.put(ColDpDownloadFinishedMessage.class, "crawler");
     messageToExchangeMappingInternal.put(DwcDpDownloadFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(DwcDpValidationFinishedMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(DwcDpMetadataSyncFinishedMessage.class, "crawler");
     messageToExchangeMappingInternal.put(DownloadLauncherMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(DownloadCancelMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(DataWarehouseMessage.class, "occurrence");
@@ -192,6 +194,10 @@ public class DefaultMessageRegistry implements MessageRegistry {
         ColDpDownloadFinishedMessage.class, ColDpDownloadFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
       DwcDpDownloadFinishedMessage.class, DwcDpDownloadFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+      DwcDpValidationFinishedMessage.class, DwcDpValidationFinishedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+      DwcDpMetadataSyncFinishedMessage.class, DwcDpMetadataSyncFinishedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         DownloadLauncherMessage.class, DownloadLauncherMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(DownloadCancelMessage.class, DownloadCancelMessage.ROUTING_KEY);
