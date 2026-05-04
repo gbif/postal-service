@@ -35,6 +35,7 @@
     <commons-io.version>2.21.0</commons-io.version>
     <gbif-api.version>2.2.2</gbif-api.version>
     <gbif-common.version>0.59</gbif-common.version>
+    <dwc-dp-analyser.version>0.0.2-SNAPSHOT</dwc-dp-analyser.version>
     <jackson.version>2.19.4</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.2</jsr305.version>
@@ -104,6 +105,11 @@
       <groupId>org.gbif</groupId>
       <artifactId>gbif-common</artifactId>
       <version>${gbif-common.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>dwc-dp-analyser-service-api</artifactId>
+      <version>${dwc-dp-analyser.version}</version>
     </dependency>
 
     <!-- Third party dependencies -->
