@@ -14,11 +14,11 @@
 package org.gbif.common.messaging.api.messages;
 
 /**
- * Similar to {@link PipelinesDwcaMessage} but specifically for the Pipelines DwC-A Validator.
+ * Similar to {@link PipelinesVerbatimMessage} but specifically for the Pipelines DwC-A Validator.
  */
-public class PipelinesValidatorDwcaMessage extends AbstractPipelinesDwcaMessage {
+public class PipelinesValidatorVerbatimStandaloneMessage extends AbstractPipelinesVerbatimMessage {
 
-  public static final String ROUTING_KEY = "crawl.dwca.validation.finished.validator";
+  public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished.validator.standalone";
 
   @Override
   public String getRoutingKey() {
