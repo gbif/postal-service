@@ -1,5 +1,9 @@
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
 import org.gbif.dp.analysis.api.DatapackageAnalysisResult;
@@ -9,8 +13,12 @@ public class DwcDpValidationFinishedMessage extends DwcDpValidationFinished impl
 
   public static final String ROUTING_KEY = "crawl.dwcdp.validation.finished";
 
-  public DwcDpValidationFinishedMessage(UUID datasetUuid, int attempt, Boolean valid,
-    DatapackageAnalysisResult validationReport) {
+  @JsonCreator
+  public DwcDpValidationFinishedMessage(
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") int attempt,
+    @JsonProperty("valid") Boolean valid,
+    @JsonProperty("validationReport") DatapackageAnalysisResult validationReport) {
     super(datasetUuid, attempt, valid, validationReport);
   }
 
