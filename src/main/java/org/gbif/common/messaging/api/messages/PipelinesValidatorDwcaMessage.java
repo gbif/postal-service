@@ -13,9 +13,12 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-public class PipelinesInterpretedMessage extends AbstractPipelinesInterpretedMessage {
+/**
+ * Similar to {@link PipelinesDwcaMessage} but specifically for the Pipelines DwC-A Validator.
+ */
+public class PipelinesValidatorDwcaMessage extends AbstractPipelinesDwcaMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished";
+  public static final String ROUTING_KEY = "crawl.dwca.validation.finished.validator";
 
   @Override
   public String getRoutingKey() {

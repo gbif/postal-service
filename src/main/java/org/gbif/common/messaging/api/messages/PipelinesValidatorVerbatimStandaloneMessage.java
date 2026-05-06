@@ -13,9 +13,12 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-public class PipelinesInterpretedMessage extends AbstractPipelinesInterpretedMessage {
+/**
+ * Similar to {@link PipelinesVerbatimMessage} but specifically for the Pipelines DwC-A Validator.
+ */
+public class PipelinesValidatorVerbatimStandaloneMessage extends PipelinesValidatorVerbatimMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished.validator.standalone";
 
   @Override
   public String getRoutingKey() {

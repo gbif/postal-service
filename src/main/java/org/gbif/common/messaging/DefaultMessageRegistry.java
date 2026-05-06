@@ -85,9 +85,23 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(MatchDatasetMessage.class, "checklist");
     messageToExchangeMappingInternal.put(PipelinesXmlMessage.class, "crawler");
     messageToExchangeMappingInternal.put(PipelinesDwcaMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(PipelinesValidatorDwcaMessage.class, "crawler");
     messageToExchangeMappingInternal.put(PipelinesAbcdMessage.class, "crawler");
+    messageToExchangeMappingInternal.put(PipelinesValidatorVerbatimMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesValidatorVerbatimDistributedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesValidatorVerbatimStandaloneMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesVerbatimMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesVerbatimDistributedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesVerbatimStandaloneMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesVerbatimIdentifierMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesVerbatimIdentifierDistributedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesVerbatimIdentifierStandaloneMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesInterpretedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesInterpretedDistributedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesInterpretedStandaloneMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesValidatorInterpretedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesValidatorInterpretedDistributedMessage.class, "occurrence");
+    messageToExchangeMappingInternal.put(PipelinesValidatorInterpretedStandaloneMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesIndexedMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesHdfsViewMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesBalancerMessage.class, "occurrence");
@@ -151,12 +165,39 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToRoutingKeyMapping.put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesDwcaMessage.class, PipelinesDwcaMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(PipelinesValidatorDwcaMessage.class, PipelinesValidatorDwcaMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesXmlMessage.class, PipelinesXmlMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesAbcdMessage.class, PipelinesAbcdMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         PipelinesVerbatimMessage.class, PipelinesVerbatimMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
+        PipelinesVerbatimDistributedMessage.class, PipelinesVerbatimDistributedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesVerbatimStandaloneMessage.class, PipelinesVerbatimStandaloneMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesVerbatimIdentifierMessage.class, PipelinesVerbatimIdentifierMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesVerbatimIdentifierDistributedMessage.class, PipelinesVerbatimIdentifierDistributedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesVerbatimIdentifierStandaloneMessage.class, PipelinesVerbatimIdentifierStandaloneMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesValidatorVerbatimMessage.class, PipelinesValidatorVerbatimMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesValidatorVerbatimDistributedMessage.class, PipelinesValidatorVerbatimDistributedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesValidatorVerbatimStandaloneMessage.class, PipelinesValidatorVerbatimStandaloneMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
         PipelinesInterpretedMessage.class, PipelinesInterpretedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesInterpretedDistributedMessage.class, PipelinesInterpretedDistributedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesInterpretedStandaloneMessage.class, PipelinesInterpretedStandaloneMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesValidatorInterpretedMessage.class, PipelinesValidatorInterpretedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesValidatorInterpretedDistributedMessage.class, PipelinesValidatorInterpretedDistributedMessage.ROUTING_KEY);
+    messageToRoutingKeyMapping.put(
+        PipelinesValidatorInterpretedStandaloneMessage.class, PipelinesValidatorInterpretedStandaloneMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
         PipelinesIndexedMessage.class, PipelinesIndexedMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(

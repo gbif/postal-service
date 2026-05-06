@@ -13,9 +13,9 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-public class PipelinesInterpretedMessage extends AbstractPipelinesInterpretedMessage {
+public class PipelinesValidatorInterpretedMessage extends AbstractPipelinesInterpretedMessage{
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished.validator";
 
   @Override
   public String getRoutingKey() {

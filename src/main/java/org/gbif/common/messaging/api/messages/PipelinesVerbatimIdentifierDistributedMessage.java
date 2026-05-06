@@ -13,9 +13,9 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-public class PipelinesInterpretedMessage extends AbstractPipelinesInterpretedMessage {
+public class PipelinesVerbatimIdentifierDistributedMessage extends PipelinesVerbatimIdentifierMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.interpretation.finished";
+  public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished.identifier.distributed";
 
   @Override
   public String getRoutingKey() {
