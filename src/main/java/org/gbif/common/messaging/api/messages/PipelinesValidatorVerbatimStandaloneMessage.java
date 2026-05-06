@@ -14,19 +14,14 @@
 package org.gbif.common.messaging.api.messages;
 
 /**
- * We send this every time a darwin core archive has been validated after being downloaded and its
- * metadata has been synchronized.
+ * Similar to {@link PipelinesVerbatimMessage} but specifically for the Pipelines DwC-A Validator.
  */
-public class PipelinesDwcaMessage extends AbstractPipelinesDwcaMessage {
+public class PipelinesValidatorVerbatimStandaloneMessage extends AbstractPipelinesVerbatimMessage {
 
-  public static final String ROUTING_KEY = DwcaValidationFinishedMessage.ROUTING_KEY;
+  public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished.validator.standalone";
 
   @Override
   public String getRoutingKey() {
-    String key = ROUTING_KEY;
-    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_DWCA_TO_VERBATIM.name())) {
-      key = key + ".validator";
-    }
-    return key;
+    return ROUTING_KEY;
   }
 }
