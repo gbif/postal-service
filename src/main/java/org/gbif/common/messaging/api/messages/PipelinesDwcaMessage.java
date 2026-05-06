@@ -140,7 +140,11 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return ROUTING_KEY;
+    String key = ROUTING_KEY;
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_DWCA_TO_VERBATIM.name())) {
+      key = key + ".validator";
+    }
+    return key;
   }
 
   public PipelinesDwcaMessage setDatasetUuid(UUID datasetUuid) {
