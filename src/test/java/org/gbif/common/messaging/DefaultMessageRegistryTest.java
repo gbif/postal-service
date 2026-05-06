@@ -18,7 +18,6 @@ import org.gbif.common.messaging.api.MessageRegistry;
 import org.gbif.common.messaging.api.messages.BackboneChangedMessage;
 import org.gbif.common.messaging.api.messages.CrawlStartedMessage;
 
-import java.lang.reflect.Modifier;
 import java.util.Optional;
 import java.util.Set;
 
@@ -43,7 +42,7 @@ public class DefaultMessageRegistryTest {
   public void testGetMessageRegistration() {
     Reflections reflections = new Reflections(BackboneChangedMessage.class.getPackage().getName());
     for (Class<? extends Message> msgClass : reflections.getSubTypesOf(Message.class)) {
-      if (msgClass.isInterface() || Modifier.isAbstract(msgClass.getModifiers())) {
+      if (msgClass.isInterface()) {
         continue;
       }
       System.out.println(msgClass);

@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
-import org.gbif.common.messaging.api.validation.ValidationResult;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -27,24 +26,29 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
+/**
+ * Similar to {@link PipelinesVerbatimMessage} but specifically for the Pipelines DwC-A Validator.
+ */
+public class PipelinesValidatorVerbatimMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
-  protected UUID datasetUuid;
-  protected Integer attempt;
-  protected Set<String> interpretTypes;
-  protected Set<String> pipelineSteps;
-  protected String runner;
-  protected EndpointType endpointType;
-  protected String extraPath;
-  protected ValidationResult validationResult;
-  protected String resetPrefix;
-  protected Long executionId;
-  protected DatasetType datasetType;
+  public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished.validator";
 
-  public AbstractPipelinesVerbatimMessage() {}
+  private UUID datasetUuid;
+  private Integer attempt;
+  private Set<String> interpretTypes;
+  private Set<String> pipelineSteps;
+  private String runner;
+  private EndpointType endpointType;
+  private String extraPath;
+  private ValidationResult validationResult;
+  private String resetPrefix;
+  private Long executionId;
+  private DatasetType datasetType;
+
+  public PipelinesValidatorVerbatimMessage() {}
 
   @JsonCreator
-  public AbstractPipelinesVerbatimMessage(
+  public PipelinesValidatorVerbatimMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
       @JsonProperty("attempt") Integer attempt,
       @JsonProperty("interpretTypes") Set<String> interpretTypes,
@@ -70,7 +74,7 @@ public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedM
   }
 
   @Override
-  public PipelineBasedMessage.DatasetInfo getDatasetInfo() {
+  public DatasetInfo getDatasetInfo() {
     boolean containsOccurrences =
         Optional.ofNullable(validationResult)
             .map(ValidationResult::getNumberOfRecords)
@@ -81,7 +85,7 @@ public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedM
             .map(ValidationResult::getNumberOfEventRecords)
             .map(count -> count > 0)
             .orElse(false);
-    return new PipelineBasedMessage.DatasetInfo(datasetType, containsOccurrences, containsEvents);
+    return new DatasetInfo(datasetType, containsOccurrences, containsEvents);
   }
 
   /** @return datasetUUID for the converted dataset */
@@ -112,7 +116,13 @@ public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedM
   }
 
   @Override
-  public abstract String getRoutingKey();
+  public String getRoutingKey() {
+    String key = ROUTING_KEY;
+    if (runner != null && !runner.isEmpty()) {
+      key = key + "." + runner.toLowerCase();
+    }
+    return key;
+  }
 
   @Override
   public String getRunner() {
@@ -135,47 +145,47 @@ public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedM
     return resetPrefix;
   }
 
-  public AbstractPipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
+  public PipelinesValidatorVerbatimMessage setDatasetUuid(UUID datasetUuid) {
     this.datasetUuid = datasetUuid;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setAttempt(Integer attempt) {
+  public PipelinesValidatorVerbatimMessage setAttempt(Integer attempt) {
     this.attempt = attempt;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setInterpretTypes(Set<String> interpretTypes) {
+  public PipelinesValidatorVerbatimMessage setInterpretTypes(Set<String> interpretTypes) {
     this.interpretTypes = interpretTypes;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setPipelineSteps(Set<String> pipelineSteps) {
+  public PipelinesValidatorVerbatimMessage setPipelineSteps(Set<String> pipelineSteps) {
     this.pipelineSteps = pipelineSteps;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setRunner(String runner) {
+  public PipelinesValidatorVerbatimMessage setRunner(String runner) {
     this.runner = runner;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setEndpointType(EndpointType endpointType) {
+  public PipelinesValidatorVerbatimMessage setEndpointType(EndpointType endpointType) {
     this.endpointType = endpointType;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setExtraPath(String extraPath) {
+  public PipelinesValidatorVerbatimMessage setExtraPath(String extraPath) {
     this.extraPath = extraPath;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setValidationResult(ValidationResult validationResult) {
+  public PipelinesValidatorVerbatimMessage setValidationResult(ValidationResult validationResult) {
     this.validationResult = validationResult;
     return this;
   }
 
-  public AbstractPipelinesVerbatimMessage setResetPrefix(String resetPrefix) {
+  public PipelinesValidatorVerbatimMessage setResetPrefix(String resetPrefix) {
     this.resetPrefix = resetPrefix;
     return this;
   }
@@ -184,7 +194,7 @@ public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedM
     return datasetType;
   }
 
-  public AbstractPipelinesVerbatimMessage setDatasetType(DatasetType datasetType) {
+  public PipelinesValidatorVerbatimMessage setDatasetType(DatasetType datasetType) {
     this.datasetType = datasetType;
     return this;
   }
@@ -202,7 +212,7 @@ public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedM
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    AbstractPipelinesVerbatimMessage that = (AbstractPipelinesVerbatimMessage) o;
+    PipelinesValidatorVerbatimMessage that = (PipelinesValidatorVerbatimMessage) o;
     return Objects.equals(datasetUuid, that.datasetUuid)
         && Objects.equals(attempt, that.attempt)
         && Objects.equals(interpretTypes, that.interpretTypes)
@@ -241,5 +251,75 @@ public abstract class AbstractPipelinesVerbatimMessage implements PipelineBasedM
       // NOP
     }
     return "";
+  }
+
+  public static class ValidationResult {
+
+    private boolean tripletValid;
+    private boolean occurrenceIdValid;
+    private Boolean useExtendedRecordId;
+    private Long numberOfRecords;
+    private Long numberOfEventRecords;
+
+    public ValidationResult() {}
+
+    @JsonCreator
+    public ValidationResult(
+        @JsonProperty("tripletValid") boolean tripletValid,
+        @JsonProperty("occurrenceIdValid") boolean occurrenceIdValid,
+        @JsonProperty("useExtendedRecordId") Boolean useExtendedRecordId,
+        @JsonProperty("numberOfRecords") Long numberOfRecords,
+        @JsonProperty("numberOfEventRecords") Long numberOfEventRecords) {
+      this.tripletValid = tripletValid;
+      this.occurrenceIdValid = occurrenceIdValid;
+      this.useExtendedRecordId = useExtendedRecordId;
+      this.numberOfRecords = numberOfRecords;
+      this.numberOfEventRecords = numberOfEventRecords;
+    }
+
+    public ValidationResult setTripletValid(boolean tripletValid) {
+      this.tripletValid = tripletValid;
+      return this;
+    }
+
+    public ValidationResult setOccurrenceIdValid(boolean occurrenceIdValid) {
+      this.occurrenceIdValid = occurrenceIdValid;
+      return this;
+    }
+
+    public ValidationResult setUseExtendedRecordId(Boolean useExtendedRecordId) {
+      this.useExtendedRecordId = useExtendedRecordId;
+      return this;
+    }
+
+    public ValidationResult setNumberOfRecords(Long numberOfRecords) {
+      this.numberOfRecords = numberOfRecords;
+      return this;
+    }
+
+    public ValidationResult setNumberOfEventRecords(Long numberOfEventRecords) {
+      this.numberOfEventRecords = numberOfEventRecords;
+      return this;
+    }
+
+    public boolean isTripletValid() {
+      return tripletValid;
+    }
+
+    public boolean isOccurrenceIdValid() {
+      return occurrenceIdValid;
+    }
+
+    public Boolean isUseExtendedRecordId() {
+      return useExtendedRecordId;
+    }
+
+    public Long getNumberOfRecords() {
+      return numberOfRecords;
+    }
+
+    public Long getNumberOfEventRecords() {
+      return numberOfEventRecords;
+    }
   }
 }
