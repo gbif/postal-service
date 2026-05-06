@@ -85,7 +85,6 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToExchangeMappingInternal.put(MatchDatasetMessage.class, "checklist");
     messageToExchangeMappingInternal.put(PipelinesXmlMessage.class, "crawler");
     messageToExchangeMappingInternal.put(PipelinesDwcaMessage.class, "crawler");
-    messageToExchangeMappingInternal.put(PipelinesValidatorDwcaMessage.class, "crawler");
     messageToExchangeMappingInternal.put(PipelinesAbcdMessage.class, "crawler");
     messageToExchangeMappingInternal.put(PipelinesVerbatimMessage.class, "occurrence");
     messageToExchangeMappingInternal.put(PipelinesInterpretedMessage.class, "occurrence");
@@ -155,7 +154,6 @@ public class DefaultMessageRegistry implements MessageRegistry {
     messageToRoutingKeyMapping.put(ChangeDoiMessage.class, ChangeDoiMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(MatchDatasetMessage.class, MatchDatasetMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesDwcaMessage.class, PipelinesDwcaMessage.ROUTING_KEY);
-    messageToRoutingKeyMapping.put(PipelinesValidatorDwcaMessage.class, PipelinesValidatorDwcaMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesXmlMessage.class, PipelinesXmlMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(PipelinesAbcdMessage.class, PipelinesAbcdMessage.ROUTING_KEY);
     messageToRoutingKeyMapping.put(
