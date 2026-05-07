@@ -15,17 +15,17 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.util.MessageUtils;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
 import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
@@ -122,17 +122,19 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
 
   @Override
   public String getRoutingKey() {
-    String key = ROUTING_KEY;
-    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
-      key = key + ".validator";
+    StringJoiner key = new StringJoiner(".").add(ROUTING_KEY);
+
+    if (pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
+      key.add("validator");
     }
-    if (pipelineSteps != null && pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
-      key = key + ".identifier";
+    if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
+      key.add("identifier");
     }
     if (runner != null && !runner.isEmpty()) {
-      key = key + "." + runner.toLowerCase();
+      key.add(runner.toLowerCase());
     }
-    return key;
+
+    return key.toString();
   }
 
   @Override
@@ -156,58 +158,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
     return resetPrefix;
   }
 
-  public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
-    this.datasetUuid = datasetUuid;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setAttempt(Integer attempt) {
-    this.attempt = attempt;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setInterpretTypes(Set<String> interpretTypes) {
-    this.interpretTypes = interpretTypes;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setPipelineSteps(Set<String> pipelineSteps) {
-    this.pipelineSteps = pipelineSteps;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setRunner(String runner) {
-    this.runner = runner;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setEndpointType(EndpointType endpointType) {
-    this.endpointType = endpointType;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setExtraPath(String extraPath) {
-    this.extraPath = extraPath;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setValidationResult(ValidationResult validationResult) {
-    this.validationResult = validationResult;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setResetPrefix(String resetPrefix) {
-    this.resetPrefix = resetPrefix;
-    return this;
-  }
-
   public DatasetType getDatasetType() {
     return datasetType;
-  }
-
-  public PipelinesVerbatimMessage setDatasetType(DatasetType datasetType) {
-    this.datasetType = datasetType;
-    return this;
   }
 
   @Override
@@ -255,13 +207,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
 
   @Override
   public String toString() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (IOException e) {
-      // NOP
-    }
-    return "";
+    return MessageUtils.toString(this);
   }
 
   public static class ValidationResult {
