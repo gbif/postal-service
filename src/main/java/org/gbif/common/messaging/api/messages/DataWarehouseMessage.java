@@ -26,7 +26,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.SneakyThrows;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DataWarehouseMessage.ROUTING_KEY)
 public class DataWarehouseMessage extends PipelinesHdfsViewMessage {
 
   public DataWarehouseMessage() {}

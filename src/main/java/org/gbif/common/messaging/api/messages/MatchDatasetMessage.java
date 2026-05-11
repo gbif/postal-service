@@ -18,9 +18,13 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 
 /** Indicates that a dataset should be rematched to the backbone */
+@MessageBinding(exchange = ExchangeType.CHECKLIST, routingKey = MatchDatasetMessage.ROUTING_KEY)
 public class MatchDatasetMessage implements DatasetBasedMessage {
+
   public static final String ROUTING_KEY = "dataset.match";
 
   private final UUID datasetUuid;

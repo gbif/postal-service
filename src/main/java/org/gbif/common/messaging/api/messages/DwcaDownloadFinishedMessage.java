@@ -14,6 +14,8 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * We send this every time a darwin core archive has been downloaded. This includes cases when the
  * archive hasn't been modified since we last downloaded it.
  */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcaDownloadFinishedMessage.ROUTING_KEY)
 public class DwcaDownloadFinishedMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.dwca.download.finished";

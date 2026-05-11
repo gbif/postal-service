@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** This message indicates that the events of a dataset have been interpreted. */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesEventsInterpretedMessage.ROUTING_KEY)
 public class PipelinesEventsInterpretedMessage
     implements PipelinesInterpretationMessage, PipelinesRunnerMessage {
 
