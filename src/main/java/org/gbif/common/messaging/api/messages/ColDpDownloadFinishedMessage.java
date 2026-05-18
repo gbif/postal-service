@@ -12,8 +12,11 @@ import java.util.StringJoiner;
 import java.util.UUID;
 
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = ColDpDownloadFinishedMessage.ROUTING_KEY)
 public class ColDpDownloadFinishedMessage implements DatasetBasedMessage {
   public static final String ROUTING_KEY = "crawl.coldp.download.finished";
 
