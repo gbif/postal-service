@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -33,6 +35,7 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_ABCD_TO_VERBATIM;
  * We send this every time an ABCD archive has been downloaded. This includes cases when the archive
  * hasn't been modified since we last downloaded it.
  */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = PipelinesAbcdMessage.ROUTING_KEY)
 public class PipelinesAbcdMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = AbcdaDownloadFinishedMessage.ROUTING_KEY;

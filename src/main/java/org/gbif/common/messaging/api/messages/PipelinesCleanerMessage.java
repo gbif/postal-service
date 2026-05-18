@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -23,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** This message is used trigger validator cleaner. */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesCleanerMessage.ROUTING_KEY)
 public class PipelinesCleanerMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.cleaner";

@@ -6,9 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.dp.analysis.api.DatapackageAnalysisResult;
 import org.gbif.dp.service.api.DwcDpValidationFinished;
 
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcDpValidationFinishedMessage.ROUTING_KEY)
 public class DwcDpValidationFinishedMessage extends DwcDpValidationFinished implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.dwcdp.validation.finished";

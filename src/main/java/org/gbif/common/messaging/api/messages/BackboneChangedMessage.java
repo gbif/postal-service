@@ -14,6 +14,8 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.checklistbank.DatasetMetrics;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 
 import java.util.Objects;
@@ -22,7 +24,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** The message sent whenever the GBIF backbone has been altered. */
+@MessageBinding(exchange = ExchangeType.CHECKLIST, routingKey = BackboneChangedMessage.ROUTING_KEY)
 public class BackboneChangedMessage implements Message {
+
   public static final String ROUTING_KEY = "backbone.changed";
 
   private final DatasetMetrics metrics;

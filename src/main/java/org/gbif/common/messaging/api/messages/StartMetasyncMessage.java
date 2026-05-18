@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 
 import java.util.Objects;
@@ -23,9 +25,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** Message to send to request a new metadata synchronisation of an Installation. */
+@MessageBinding(exchange = ExchangeType.REGISTRY, routingKey = StartMetasyncMessage.ROUTING_KEY)
 public class StartMetasyncMessage implements Message {
 
   public static final String ROUTING_KEY = "metasync.start";
+
   private final UUID installationKey;
 
   @JsonCreator

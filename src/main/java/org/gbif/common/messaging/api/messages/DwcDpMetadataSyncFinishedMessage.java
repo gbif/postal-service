@@ -6,8 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcDpMetadataSyncFinishedMessage.ROUTING_KEY)
 public class DwcDpMetadataSyncFinishedMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.dwcdp.metadatasync.finished";

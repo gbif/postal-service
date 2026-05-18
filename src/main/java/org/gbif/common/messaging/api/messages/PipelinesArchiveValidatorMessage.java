@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -29,6 +31,7 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VALIDATE_ARCHIVE;
 /**
  * This message is used trigger Checklists validations.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesArchiveValidatorMessage.ROUTING_KEY)
 public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.archive.validator";

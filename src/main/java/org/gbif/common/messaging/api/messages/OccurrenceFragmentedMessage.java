@@ -16,6 +16,8 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.api.vocabulary.OccurrenceSchemaType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Arrays;
@@ -32,7 +34,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * We send this message for every new occurrence fragment we produce. This class does not make a
  * copy of the fragment at the moment so make sure that you don't change the underlying byte array.
  */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = OccurrenceFragmentedMessage.ROUTING_KEY)
 public class OccurrenceFragmentedMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "crawler.fragment.new";
 
   private final UUID datasetUuid;
 
@@ -90,8 +95,7 @@ public class OccurrenceFragmentedMessage implements DatasetBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    // TODO
-    return "crawler.fragment.new";
+    return ROUTING_KEY;
   }
 
   @Override

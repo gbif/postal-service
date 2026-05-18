@@ -17,6 +17,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import jakarta.annotation.Nullable;
@@ -31,6 +33,7 @@ import java.util.UUID;
  * We send this every time an DwcDp archive has been downloaded. This includes cases when the archive
  * hasn't been modified since we last downloaded it.
  */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcDpDownloadFinishedMessage.ROUTING_KEY)
 public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.dwcdp.download.finished";

@@ -16,6 +16,8 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.FinishReason;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_XML_TO_VERBATIM;
 
 /** We send this every time we finish a crawl. */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = PipelinesXmlMessage.ROUTING_KEY)
 public class PipelinesXmlMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = CrawlFinishedMessage.ROUTING_KEY;
