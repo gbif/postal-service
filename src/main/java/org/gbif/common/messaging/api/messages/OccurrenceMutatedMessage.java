@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.occurrence.Occurrence;
 import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Objects;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * DELETED). An interpreted occurrence is the result of interpreting the values of a verbatim
  * occurrence.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = "occurrence.interpreted.mutated")
 public class OccurrenceMutatedMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;

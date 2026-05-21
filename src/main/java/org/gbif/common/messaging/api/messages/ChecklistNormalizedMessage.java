@@ -18,9 +18,13 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 
 /** The message sent whenever an entire checklist is imported into neo and normalized. */
+@MessageBinding(exchange = ExchangeType.CHECKLIST, routingKey = ChecklistNormalizedMessage.ROUTING_KEY)
 public class ChecklistNormalizedMessage implements DatasetBasedMessage {
+
   public static final String ROUTING_KEY = "checklist.normalized";
 
   private final UUID datasetUuid;

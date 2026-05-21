@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 
 import java.util.Objects;
@@ -24,7 +26,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the occurrence deletion service to delete all occurrence records for the
  * given data resource id (the legacy id from the MySQL portal).
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DeleteDataResourceOccurrencesMessage.ROUTING_KEY)
 public class DeleteDataResourceOccurrencesMessage implements Message {
+
+  public static final String ROUTING_KEY = "occurrence.delete.dataresource";
 
   private final int dataResourceId;
 
@@ -35,7 +40,7 @@ public class DeleteDataResourceOccurrencesMessage implements Message {
 
   @Override
   public String getRoutingKey() {
-    return "occurrence.delete.dataresource";
+    return ROUTING_KEY;
   }
 
   public int getDataResourceId() {

@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.utils.PreconditionUtils;
 
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** A message to notify the release of a vocabulary. */
+@MessageBinding(exchange = ExchangeType.VOCABULARY, routingKey = VocabularyReleasedMessage.ROUTING_KEY)
 public class VocabularyReleasedMessage implements Message {
 
   public static final String ROUTING_KEY = "vocabulary.released";

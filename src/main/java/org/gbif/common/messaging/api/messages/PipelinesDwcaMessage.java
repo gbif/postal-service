@@ -17,6 +17,8 @@ import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.model.crawler.GenericValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -36,6 +38,7 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_DWCA_TO_VERBATIM;
  * We send this every time a darwin core archive has been validated after being downloaded and its
  * metadata has been synchronized.
  */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = PipelinesDwcaMessage.ROUTING_KEY)
 public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = DwcaValidationFinishedMessage.ROUTING_KEY;

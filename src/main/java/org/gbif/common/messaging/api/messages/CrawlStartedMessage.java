@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
@@ -24,7 +26,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** We send this message every time we actively start to crawl a dataset. */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = CrawlStartedMessage.ROUTING_KEY)
 public class CrawlStartedMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "crawl.started";
 
   private final UUID datasetUuid;
 
@@ -76,7 +81,7 @@ public class CrawlStartedMessage implements DatasetBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return "crawl.started";
+    return ROUTING_KEY;
   }
 
   @Override
@@ -105,3 +110,4 @@ public class CrawlStartedMessage implements DatasetBasedMessage {
         .toString();
   }
 }
+

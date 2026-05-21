@@ -18,12 +18,17 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 
 /**
  * This message instructs the dataset mutator service to send InterpretVerbatimMessages for each
  * occurrence in the dataset.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = InterpretDatasetMessage.ROUTING_KEY)
 public class InterpretDatasetMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "occurrence.interpret.dataset";
 
   private final UUID datasetUuid;
 
@@ -39,7 +44,7 @@ public class InterpretDatasetMessage implements DatasetBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return "occurrence.interpret.dataset";
+    return ROUTING_KEY;
   }
 
   @Override
