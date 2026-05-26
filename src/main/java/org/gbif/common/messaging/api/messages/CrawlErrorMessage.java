@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Objects;
@@ -25,7 +27,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** We send this message every time we encounter an error during crawling. */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = CrawlErrorMessage.ROUTING_KEY)
 public class CrawlErrorMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "crawl.error";
 
   private final UUID datasetUuid;
 
@@ -97,7 +102,7 @@ public class CrawlErrorMessage implements DatasetBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return "crawl.error" + errorType.toString().toLowerCase();
+    return ROUTING_KEY + errorType.toString().toLowerCase();
   }
 
   public Throwable getThrowable() {

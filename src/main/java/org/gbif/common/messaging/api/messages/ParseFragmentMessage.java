@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.utils.PreconditionUtils;
 
@@ -26,7 +28,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the processors to parse an occurrence's original fragment into a
  * VerbatimOccurrence.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = ParseFragmentMessage.ROUTING_KEY)
 public class ParseFragmentMessage implements Message {
+
+  public static final String ROUTING_KEY = "occurrence.parse.occurrence";
 
   private final long occurrenceKey;
 
@@ -42,7 +47,7 @@ public class ParseFragmentMessage implements Message {
 
   @Override
   public String getRoutingKey() {
-    return "occurrence.parse.occurrence";
+    return ROUTING_KEY;
   }
 
   @Override

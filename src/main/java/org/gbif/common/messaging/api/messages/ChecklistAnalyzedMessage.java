@@ -18,12 +18,16 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 
 /**
  * The message sent whenever an entire checklist is analyzed and dataset metrics stored in
  * checklistbank.
  */
+@MessageBinding(exchange = ExchangeType.CHECKLIST, routingKey = ChecklistAnalyzedMessage.ROUTING_KEY)
 public class ChecklistAnalyzedMessage implements DatasetBasedMessage {
+
   public static final String ROUTING_KEY = "checklist.analyzed";
 
   private final UUID datasetUuid;

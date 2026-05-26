@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.FinishReason;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Objects;
@@ -25,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** We send this every time we finish a crawl. */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = CrawlFinishedMessage.ROUTING_KEY)
 public class CrawlFinishedMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.finished";

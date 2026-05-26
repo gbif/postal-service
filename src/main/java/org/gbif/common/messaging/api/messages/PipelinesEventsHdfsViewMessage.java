@@ -14,6 +14,8 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -27,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** This message indicates that the Event HDFS view of a dataset has finished. */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesEventsHdfsViewMessage.ROUTING_KEY)
 public class PipelinesEventsHdfsViewMessage
     implements PipelineBasedMessage, PipelinesRunnerMessage {
 

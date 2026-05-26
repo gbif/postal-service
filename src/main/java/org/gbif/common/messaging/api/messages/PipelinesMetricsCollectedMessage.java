@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the dataset mutator service to send PipelinesMetricsCollectedMessage for each
  * occurrence in the dataset.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesMetricsCollectedMessage.ROUTING_KEY)
 public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.metrics.finished";

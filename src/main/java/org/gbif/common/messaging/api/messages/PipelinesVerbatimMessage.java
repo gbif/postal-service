@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 
 import java.util.Collections;
@@ -34,6 +36,7 @@ import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
  * Message is published when the conversion from of dataset from various formats(DwC or Xml) to
  * avro(ExtendedRecord) is done.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesVerbatimMessage.ROUTING_KEY)
 public class PipelinesVerbatimMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished";

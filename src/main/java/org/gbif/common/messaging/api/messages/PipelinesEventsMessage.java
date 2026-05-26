@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
 import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * This message is used to start the processing of events datasets.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesEventsMessage.ROUTING_KEY)
 public class PipelinesEventsMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.events";

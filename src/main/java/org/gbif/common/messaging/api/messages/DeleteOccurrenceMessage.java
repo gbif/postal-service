@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.utils.PreconditionUtils;
 
@@ -25,7 +27,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** This message instructs the occurrence deletion service to delete a single Occurrence. */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DeleteOccurrenceMessage.ROUTING_KEY)
 public class DeleteOccurrenceMessage implements Message {
+
+  public static final String ROUTING_KEY = "occurrence.delete.occurrence";
 
   private final long occurrenceKey;
   private final OccurrenceDeletionReason deletionReason;
@@ -60,7 +65,7 @@ public class DeleteOccurrenceMessage implements Message {
 
   @Override
   public String getRoutingKey() {
-    return "occurrence.delete.occurrence";
+    return ROUTING_KEY;
   }
 
   public long getOccurrenceKey() {

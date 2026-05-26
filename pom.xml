@@ -34,8 +34,9 @@
 
     <amqp-client.version>5.22.0</amqp-client.version>
     <commons-io.version>2.21.0</commons-io.version>
-    <gbif-api.version>2.2.2</gbif-api.version>
+    <gbif-api.version>2.4.8</gbif-api.version>
     <gbif-common.version>0.59</gbif-common.version>
+    <dwc-dp-analyser.version>0.0.3</dwc-dp-analyser.version>
     <jackson.version>2.19.4</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.2</jsr305.version>
@@ -53,7 +54,6 @@
     <coverage.dir>${project.basedir}/target/coverage</coverage.dir>
     <coverage.report.it.dir>${project.basedir}/target/site/jacoco-it</coverage.report.it.dir>
     <coverage.report.ut.dir>${project.basedir}/target/site/jacoco-ut</coverage.report.ut.dir>
-    <sonar.coverage.jacoco.xmlReportPaths>${coverage.report.ut.dir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
   </properties>
 
   <distributionManagement>
@@ -110,6 +110,11 @@
       <artifactId>gbif-common</artifactId>
       <version>${gbif-common.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.gbif</groupId>
+      <artifactId>dwc-dp-analyser-service-api</artifactId>
+      <version>${dwc-dp-analyser.version}</version>
+    </dependency>
 
     <!-- Third party dependencies -->
     <dependency>
@@ -141,6 +146,11 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
       <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>${reflections.version}</version>
     </dependency>
 
     <dependency>
@@ -177,12 +187,6 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>${commons-io.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId>
-      <version>${reflections.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
