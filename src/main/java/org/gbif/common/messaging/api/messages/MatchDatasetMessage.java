@@ -13,13 +13,14 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+
 import java.util.Objects;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.gbif.common.messaging.ExchangeType;
-import org.gbif.common.messaging.MessageBinding;
 
 /** Indicates that a dataset should be rematched to the backbone */
 @MessageBinding(exchange = ExchangeType.CHECKLIST, routingKey = MatchDatasetMessage.ROUTING_KEY)

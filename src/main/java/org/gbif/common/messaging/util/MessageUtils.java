@@ -13,11 +13,12 @@
  */
 package org.gbif.common.messaging.util;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
 
 @Slf4j
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)

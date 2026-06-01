@@ -16,7 +16,6 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageRegistry;
 import org.gbif.common.messaging.api.messages.*;
-import org.reflections.Reflections;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -27,6 +26,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
+
+import org.reflections.Reflections;
 
 import lombok.extern.slf4j.Slf4j;
 
