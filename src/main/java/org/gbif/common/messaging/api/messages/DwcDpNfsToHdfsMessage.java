@@ -17,19 +17,18 @@ import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
 
-import java.nio.channels.Pipe;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 @JsonSerialize
 @MessageBinding(
   exchange = ExchangeType.OCCURRENCE,
@@ -38,8 +37,8 @@ public class DwcDpNfsToHdfsMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurence.dwcdp.nfs-to-hdfs";
 
-  private UUID datasetUuid;
-  private Integer attempt;
+  private final UUID datasetUuid;
+  private final Integer attempt;
   private Set<String> pipelineSteps;
   private Long executionId;
 
