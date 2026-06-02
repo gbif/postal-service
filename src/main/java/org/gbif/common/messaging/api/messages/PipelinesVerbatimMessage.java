@@ -28,6 +28,8 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Builder;
+
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
 import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
 
@@ -36,6 +38,7 @@ import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
  * Message is published when the conversion from of dataset from various formats (DwC or XML) to
  * avro (ExtendedRecord) is done.
  */
+@Builder(toBuilder = true)
 @MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesVerbatimMessage.ROUTING_KEY)
 public class PipelinesVerbatimMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 

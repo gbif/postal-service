@@ -41,6 +41,7 @@
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.2</jsr305.version>
     <logback.version>1.5.21</logback.version>
+    <lombok.version>1.18.46</lombok.version>
     <junit.version>5.11.4</junit.version>
     <mockito.version>5.20.0</mockito.version>
     <slf4j.version>2.0.17</slf4j.version>
@@ -117,6 +118,11 @@
     </dependency>
 
     <!-- Third party dependencies -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
