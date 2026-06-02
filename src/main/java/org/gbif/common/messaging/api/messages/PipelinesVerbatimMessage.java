@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -32,14 +31,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
 import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
 
+// TODO: Almost identical to DwcaValidationFinishedMessage. Why are there two messages?
 /**
- * Message is published when the conversion from of dataset from various formats(DwC or Xml) to
- * avro(ExtendedRecord) is done.
+ * Message is published when the conversion from of dataset from various formats (DwC or XML) to
+ * avro (ExtendedRecord) is done.
  */
 @MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesVerbatimMessage.ROUTING_KEY)
 public class PipelinesVerbatimMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished";
+
+  private static final String VALIDATOR_ROUTING_KEY = ROUTING_KEY + ".validator";
+  private static final String IDENTIFIER_ROUTING_KEY = ROUTING_KEY + ".identifier";
 
   private UUID datasetUuid;
   private Integer attempt;
@@ -125,19 +128,21 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
 
   @Override
   public String getRoutingKey() {
-    StringJoiner key = new StringJoiner(".").add(ROUTING_KEY);
-
+    // interpretation (no suffix), identifier and validator
+    String key;
     if (pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
-      key.add("validator");
-    }
-    if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
-      key.add("identifier");
-    }
-    if (runner != null && !runner.isEmpty()) {
-      key.add(runner.toLowerCase());
+      key = VALIDATOR_ROUTING_KEY;
+    } else if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
+      key = IDENTIFIER_ROUTING_KEY;
+    } else {
+      key = ROUTING_KEY;
     }
 
-    return key.toString();
+    // TODO: Runner is always supposed to be present isn't it?
+    // TODO: If not, in which cases is it absent?
+    // TODO: use DISTRIBUTED if runner is null as a default
+    // runner is appended when present
+    return (runner != null && !runner.isEmpty()) ? key + "." + runner.toLowerCase() : key;
   }
 
   @Override
