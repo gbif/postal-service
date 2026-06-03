@@ -17,7 +17,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import lombok.ToString;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.common.messaging.ExchangeType;
@@ -35,6 +39,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonSerialize
+@ToString
+@EqualsAndHashCode(callSuper = false)
 @MessageBinding(
   exchange = ExchangeType.OCCURRENCE,
   routingKey = DwcDpNfsToHdfsMessage.ROUTING_KEY)
