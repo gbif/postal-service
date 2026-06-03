@@ -13,6 +13,12 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.NoArgsConstructor;
+
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
@@ -22,13 +28,12 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
 @JsonSerialize
 @MessageBinding(
   exchange = ExchangeType.OCCURRENCE,
@@ -37,10 +42,22 @@ public class DwcDpNfsToHdfsMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.dwcdp.nfs-to-hdfs";
 
-  private final UUID datasetUuid;
-  private final Integer attempt;
+  private UUID datasetUuid;
+  private Integer attempt;
   private Set<String> pipelineSteps;
   private Long executionId;
+
+  @JsonCreator
+  public DwcDpNfsToHdfsMessage(
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") Integer attempt,
+    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+    @JsonProperty("executionId") Long executionId) {
+    this.datasetUuid = datasetUuid;
+    this.attempt = attempt;
+    this.pipelineSteps = pipelineSteps;
+    this.executionId = executionId;
+  }
 
   @Override
   public DatasetInfo getDatasetInfo() {
