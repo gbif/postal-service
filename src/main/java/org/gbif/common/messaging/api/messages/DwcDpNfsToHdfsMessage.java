@@ -35,7 +35,7 @@ import lombok.Setter;
   routingKey = DwcDpNfsToHdfsMessage.ROUTING_KEY)
 public class DwcDpNfsToHdfsMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "occurence.dwcdp.nfs-to-hdfs";
+  public static final String ROUTING_KEY = "occurrence.dwcdp.nfs-to-hdfs";
 
   private final UUID datasetUuid;
   private final Integer attempt;
