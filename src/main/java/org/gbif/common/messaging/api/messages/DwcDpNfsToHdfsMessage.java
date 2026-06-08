@@ -13,33 +13,27 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-import lombok.ToString;
-
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.util.MessageUtils;
 
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonSerialize
-@ToString
 @EqualsAndHashCode(callSuper = false)
 @MessageBinding(
   exchange = ExchangeType.OCCURRENCE,
@@ -52,22 +46,43 @@ public class DwcDpNfsToHdfsMessage implements PipelineBasedMessage {
   private Integer attempt;
   private Set<String> pipelineSteps;
   private Long executionId;
+  private boolean containsOccurrences;
+  private boolean containsEvents;
 
   @JsonCreator
   public DwcDpNfsToHdfsMessage(
     @JsonProperty("datasetUuid") UUID datasetUuid,
     @JsonProperty("attempt") Integer attempt,
     @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-    @JsonProperty("executionId") Long executionId) {
+    @JsonProperty("executionId") Long executionId,
+    @JsonProperty("containsOccurrences") boolean containsOccurrences,
+    @JsonProperty("containsEvents") boolean containsEvents) {
     this.datasetUuid = datasetUuid;
     this.attempt = attempt;
     this.pipelineSteps = pipelineSteps;
     this.executionId = executionId;
+    this.containsOccurrences = containsOccurrences;
+    this.containsEvents = containsEvents;
   }
 
   @Override
   public DatasetInfo getDatasetInfo() {
-    return new DatasetInfo(DatasetType.OCCURRENCE, true, false);
+    return new DatasetInfo(getDataSetType(), containsOccurrences, containsEvents);
+  }
+
+  private DatasetType getDataSetType() {
+    if (containsOccurrences) {
+      return DatasetType.OCCURRENCE;
+    }
+    if (containsEvents) {
+      return DatasetType.SAMPLING_EVENT;
+    }
+    return DatasetType.METADATA;
+  }
+
+  @Override
+  public String toString() {
+    return MessageUtils.toString(this);
   }
 
   @Override
