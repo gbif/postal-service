@@ -18,10 +18,10 @@ import org.gbif.common.messaging.ConnectionParameters;
 import java.io.IOException;
 import java.util.StringJoiner;
 
-import jakarta.validation.constraints.NotNull;
-
 import com.beust.jcommander.Parameter;
 import com.rabbitmq.client.AMQP;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A configuration class which can be used to get all the details needed to create a connection to
