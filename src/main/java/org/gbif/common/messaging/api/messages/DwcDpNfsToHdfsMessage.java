@@ -71,11 +71,11 @@ public class DwcDpNfsToHdfsMessage implements PipelineBasedMessage {
   }
 
   private DatasetType getDataSetType() {
-    if (containsOccurrences) {
-      return DatasetType.OCCURRENCE;
-    }
     if (containsEvents) {
       return DatasetType.SAMPLING_EVENT;
+    }
+    if (containsOccurrences) {
+      return DatasetType.OCCURRENCE;
     }
     return DatasetType.METADATA;
   }
