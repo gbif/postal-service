@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_IDENTIFIER;
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
 import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
 
@@ -44,7 +45,8 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
 
   public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished";
 
-  private static final String VALIDATOR_ROUTING_KEY = ROUTING_KEY + ".validator";
+  private static final String VALIDATOR_INTERPRETED_ROUTING_KEY = ROUTING_KEY + ".validator";
+  private static final String VALIDATOR_IDENTIFIER_ROUTING_KEY = ROUTING_KEY + ".validator.identifier";
   private static final String IDENTIFIER_ROUTING_KEY = ROUTING_KEY + ".identifier";
 
   private UUID datasetUuid;
@@ -131,21 +133,30 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
 
   @Override
   public String getRoutingKey() {
-    // interpretation (no suffix), identifier and validator
-    String key;
+    // interpretation (no suffix)
+    String key = ROUTING_KEY;
+
+    // validator interpretation
     if (pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
-      key = VALIDATOR_ROUTING_KEY;
-    } else if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
-      key = IDENTIFIER_ROUTING_KEY;
-    } else {
-      key = ROUTING_KEY;
+      key = VALIDATOR_INTERPRETED_ROUTING_KEY;
     }
 
-    // TODO: Runner is always supposed to be present isn't it?
-    // TODO: If not, in which cases is it absent?
-    // TODO: use DISTRIBUTED if runner is null as a default
+    // validator identifier
+    if (pipelineSteps.contains(VALIDATOR_VERBATIM_TO_IDENTIFIER.name())) {
+      key = VALIDATOR_IDENTIFIER_ROUTING_KEY;
+    }
+
+    // identifier
+    if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
+      key = IDENTIFIER_ROUTING_KEY;
+    }
+
     // runner is appended when present
-    return (runner != null && !runner.isEmpty()) ? key + "." + runner.toLowerCase() : key;
+    if (runner != null && !runner.isEmpty()) {
+      key += "." + runner.toLowerCase();
+    }
+
+    return key;
   }
 
   @Override
