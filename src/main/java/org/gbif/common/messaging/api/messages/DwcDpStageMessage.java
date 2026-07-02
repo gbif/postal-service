@@ -13,14 +13,6 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.vocabulary.DatasetType;
-import org.gbif.common.messaging.ExchangeType;
-import org.gbif.common.messaging.MessageBinding;
-import org.gbif.common.messaging.util.MessageUtils;
-
-import java.util.Set;
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -30,7 +22,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Deprecated
+import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.util.MessageUtils;
+
+import java.util.Set;
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,10 +37,10 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 @MessageBinding(
   exchange = ExchangeType.OCCURRENCE,
-  routingKey = DwcDpNfsToHdfsMessage.ROUTING_KEY)
-public class DwcDpNfsToHdfsMessage implements PipelineBasedMessage {
+  routingKey = DwcDpStageMessage.ROUTING_KEY)
+public class DwcDpStageMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "occurrence.dwcdp.nfs-to-hdfs";
+  public static final String ROUTING_KEY = "occurrence.dwcdp.stage";
 
   private UUID datasetUuid;
   private Integer attempt;
@@ -51,7 +50,7 @@ public class DwcDpNfsToHdfsMessage implements PipelineBasedMessage {
   private boolean containsEvents;
 
   @JsonCreator
-  public DwcDpNfsToHdfsMessage(
+  public DwcDpStageMessage(
     @JsonProperty("datasetUuid") UUID datasetUuid,
     @JsonProperty("attempt") Integer attempt,
     @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
