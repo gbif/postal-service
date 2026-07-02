@@ -13,6 +13,14 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.util.MessageUtils;
+
+import java.util.Set;
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -21,14 +29,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.gbif.api.vocabulary.DatasetType;
-import org.gbif.common.messaging.ExchangeType;
-import org.gbif.common.messaging.MessageBinding;
-import org.gbif.common.messaging.util.MessageUtils;
-
-import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
