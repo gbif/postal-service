@@ -30,14 +30,25 @@ public class DwcDpMetadataSyncFinishedMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;
   private final int attempt;
+  private final boolean containsOccurrences;
+  private final boolean containsEvents;
+
+  @Deprecated
+  public DwcDpMetadataSyncFinishedMessage(UUID datasetUuid, int attempt) {
+    this(datasetUuid, attempt, null, null);
+  }
 
   @JsonCreator
   public DwcDpMetadataSyncFinishedMessage(
     @JsonProperty("datasetUuid") UUID datasetUuid,
-    @JsonProperty("attempt") int attempt) {
+    @JsonProperty("attempt") int attempt,
+    @JsonProperty("containsOccurrences") Boolean containsOccurrences,
+    @JsonProperty("containsEvents") Boolean containsEvents) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
+    this.containsOccurrences = containsOccurrences != null && containsOccurrences;
+    this.containsEvents = containsEvents != null && containsEvents;
   }
 
   @Override
@@ -47,6 +58,14 @@ public class DwcDpMetadataSyncFinishedMessage implements DatasetBasedMessage {
 
   public int getAttempt() {
     return attempt;
+  }
+
+  public boolean isContainsOccurrences() {
+    return containsOccurrences;
+  }
+
+  public boolean isContainsEvents() {
+    return containsEvents;
   }
 
   @Override
