@@ -14,6 +14,8 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Objects;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * The message sent whenever an occurrence fragment is persisted. All incoming fragments will be
  * persisted, hence there will be one of these messages for every incoming fragment.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = "occurrence.fragment.persisted")
 public class FragmentPersistedMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;

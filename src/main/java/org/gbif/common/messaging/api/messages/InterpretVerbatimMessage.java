@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.utils.PreconditionUtils;
 
@@ -26,7 +28,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the processors to interpret an Occurrence from a stored
  * VerbatimOccurrence.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = InterpretVerbatimMessage.ROUTING_KEY)
 public class InterpretVerbatimMessage implements Message {
+
+  public static final String ROUTING_KEY = "occurrence.interpret.occurrence";
 
   private final long occurrenceKey;
 
@@ -42,7 +47,7 @@ public class InterpretVerbatimMessage implements Message {
 
   @Override
   public String getRoutingKey() {
-    return "occurrence.interpret.occurrence";
+    return ROUTING_KEY;
   }
 
   @Override

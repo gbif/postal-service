@@ -16,9 +16,11 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.FinishReason;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -26,11 +28,11 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_XML_TO_VERBATIM;
 
 /** We send this every time we finish a crawl. */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = PipelinesXmlMessage.ROUTING_KEY)
 public class PipelinesXmlMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = CrawlFinishedMessage.ROUTING_KEY;
@@ -185,12 +187,6 @@ public class PipelinesXmlMessage implements PipelineBasedMessage {
 
   @Override
   public String toString() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (IOException e) {
-      // NOP
-    }
-    return "";
+    return MessageUtils.toString(this);
   }
 }

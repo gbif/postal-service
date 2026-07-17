@@ -13,31 +13,28 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.occurrence.DownloadType;
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
-import org.gbif.common.messaging.api.Message;
+import org.gbif.dp.analysis.api.DatapackageAnalysisResult;
+import org.gbif.dp.service.api.DwcDpValidationFinished;
+
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcDpValidationFinishedMessage.ROUTING_KEY)
+public class DwcDpValidationFinishedMessage extends DwcDpValidationFinished implements DatasetBasedMessage {
 
-@Data
-@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DownloadCancelMessage.ROUTING_KEY)
-public class DownloadCancelMessage implements Message {
-
-  public static final String ROUTING_KEY = "occurrence.download.cancel";
-
-  private final String downloadKey;
-  private final DownloadType downloadType;
+  public static final String ROUTING_KEY = "crawl.dwcdp.validation.finished";
 
   @JsonCreator
-  public DownloadCancelMessage(
-      @JsonProperty("downloadKey") String downloadKey,
-      @JsonProperty("downloadType") DownloadType downloadType) {
-    this.downloadKey = downloadKey;
-    this.downloadType = downloadType;
+  public DwcDpValidationFinishedMessage(
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") int attempt,
+    @JsonProperty("valid") Boolean valid,
+    @JsonProperty("validationReport") DatapackageAnalysisResult validationReport) {
+    super(datasetUuid, attempt, valid, validationReport);
   }
 
   @Override

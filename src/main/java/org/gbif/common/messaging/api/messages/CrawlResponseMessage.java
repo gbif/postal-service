@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Arrays;
@@ -20,13 +22,16 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.annotation.Nullable;
+
 /** We send this message every time we get a response from an endpoint. */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = CrawlResponseMessage.ROUTING_KEY)
 public class CrawlResponseMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "crawl.response";
 
   private final UUID datasetUuid;
 
@@ -113,7 +118,7 @@ public class CrawlResponseMessage implements DatasetBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return "crawl.response";
+    return ROUTING_KEY;
   }
 
   @Override

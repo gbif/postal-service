@@ -15,10 +15,12 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.messages.PipelinesVerbatimMessage.ValidationResult;
+import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +29,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_INTERPRETED_TO_INDEX;
 
@@ -35,6 +36,7 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_INTERPRETED_TO_IND
  * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
  * occurrence in the dataset.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesInterpretedMessage.ROUTING_KEY)
 public class PipelinesInterpretedMessage
     implements PipelinesInterpretationMessage, PipelinesRunnerMessage {
 
@@ -281,12 +283,6 @@ public class PipelinesInterpretedMessage
 
   @Override
   public String toString() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (IOException e) {
-      // NOP
-    }
-    return "";
+    return MessageUtils.toString(this);
   }
 }

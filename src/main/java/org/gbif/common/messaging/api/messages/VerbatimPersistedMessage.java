@@ -14,6 +14,8 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.OccurrencePersistenceStatus;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Objects;
@@ -27,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * result of parsing incoming fragments, but has had no interpretation (e.g. dates, co-ordinates,
  * etc) applied. Note that this message will only have status NEW or UPDATED - never UNCHANGED.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = "occurrence.verbatim.persisted")
 public class VerbatimPersistedMessage implements DatasetBasedMessage {
 
   private final UUID datasetUuid;

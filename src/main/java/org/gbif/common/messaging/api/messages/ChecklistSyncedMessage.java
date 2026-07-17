@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Date;
@@ -23,7 +25,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /** The message sent whenever an entire checklist is imported into checklistbank. */
+@MessageBinding(exchange = ExchangeType.CHECKLIST, routingKey = ChecklistSyncedMessage.ROUTING_KEY)
 public class ChecklistSyncedMessage implements DatasetBasedMessage {
+
   public static final String ROUTING_KEY = "checklist.imported";
 
   private final UUID datasetUuid;

@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 
 import java.util.Objects;
@@ -25,9 +27,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * This message will be sent every time an entity in the Registry changes (which includes deletions
  * and additions).
  */
+@MessageBinding(exchange = ExchangeType.REGISTRY, routingKey = "registry.change.#")
 public class RegistryChangeMessage implements Message {
 
   private static final String ROUTING_KEY = "registry.change";
+
   private final ChangeType changeType;
   private final Class<?> objectClass;
   private final Object oldObject;

@@ -13,14 +13,17 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.annotation.Nullable;
 
 /**
  * Message to send to request a new crawl of a dataset.
@@ -29,7 +32,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * higher priority will be running first but there is no guarantee on the scheduling algorithm so
  * consider this as a hint.
  */
+@MessageBinding(exchange = ExchangeType.REGISTRY, routingKey = StartCrawlMessage.ROUTING_KEY)
 public class StartCrawlMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "crawl.start";
 
   private final UUID datasetUuid;
 
@@ -87,7 +93,7 @@ public class StartCrawlMessage implements DatasetBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return "crawl.start";
+    return ROUTING_KEY;
   }
 
   @Override

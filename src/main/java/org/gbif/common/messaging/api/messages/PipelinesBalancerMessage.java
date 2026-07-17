@@ -13,15 +13,17 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
+import org.gbif.common.messaging.util.MessageUtils;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesBalancerMessage.ROUTING_KEY)
 public class PipelinesBalancerMessage implements Message {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.balancer";
@@ -81,12 +83,6 @@ public class PipelinesBalancerMessage implements Message {
 
   @Override
   public String toString() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (IOException e) {
-      // NOP
-    }
-    return "";
+    return MessageUtils.toString(this);
   }
 }

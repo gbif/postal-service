@@ -13,9 +13,11 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -23,12 +25,12 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This message instructs the dataset mutator service to send PipelinesMetricsCollectedMessage for each
  * occurrence in the dataset.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesMetricsCollectedMessage.ROUTING_KEY)
 public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.metrics.finished";
@@ -125,12 +127,6 @@ public class PipelinesMetricsCollectedMessage implements PipelineBasedMessage {
 
   @Override
   public String toString() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (IOException e) {
-      // NOP
-    }
-    return "";
+    return MessageUtils.toString(this);
   }
 }

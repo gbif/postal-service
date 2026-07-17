@@ -13,6 +13,9 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the dataset mutator service to send PipelinesArchiveValidatorMessage for
  * each occurrence in the dataset.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesChecklistValidatorMessage.ROUTING_KEY)
 public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidatorMessage
     implements RpcMessage {
 

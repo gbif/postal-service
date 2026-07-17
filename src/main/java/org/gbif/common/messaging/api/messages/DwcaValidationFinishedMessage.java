@@ -16,6 +16,8 @@ package org.gbif.common.messaging.api.messages;
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * We send this every time a darwin core archive has been validated after being downloaded and its
  * metadata has been synchronized.
  */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcaValidationFinishedMessage.ROUTING_KEY)
 public class DwcaValidationFinishedMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.dwca.validation.finished";

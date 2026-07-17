@@ -29,14 +29,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.annotation.Nullable;
 
-/**
- * We send this every time an ABCD archive has been downloaded. This includes cases when the archive
- * hasn't been modified since we last downloaded it.
- */
-@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = AbcdaDownloadFinishedMessage.ROUTING_KEY)
-public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
-
-  public static final String ROUTING_KEY = "crawl.abcda.download.finished";
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = ColDpDownloadFinishedMessage.ROUTING_KEY)
+public class ColDpDownloadFinishedMessage implements DatasetBasedMessage {
+  public static final String ROUTING_KEY = "crawl.coldp.download.finished";
 
   private final UUID datasetUuid;
   private final URI source;
@@ -47,14 +42,14 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
   private final Platform platform;
 
   @JsonCreator
-  public AbcdaDownloadFinishedMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("source") URI source,
-      @JsonProperty("attempt") int attempt,
-      @Nullable @JsonProperty("lastModified") Date lastModified,
-      @JsonProperty("modified") boolean modified,
-      @JsonProperty("endpointType") EndpointType endpointType,
-      @JsonProperty("platform") Platform platform) {
+  public ColDpDownloadFinishedMessage(
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("source") URI source,
+    @JsonProperty("attempt") int attempt,
+    @Nullable @JsonProperty("lastModified") Date lastModified,
+    @JsonProperty("modified") boolean modified,
+    @JsonProperty("endpointType") EndpointType endpointType,
+    @JsonProperty("platform") Platform platform) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.source = Objects.requireNonNull(source, "source can't be null");
     PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
@@ -112,32 +107,32 @@ public class AbcdaDownloadFinishedMessage implements DatasetBasedMessage {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    AbcdaDownloadFinishedMessage that = (AbcdaDownloadFinishedMessage) o;
+    ColDpDownloadFinishedMessage that = (ColDpDownloadFinishedMessage) o;
     return attempt == that.attempt
-        && modified == that.modified
-        && Objects.equals(datasetUuid, that.datasetUuid)
-        && Objects.equals(source, that.source)
-        && Objects.equals(lastModified, that.lastModified)
-        && endpointType == that.endpointType
-        && platform == that.platform;
+      && modified == that.modified
+      && Objects.equals(datasetUuid, that.datasetUuid)
+      && Objects.equals(source, that.source)
+      && Objects.equals(lastModified, that.lastModified)
+      && endpointType == that.endpointType
+      && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
+      datasetUuid, source, attempt, lastModified, modified, endpointType, platform);
   }
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", AbcdaDownloadFinishedMessage.class.getSimpleName() + "[", "]")
-        .add("datasetUuid=" + datasetUuid)
-        .add("source=" + source)
-        .add("attempt=" + attempt)
-        .add("lastModified=" + lastModified)
-        .add("modified=" + modified)
-        .add("endpointType=" + endpointType)
-        .add("platform=" + platform)
-        .toString();
+    return new StringJoiner(", ", ColDpDownloadFinishedMessage.class.getSimpleName() + "[", "]")
+      .add("datasetUuid=" + datasetUuid)
+      .add("source=" + source)
+      .add("attempt=" + attempt)
+      .add("lastModified=" + lastModified)
+      .add("modified=" + modified)
+      .add("endpointType=" + endpointType)
+      .add("platform=" + platform)
+      .toString();
   }
 }

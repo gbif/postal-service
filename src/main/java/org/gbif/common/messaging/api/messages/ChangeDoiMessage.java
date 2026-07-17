@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.common.DOI;
 import org.gbif.api.model.common.DoiStatus;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 
 import java.net.URI;
@@ -27,7 +29,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * A message to request an update to a DOIs metadata and target URL in DataCite. The DOI can be in
  * any current state (registered, reserved, deleted) or even yet unknown to DataCite.
  */
+@MessageBinding(exchange = ExchangeType.REGISTRY, routingKey = ChangeDoiMessage.ROUTING_KEY)
 public class ChangeDoiMessage implements Message {
+
   public static final String ROUTING_KEY = "doi.change";
 
   public static final String DOI_FIELD = "doi";

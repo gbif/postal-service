@@ -13,12 +13,13 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import org.gbif.api.model.crawler.FinishReason;
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
+import java.net.URI;
+import java.util.Date;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -26,61 +27,89 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/** We send this every time we finish a crawl. */
-@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = CrawlFinishedMessage.ROUTING_KEY)
-public class CrawlFinishedMessage implements DatasetBasedMessage {
+import jakarta.annotation.Nullable;
 
-  public static final String ROUTING_KEY = "crawl.finished";
+/**
+ * We send this every time an DwcDp archive has been downloaded. This includes cases when the archive
+ * hasn't been modified since we last downloaded it.
+ */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcDpDownloadFinishedMessage.ROUTING_KEY)
+public class DwcDpDownloadFinishedMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "crawl.dwcdp.download.finished";
 
   private final UUID datasetUuid;
+  private final URI source;
   private final int attempt;
-  private final int totalRecordCount;
-  private final FinishReason reason;
+  private final Date lastModified;
+  private final boolean modified;
   private final EndpointType endpointType;
+  private final Integer endpointKey;
   private final Platform platform;
 
   @JsonCreator
-  public CrawlFinishedMessage(
+  public DwcDpDownloadFinishedMessage(
       @JsonProperty("datasetUuid") UUID datasetUuid,
+      @JsonProperty("source") URI source,
       @JsonProperty("attempt") int attempt,
-      @JsonProperty("totalRecordCount") int totalRecordCount,
-      @JsonProperty("reason") FinishReason reason,
+      @Nullable @JsonProperty("lastModified") Date lastModified,
+      @JsonProperty("modified") boolean modified,
       @JsonProperty("endpointType") EndpointType endpointType,
+      @JsonProperty("endpointKey") Integer endpointKey,
       @JsonProperty("platform") Platform platform) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
+    this.source = Objects.requireNonNull(source, "source can't be null");
     PreconditionUtils.checkArgument(attempt > 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    PreconditionUtils.checkArgument(
-        totalRecordCount >= 0, "totalRecordCount has to be greater than or equal to 0");
-    this.totalRecordCount = totalRecordCount;
-    this.reason = Objects.requireNonNull(reason, "reason can't be null");
+    this.lastModified = lastModified;
+    this.modified = modified;
     this.endpointType = endpointType;
+    this.endpointKey = endpointKey;
     this.platform = platform != null ? platform : Platform.ALL;
+  }
+
+  /** @return dataset uuid */
+  @Override
+  public UUID getDatasetUuid() {
+    return datasetUuid;
+  }
+
+  /** @return source the archive has been downloaded from */
+  public URI getSource() {
+    return source;
   }
 
   public int getAttempt() {
     return attempt;
   }
 
-  @Override
-  public UUID getDatasetUuid() {
-    return datasetUuid;
-  }
-
-  public FinishReason getReason() {
-    return reason;
-  }
-
-  public int getTotalRecordCount() {
-    return totalRecordCount;
-  }
-
   public EndpointType getEndpointType() {
     return endpointType;
   }
 
+  /** @return the date the downloaded archive was last modified or null e.g. for failed downloads */
+  @Nullable
+  public Date getLastModified() {
+    return lastModified;
+  }
+
+  /**
+   * @return true if the archive has changed since we last downloaded it or never been downloaded
+   *     before
+   */
+  public boolean isModified() {
+    return modified;
+  }
+
+  /** @return platform that must index the Abcd fragment */
   public Platform getPlatform() {
     return platform;
+  }
+
+
+  /**Endpoint key used to crawl the dataset.*/
+  public Integer getEndpointKey() {
+    return endpointKey;
   }
 
   @Override
@@ -92,28 +121,33 @@ public class CrawlFinishedMessage implements DatasetBasedMessage {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    CrawlFinishedMessage that = (CrawlFinishedMessage) o;
+    DwcDpDownloadFinishedMessage that = (DwcDpDownloadFinishedMessage) o;
     return attempt == that.attempt
-        && totalRecordCount == that.totalRecordCount
+        && modified == that.modified
         && Objects.equals(datasetUuid, that.datasetUuid)
-        && reason == that.reason
+        && Objects.equals(source, that.source)
+        && Objects.equals(lastModified, that.lastModified)
         && endpointType == that.endpointType
+        && Objects.equals(endpointKey, that.endpointKey)
         && platform == that.platform;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, totalRecordCount, reason, endpointType, platform);
+    return Objects.hash(
+        datasetUuid, source, attempt, lastModified, modified, endpointType, endpointKey, platform);
   }
 
   @Override
   public String toString() {
-    return new StringJoiner(", ", CrawlFinishedMessage.class.getSimpleName() + "[", "]")
+    return new StringJoiner(", ", DwcDpDownloadFinishedMessage.class.getSimpleName() + "[", "]")
         .add("datasetUuid=" + datasetUuid)
+        .add("source=" + source)
         .add("attempt=" + attempt)
-        .add("totalRecordCount=" + totalRecordCount)
-        .add("reason=" + reason)
+        .add("lastModified=" + lastModified)
+        .add("modified=" + modified)
         .add("endpointType=" + endpointType)
+        .add("endpointKey=" + endpointKey)
         .add("platform=" + platform)
         .toString();
   }

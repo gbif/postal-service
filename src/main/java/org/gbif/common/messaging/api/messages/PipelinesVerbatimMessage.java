@@ -15,17 +15,23 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
 import org.gbif.api.vocabulary.EndpointType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.util.MessageUtils;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
 import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
@@ -34,19 +40,29 @@ import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
  * Message is published when the conversion from of dataset from various formats(DwC or Xml) to
  * avro(ExtendedRecord) is done.
  */
+@Getter
+@EqualsAndHashCode
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesVerbatimMessage.ROUTING_KEY)
 public class PipelinesVerbatimMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.verbatim.finished";
 
   private UUID datasetUuid;
   private Integer attempt;
+  /**
+   * @return types of interpretation - ALL, LOCATION, BASE or etc.
+   */
+  @Setter
   private Set<String> interpretTypes;
+  @Setter
   private Set<String> pipelineSteps;
   private String runner;
   private EndpointType endpointType;
   private String extraPath;
   private ValidationResult validationResult;
+  @Setter
   private String resetPrefix;
+  @Setter
   private Long executionId;
   private DatasetType datasetType;
 
@@ -93,177 +109,31 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
     return new DatasetInfo(datasetType, containsOccurrences, containsEvents);
   }
 
-  /** @return datasetUUID for the converted dataset */
-  @Override
-  public UUID getDatasetUuid() {
-    return datasetUuid;
-  }
-
-  /** @return attempt for the converted dataset */
-  @Override
-  public Integer getAttempt() {
-    return attempt;
-  }
-
-  @Override
-  public Set<String> getPipelineSteps() {
-    return pipelineSteps;
-  }
-
-  @Override
-  public Long getExecutionId() {
-    return executionId;
-  }
-
-  /** @return types of interpretation - ALL, LOCATION, BASE or etc. */
-  public Set<String> getInterpretTypes() {
-    return interpretTypes;
-  }
-
   @Override
   public String getRoutingKey() {
-    String key = ROUTING_KEY;
-    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
-      key = key + ".validator";
+    StringJoiner key = new StringJoiner(".").add(ROUTING_KEY);
+
+    if (pipelineSteps.contains(VALIDATOR_VERBATIM_TO_INTERPRETED.name())) {
+      key.add("validator");
     }
-    if (pipelineSteps != null && pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
-      key = key + ".identifier";
+    if (pipelineSteps.contains(VERBATIM_TO_IDENTIFIER.name())) {
+      key.add("identifier");
     }
     if (runner != null && !runner.isEmpty()) {
-      key = key + "." + runner.toLowerCase();
+      key.add(runner.toLowerCase());
     }
-    return key;
-  }
 
-  @Override
-  public String getRunner() {
-    return runner;
-  }
-
-  public EndpointType getEndpointType() {
-    return endpointType;
-  }
-
-  public String getExtraPath() {
-    return extraPath;
-  }
-
-  public ValidationResult getValidationResult() {
-    return validationResult;
-  }
-
-  public String getResetPrefix() {
-    return resetPrefix;
-  }
-
-  public PipelinesVerbatimMessage setDatasetUuid(UUID datasetUuid) {
-    this.datasetUuid = datasetUuid;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setAttempt(Integer attempt) {
-    this.attempt = attempt;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setInterpretTypes(Set<String> interpretTypes) {
-    this.interpretTypes = interpretTypes;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setPipelineSteps(Set<String> pipelineSteps) {
-    this.pipelineSteps = pipelineSteps;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setRunner(String runner) {
-    this.runner = runner;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setEndpointType(EndpointType endpointType) {
-    this.endpointType = endpointType;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setExtraPath(String extraPath) {
-    this.extraPath = extraPath;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setValidationResult(ValidationResult validationResult) {
-    this.validationResult = validationResult;
-    return this;
-  }
-
-  public PipelinesVerbatimMessage setResetPrefix(String resetPrefix) {
-    this.resetPrefix = resetPrefix;
-    return this;
-  }
-
-  public DatasetType getDatasetType() {
-    return datasetType;
-  }
-
-  public PipelinesVerbatimMessage setDatasetType(DatasetType datasetType) {
-    this.datasetType = datasetType;
-    return this;
-  }
-
-  @Override
-  public void setExecutionId(Long executionId) {
-    this.executionId = executionId;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    PipelinesVerbatimMessage that = (PipelinesVerbatimMessage) o;
-    return Objects.equals(datasetUuid, that.datasetUuid)
-        && Objects.equals(attempt, that.attempt)
-        && Objects.equals(interpretTypes, that.interpretTypes)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(runner, that.runner)
-        && endpointType == that.endpointType
-        && Objects.equals(extraPath, that.extraPath)
-        && Objects.equals(validationResult, that.validationResult)
-        && Objects.equals(resetPrefix, that.resetPrefix)
-        && Objects.equals(executionId, that.executionId)
-        && datasetType == that.datasetType;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        datasetUuid,
-        attempt,
-        interpretTypes,
-        pipelineSteps,
-        runner,
-        endpointType,
-        extraPath,
-        validationResult,
-        resetPrefix,
-        executionId,
-        datasetType);
+    return key.toString();
   }
 
   @Override
   public String toString() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (IOException e) {
-      // NOP
-    }
-    return "";
+    return MessageUtils.toString(this);
   }
 
+  @Setter
+  @Getter
+  @EqualsAndHashCode
   public static class ValidationResult {
 
     private boolean tripletValid;
@@ -288,49 +158,10 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
       this.numberOfEventRecords = numberOfEventRecords;
     }
 
-    public ValidationResult setTripletValid(boolean tripletValid) {
-      this.tripletValid = tripletValid;
-      return this;
+    @Override
+    public String toString() {
+      return MessageUtils.toString(this);
     }
 
-    public ValidationResult setOccurrenceIdValid(boolean occurrenceIdValid) {
-      this.occurrenceIdValid = occurrenceIdValid;
-      return this;
-    }
-
-    public ValidationResult setUseExtendedRecordId(Boolean useExtendedRecordId) {
-      this.useExtendedRecordId = useExtendedRecordId;
-      return this;
-    }
-
-    public ValidationResult setNumberOfRecords(Long numberOfRecords) {
-      this.numberOfRecords = numberOfRecords;
-      return this;
-    }
-
-    public ValidationResult setNumberOfEventRecords(Long numberOfEventRecords) {
-      this.numberOfEventRecords = numberOfEventRecords;
-      return this;
-    }
-
-    public boolean isTripletValid() {
-      return tripletValid;
-    }
-
-    public boolean isOccurrenceIdValid() {
-      return occurrenceIdValid;
-    }
-
-    public Boolean isUseExtendedRecordId() {
-      return useExtendedRecordId;
-    }
-
-    public Long getNumberOfRecords() {
-      return numberOfRecords;
-    }
-
-    public Long getNumberOfEventRecords() {
-      return numberOfEventRecords;
-    }
   }
 }

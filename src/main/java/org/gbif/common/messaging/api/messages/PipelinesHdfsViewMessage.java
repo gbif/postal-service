@@ -14,9 +14,11 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -24,9 +26,9 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /** This message indicates that the HDFS view of a dataset has finished. */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesHdfsViewMessage.ROUTING_KEY)
 public class PipelinesHdfsViewMessage implements PipelineBasedMessage, PipelinesRunnerMessage {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.hdfsview.finished";
@@ -141,12 +143,6 @@ public class PipelinesHdfsViewMessage implements PipelineBasedMessage, Pipelines
 
   @Override
   public String toString() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.writeValueAsString(this);
-    } catch (IOException e) {
-      // NOP
-    }
-    return "";
+    return MessageUtils.toString(this);
   }
 }

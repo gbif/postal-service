@@ -13,6 +13,9 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,7 +26,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * This message instructs the occurrence deletion service to delete all occurrence records for the
  * given dataset.
  */
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DeleteDatasetOccurrencesMessage.ROUTING_KEY)
 public class DeleteDatasetOccurrencesMessage implements DatasetBasedMessage {
+
+  public static final String ROUTING_KEY = "occurrence.delete.dataset";
 
   private final UUID datasetUuid;
   private final OccurrenceDeletionReason deletionReason;
@@ -38,7 +44,7 @@ public class DeleteDatasetOccurrencesMessage implements DatasetBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return "occurrence.delete.dataset";
+    return ROUTING_KEY;
   }
 
   @Override

@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeoutException;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -90,8 +91,13 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     LOG.info("Connecting to AMQP broker {}", connectionParameters);
-    connection = connectionParameters.getConnectionFactory().newConnection();
-    declareAllExchanges(registry, connection);
+    try {
+      connection = connectionParameters.getConnectionFactory().newConnection();
+      declareAllExchanges(registry, connection);
+    } catch (TimeoutException e) {
+      LOG.error("Timeout connecting to AMQP broker", e);
+      throw new IOException(e);
+    }
   }
 
   @Override
@@ -145,9 +151,12 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
         if (persistent) {
           channel.basicPublish(exchange, routingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, data);
         } else {
-          BasicProperties properties = MessageProperties.TEXT_PLAIN;
+
+          BasicProperties properties = null;
           if (customContentType != null) {
-            properties.setContentType(customContentType);
+            properties = new BasicProperties.Builder().contentType(customContentType).build();
+          } else {
+            properties = MessageProperties.TEXT_PLAIN;
           }
           channel.basicPublish(exchange, routingKey, properties, data);
         }
@@ -297,7 +306,11 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
       }
     } finally {
       if (channel != null) {
-        channel.close();
+        try {
+          channel.close();
+        } catch (TimeoutException e) {
+          throw new IOException(e);
+        }
       }
     }
   }
@@ -342,8 +355,15 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     for (Channel c : channelPool) {
       try {
         c.waitForConfirmsOrDie();
-      } catch (IOException | InterruptedException | IllegalStateException e) {
+      } catch (IllegalStateException e) {
+        LOG.warn("IllegalStateException waiting for confirms. This is expected if confirms not enabled: "
+          + e.getMessage());
+        LOG.debug(e.getMessage(), e);
+      } catch (IOException e) {
         LOG.warn("Exception waiting for confirms", e);
+      } catch (InterruptedException e) {
+        LOG.warn("Interrupted while waiting for confirms", e);
+        Thread.currentThread().interrupt();
       }
     }
 

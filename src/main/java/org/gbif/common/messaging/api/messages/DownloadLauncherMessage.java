@@ -14,6 +14,8 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.occurrence.DownloadRequest;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -22,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
+@MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DownloadLauncherMessage.ROUTING_KEY)
 public class DownloadLauncherMessage implements Message {
 
   public static final String ROUTING_KEY = "occurrence.download.launch";

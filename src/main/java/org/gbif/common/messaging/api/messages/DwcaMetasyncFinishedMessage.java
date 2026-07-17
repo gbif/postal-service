@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.crawler.DwcaValidationReport;
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * the metadata repository. This includes updating the registered dataset metadata and synchronizing
  * potentially all found dataset constituents, e.g. GSDs in CoL.
  */
+@MessageBinding(exchange = ExchangeType.CRAWLER, routingKey = DwcaMetasyncFinishedMessage.ROUTING_KEY)
 public class DwcaMetasyncFinishedMessage implements DatasetBasedMessage {
 
   public static final String ROUTING_KEY = "crawl.dwca.metasync.finished";
