@@ -15,12 +15,13 @@ package org.gbif.common.messaging;
 
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.messages.*;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.reflections.Reflections;
 
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.reflections.Reflections;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

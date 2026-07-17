@@ -23,10 +23,10 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
-import jakarta.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.annotation.Nullable;
 
 /**
  * The message sent whenever an "interpreted" occurrence has changed (either NEW, UPDATED, or

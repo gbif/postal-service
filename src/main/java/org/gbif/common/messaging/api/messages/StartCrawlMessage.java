@@ -13,16 +13,17 @@
  */
 package org.gbif.common.messaging.api.messages;
 
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
-import jakarta.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.gbif.common.messaging.ExchangeType;
-import org.gbif.common.messaging.MessageBinding;
+
+import jakarta.annotation.Nullable;
 
 /**
  * Message to send to request a new crawl of a dataset.

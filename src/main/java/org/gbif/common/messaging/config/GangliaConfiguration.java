@@ -15,12 +15,12 @@ package org.gbif.common.messaging.config;
 
 import java.util.StringJoiner;
 
-import jakarta.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.beust.jcommander.Parameter;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A configuration class which holds the host and port to connect yammer metrics to a ganglia

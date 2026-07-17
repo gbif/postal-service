@@ -24,10 +24,10 @@ import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
 
-import jakarta.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.annotation.Nullable;
 
 /**
  * We send this every time an ABCD archive has been downloaded. This includes cases when the archive

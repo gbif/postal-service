@@ -13,21 +13,21 @@
  */
 package org.gbif.common.messaging.api.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.gbif.api.vocabulary.EndpointType;
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
 import org.gbif.utils.PreconditionUtils;
-
-import jakarta.annotation.Nullable;
 
 import java.net.URI;
 import java.util.Date;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.annotation.Nullable;
 
 /**
  * We send this every time an DwcDp archive has been downloaded. This includes cases when the archive

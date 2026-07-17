@@ -21,10 +21,10 @@ import org.gbif.utils.PreconditionUtils;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import jakarta.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.annotation.Nullable;
 
 /** This message instructs the occurrence deletion service to delete a single Occurrence. */
 @MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DeleteOccurrenceMessage.ROUTING_KEY)

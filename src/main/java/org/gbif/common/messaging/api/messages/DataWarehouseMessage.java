@@ -15,6 +15,8 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.model.pipelines.PipelinesWorkflow;
 import org.gbif.api.model.pipelines.StepType;
+import org.gbif.common.messaging.ExchangeType;
+import org.gbif.common.messaging.MessageBinding;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +28,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.SneakyThrows;
-import org.gbif.common.messaging.ExchangeType;
-import org.gbif.common.messaging.MessageBinding;
 
 @MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = DataWarehouseMessage.ROUTING_KEY)
 public class DataWarehouseMessage extends PipelinesHdfsViewMessage {
