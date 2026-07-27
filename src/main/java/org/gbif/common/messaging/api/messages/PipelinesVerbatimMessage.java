@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -36,7 +35,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_IDENTIFIER;
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
 import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
 
