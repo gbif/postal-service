@@ -42,6 +42,7 @@ import static org.gbif.api.model.pipelines.StepType.VALIDATOR_DWCA_TO_VERBATIM;
 public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   public static final String ROUTING_KEY = DwcaValidationFinishedMessage.ROUTING_KEY;
+  public static final String VALIDATOR_ROUTING_KEY = ROUTING_KEY + ".validator";
 
   private UUID datasetUuid;
   private DatasetType datasetType;
@@ -142,10 +143,13 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    String key = ROUTING_KEY;
+    String key;
     if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_DWCA_TO_VERBATIM.name())) {
-      key = key + ".validator";
+      key = VALIDATOR_ROUTING_KEY;
+    } else {
+      key = ROUTING_KEY;
     }
+
     return key;
   }
 

@@ -30,8 +30,6 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import static org.gbif.api.model.pipelines.StepType.VALIDATOR_INTERPRETED_TO_INDEX;
-
 /**
  * This message instructs the dataset mutator service to send InterpretDatasetMessage for each
  * occurrence in the dataset.
@@ -127,7 +125,8 @@ public class PipelinesInterpretedMessage
   @Override
   public String getRoutingKey() {
     String key = ROUTING_KEY;
-    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_INTERPRETED_TO_INDEX.name())) {
+    // if any pipeline step starts with "VALIDATOR_"
+    if (pipelineSteps != null && pipelineSteps.stream().anyMatch(step -> step.startsWith("VALIDATOR_"))) {
       key = key + ".validator";
     }
     if (runner != null && !runner.isEmpty()) {
