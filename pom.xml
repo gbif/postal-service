@@ -34,7 +34,7 @@
 
     <amqp-client.version>5.22.0</amqp-client.version>
     <commons-io.version>2.21.0</commons-io.version>
-    <gbif-api.version>2.4.15-SNAPSHOT</gbif-api.version>
+    <gbif-api.version>2.4.16-SNAPSHOT</gbif-api.version>
     <gbif-common.version>0.59</gbif-common.version>
     <dwc-dp-analyser-service.version>0.0.6-SNAPSHOT</dwc-dp-analyser-service.version>
     <jackson.version>2.19.4</jackson.version>
