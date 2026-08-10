@@ -36,7 +36,7 @@
     <commons-io.version>2.21.0</commons-io.version>
     <gbif-api.version>2.4.17</gbif-api.version>
     <gbif-common.version>0.59</gbif-common.version>
-    <dwc-dp-analyser-service.version>0.0.6</dwc-dp-analyser-service.version>
+    <dwc-dp-analyser-service.version>0.0.6-SNAPSHOT</dwc-dp-analyser-service.version>
     <jackson.version>2.19.4</jackson.version>
     <jcommander.version>1.48</jcommander.version>
     <jsr305.version>3.0.2</jsr305.version>
