@@ -26,13 +26,15 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VALIDATE_ARCHIVE;
+
 /**
- * This message is used to trigger validations.
+ * This message is used trigger Checklists validations.
  */
 @MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesArchiveValidatorMessage.ROUTING_KEY)
 public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.archive.validator.validator";
+  public static final String ROUTING_KEY = "occurrence.pipelines.archive.validator";
 
   private UUID datasetUuid;
   private int attempt;
@@ -44,11 +46,11 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
   @JsonCreator
   public PipelinesArchiveValidatorMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("fileFormat") String fileFormat) {
+    @JsonProperty("datasetUuid") UUID datasetUuid,
+    @JsonProperty("attempt") int attempt,
+    @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
+    @JsonProperty("executionId") Long executionId,
+    @JsonProperty("fileFormat") String fileFormat) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
@@ -89,7 +91,11 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return ROUTING_KEY;
+    String key = ROUTING_KEY;
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VALIDATE_ARCHIVE.name())) {
+      key = key + ".validator";
+    }
+    return key;
   }
 
   public String getFileFormat() {
@@ -126,10 +132,10 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     }
     PipelinesArchiveValidatorMessage that = (PipelinesArchiveValidatorMessage) o;
     return attempt == that.attempt
-        && Objects.equals(datasetUuid, that.datasetUuid)
-        && Objects.equals(pipelineSteps, that.pipelineSteps)
-        && Objects.equals(fileFormat, that.fileFormat)
-        && Objects.equals(executionId, that.executionId);
+      && Objects.equals(datasetUuid, that.datasetUuid)
+      && Objects.equals(pipelineSteps, that.pipelineSteps)
+      && Objects.equals(fileFormat, that.fileFormat)
+      && Objects.equals(executionId, that.executionId);
   }
 
   @Override
