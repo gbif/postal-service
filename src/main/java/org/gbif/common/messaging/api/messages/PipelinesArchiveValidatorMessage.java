@@ -26,13 +26,15 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VALIDATE_ARCHIVE;
+
 /**
  * This message is used to trigger validations.
  */
 @MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesArchiveValidatorMessage.ROUTING_KEY)
 public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
-  public static final String ROUTING_KEY = "occurrence.pipelines.archive.validator.validator";
+  public static final String ROUTING_KEY = "occurrence.pipelines.archive.validator";
 
   private UUID datasetUuid;
   private int attempt;
@@ -89,7 +91,11 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
 
   @Override
   public String getRoutingKey() {
-    return ROUTING_KEY;
+    String key = ROUTING_KEY;
+    if (pipelineSteps != null && pipelineSteps.contains(VALIDATOR_VALIDATE_ARCHIVE.name())) {
+      key = key + ".validator";
+    }
+    return key;
   }
 
   public String getFileFormat() {
