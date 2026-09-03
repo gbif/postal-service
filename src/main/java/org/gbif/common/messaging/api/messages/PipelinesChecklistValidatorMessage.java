@@ -15,37 +15,37 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
+import org.gbif.common.messaging.api.Message;
 
-import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Getter;
 
 /**
  * This message instructs the dataset mutator service to send PipelinesArchiveValidatorMessage for
  * each occurrence in the dataset.
  */
 @MessageBinding(exchange = ExchangeType.OCCURRENCE, routingKey = PipelinesChecklistValidatorMessage.ROUTING_KEY)
-public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidatorMessage
-    implements RpcMessage {
+@Getter
+public class PipelinesChecklistValidatorMessage implements Message {
 
   public static final String ROUTING_KEY = "occurrence.pipelines.checklist.validator";
 
-  private String correlationId;
+  private UUID validationKey;
+  private String clBResponsePayload;
 
-  private String replyTo;
-
-  public PipelinesChecklistValidatorMessage() {}
+  public PipelinesChecklistValidatorMessage() {
+  }
 
   @JsonCreator
   public PipelinesChecklistValidatorMessage(
-      @JsonProperty("datasetUuid") UUID datasetUuid,
-      @JsonProperty("attempt") int attempt,
-      @JsonProperty("pipelineSteps") Set<String> pipelineSteps,
-      @JsonProperty("executionId") Long executionId,
-      @JsonProperty("fileFormat") String fileFormat) {
-    super(datasetUuid, attempt, pipelineSteps, executionId, fileFormat);
+    @JsonProperty("validationKey") UUID validationKey,
+    @JsonProperty("clBResponsePayload") String clBResponsePayload) {
+    this.validationKey = validationKey;
+    this.clBResponsePayload = clBResponsePayload;
   }
 
   @Override
@@ -53,23 +53,4 @@ public class PipelinesChecklistValidatorMessage extends PipelinesArchiveValidato
     return ROUTING_KEY;
   }
 
-  @Override
-  public void setCorrelationId(String correlationId) {
-    this.correlationId = correlationId;
-  }
-
-  @Override
-  public String getCorrelationId() {
-    return correlationId;
-  }
-
-  @Override
-  public void setReplyTo(String replyTo) {
-    this.replyTo = replyTo;
-  }
-
-  @Override
-  public String getReplyTo() {
-    return replyTo;
-  }
 }
