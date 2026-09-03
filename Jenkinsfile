@@ -64,6 +64,7 @@ pipeline {
                 anyOf {
                     branch 'dev';
                     branch 'feature/*';
+                    branch 'clb_validator';
                 }
             }
         }
