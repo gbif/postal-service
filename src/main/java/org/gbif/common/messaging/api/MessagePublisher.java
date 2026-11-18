@@ -13,6 +13,8 @@
  */
 package org.gbif.common.messaging.api;
 
+import org.gbif.common.messaging.SendOptions;
+
 import java.io.IOException;
 
 public interface MessagePublisher {
@@ -63,6 +65,25 @@ public interface MessagePublisher {
    */
   void send(Object message, String exchange, String routingKey, boolean persistent)
       throws IOException;
+
+  /**
+   * Sends a message with explicit per-message properties (persistence, message id, content type,
+   * headers). Implemented by {@link org.gbif.common.messaging.DefaultMessagePublisher}; other
+   * implementations throw {@link UnsupportedOperationException} unless they override it.
+   *
+   * @param message to send. This is being converted into JSON using Jackson
+   * @param exchange to publish to
+   * @param routingKey to use
+   * @param options per-message properties
+   * @throws IOException if the message could not be sent; with publisher confirms enabled also when
+   *     the broker nacked it or did not confirm it in time, and an {@link
+   *     org.gbif.common.messaging.UnroutableMessageException} when it was returned as unroutable
+   */
+  default void send(Object message, String exchange, String routingKey, SendOptions options)
+      throws IOException {
+    throw new UnsupportedOperationException(
+        getClass().getName() + " does not support send with SendOptions");
+  }
 
   /**
    * Sends a message to a reply queue. Tries to reuse a channel and only opens a new one if the old one was closed.

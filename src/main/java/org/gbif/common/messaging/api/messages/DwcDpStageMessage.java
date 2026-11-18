@@ -18,10 +18,12 @@ import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -48,6 +50,15 @@ public class DwcDpStageMessage implements PipelineBasedMessage {
   private Long executionId;
   private boolean containsOccurrences;
   private boolean containsEvents;
+
+  /**
+   * Orchestrator step header (workflowId, datasetKey, attempt, stepType, stepAttempt), passed through
+   * unchanged. Present only when the flow-orchestrator dispatched the step; the worker then replies
+   * to the orchestrator instead of sending the next step. Untyped so postal does not depend on the
+   * orchestrator API.
+   */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Map<String, Object> stepHeader;
 
   @JsonCreator
   public DwcDpStageMessage(

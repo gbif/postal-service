@@ -16,6 +16,7 @@ package org.gbif.common.messaging.util;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,18 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class MessageUtils {
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = configure(new ObjectMapper());
+
+  /**
+   * The settings postal applies to every mapper it uses: java.time support, so messages can carry
+   * standard {@code LocalDateTime}, {@code Instant} etc. values. {@code java.util.Date} keeps its
+   * existing form (epoch milliseconds).
+   *
+   * @return the same mapper
+   */
+  public static ObjectMapper configure(ObjectMapper mapper) {
+    return mapper.registerModule(new JavaTimeModule());
+  }
 
   public static String toString(Object message) {
     try {

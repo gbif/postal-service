@@ -22,12 +22,14 @@ import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -53,6 +55,10 @@ public class PipelinesInterpretedMessage
   private ValidationResult validationResult;
   private Set<String> interpretTypes;
   private DatasetType datasetType;
+
+  /** Orchestrator step header, passed through unchanged; see {@link DwcDpStageMessage}. */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Map<String, Object> stepHeader;
 
   public PipelinesInterpretedMessage() {}
 
@@ -233,6 +239,15 @@ public class PipelinesInterpretedMessage
     return this;
   }
 
+  public Map<String, Object> getStepHeader() {
+    return stepHeader;
+  }
+
+  public PipelinesInterpretedMessage setStepHeader(Map<String, Object> stepHeader) {
+    this.stepHeader = stepHeader;
+    return this;
+  }
+
   @Override
   public void setExecutionId(Long executionId) {
     this.executionId = executionId;
@@ -259,7 +274,8 @@ public class PipelinesInterpretedMessage
         && Objects.equals(numberOfEventRecords, that.numberOfEventRecords)
         && Objects.equals(validationResult, that.validationResult)
         && Objects.equals(interpretTypes, that.interpretTypes)
-        && datasetType == that.datasetType;
+        && datasetType == that.datasetType
+        && Objects.equals(stepHeader, that.stepHeader);
   }
 
   @Override
@@ -277,7 +293,8 @@ public class PipelinesInterpretedMessage
         endpointType,
         validationResult,
         interpretTypes,
-        datasetType);
+        datasetType,
+        stepHeader);
   }
 
   @Override

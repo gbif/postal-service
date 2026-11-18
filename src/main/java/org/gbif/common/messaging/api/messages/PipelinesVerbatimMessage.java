@@ -20,21 +20,22 @@ import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.util.MessageUtils;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
-
-import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_IDENTIFIER;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_IDENTIFIER;
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VERBATIM_TO_INTERPRETED;
 import static org.gbif.api.model.pipelines.StepType.VERBATIM_TO_IDENTIFIER;
 
@@ -73,6 +74,11 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
   private Long executionId;
   private DatasetType datasetType;
 
+  /** Orchestrator step header, passed through unchanged; see {@link DwcDpStageMessage}. */
+  @Setter
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Map<String, Object> stepHeader;
+
   public PipelinesVerbatimMessage() {}
 
   @JsonCreator
@@ -88,6 +94,38 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
       @JsonProperty("resetPrefix") String resetPrefix,
       @JsonProperty("executionId") Long executionId,
       @JsonProperty("datasetType") DatasetType datasetType) {
+    this(
+        datasetUuid,
+        attempt,
+        interpretTypes,
+        pipelineSteps,
+        runner,
+        endpointType,
+        extraPath,
+        validationResult,
+        resetPrefix,
+        executionId,
+        datasetType,
+        null);
+  }
+
+  /**
+   * All fields, for the builder only: use {@link #builder()} or {@link #toBuilder()}, which also
+   * carry the step header.
+   */
+  private PipelinesVerbatimMessage(
+      UUID datasetUuid,
+      Integer attempt,
+      Set<String> interpretTypes,
+      Set<String> pipelineSteps,
+      String runner,
+      EndpointType endpointType,
+      String extraPath,
+      ValidationResult validationResult,
+      String resetPrefix,
+      Long executionId,
+      DatasetType datasetType,
+      Map<String, Object> stepHeader) {
     this.datasetUuid = Objects.requireNonNull(datasetUuid, "datasetUuid can't be null");
     this.interpretTypes = Objects.requireNonNull(interpretTypes, "interpretTypes can't be null");
     this.attempt = attempt;
@@ -99,6 +137,7 @@ public class PipelinesVerbatimMessage implements PipelineBasedMessage, Pipelines
     this.resetPrefix = resetPrefix;
     this.executionId = executionId;
     this.datasetType = datasetType;
+    this.stepHeader = stepHeader;
   }
 
   @Override

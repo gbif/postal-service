@@ -16,17 +16,24 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessagePublisher;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.time.Duration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -43,6 +50,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.MessageProperties;
+import com.rabbitmq.client.Return;
 
 /** This class can be used to publish messages easily. */
 @ThreadSafe
@@ -61,6 +69,27 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
    * consumer load (e.g. concurrent threads).
    */
   private final ConcurrentLinkedQueue<Channel> channelPool = new ConcurrentLinkedQueue<>();
+
+  /** Null unless publisher confirms are enabled; then every send waits this long for a confirm. */
+  private final Duration confirmTimeout;
+
+  /** Whether messages are published with the mandatory flag, so unroutable ones are returned. */
+  private final boolean mandatory;
+
+  private final boolean declareExchangeOnSend;
+  private final Set<String> declaredExchanges = ConcurrentHashMap.newKeySet();
+
+  /** The last broker return per channel; only used when {@link #mandatory} is set. */
+  private final Map<Channel, AtomicReference<Return>> returns = new ConcurrentHashMap<>();
+
+  /**
+   * Starts a builder for a publisher with non-default settings, such as publisher confirms or the
+   * mandatory flag. Without any builder settings the result behaves like {@link
+   * #DefaultMessagePublisher(ConnectionParameters, MessageRegistry, ObjectMapper)}.
+   */
+  public static Builder builder(ConnectionParameters connectionParameters) {
+    return new Builder(connectionParameters);
+  }
 
   /**
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link
@@ -84,16 +113,26 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   public DefaultMessagePublisher(
       ConnectionParameters connectionParameters, MessageRegistry registry, ObjectMapper mapper)
       throws IOException {
-    Objects.requireNonNull(connectionParameters, "connectionParameters can't be null");
-    this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
-    this.registry = Objects.requireNonNull(registry, "registry can't be null");
+    this(new Builder(connectionParameters).registry(registry).mapper(mapper));
+  }
+
+  private DefaultMessagePublisher(Builder builder) throws IOException {
+    Objects.requireNonNull(builder.connectionParameters, "connectionParameters can't be null");
+    this.mapper =
+        MessageUtils.configure(Objects.requireNonNull(builder.mapper, "mapper can't be null"));
+    this.registry = Objects.requireNonNull(builder.registry, "registry can't be null");
+    this.confirmTimeout = builder.confirmTimeout;
+    this.mandatory = builder.mandatory;
+    this.declareExchangeOnSend = builder.declareExchangeOnSend;
 
     this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
-    LOG.info("Connecting to AMQP broker {}", connectionParameters);
+    LOG.info("Connecting to AMQP broker {}", builder.connectionParameters);
     try {
-      connection = connectionParameters.getConnectionFactory().newConnection();
-      declareAllExchanges(registry, connection);
+      connection = builder.connectionParameters.getConnectionFactory().newConnection();
+      if (builder.declareRegisteredExchanges) {
+        declareAllExchanges(registry, connection);
+      }
     } catch (TimeoutException e) {
       LOG.error("Timeout connecting to AMQP broker", e);
       throw new IOException(e);
@@ -137,6 +176,30 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
     Objects.requireNonNull(exchange, "exchange can't be null");
     Objects.requireNonNull(routingKey, "routingKey can't be null");
 
+    BasicProperties properties;
+    if (persistent) {
+      properties = MessageProperties.PERSISTENT_TEXT_PLAIN;
+    } else if (customContentType != null) {
+      properties = new BasicProperties.Builder().contentType(customContentType).build();
+    } else {
+      properties = MessageProperties.TEXT_PLAIN;
+    }
+    publish(message, exchange, routingKey, properties);
+  }
+
+  @Override
+  public void send(Object message, String exchange, String routingKey, SendOptions options)
+      throws IOException {
+    Objects.requireNonNull(message, "message can't be null");
+    Objects.requireNonNull(exchange, "exchange can't be null");
+    Objects.requireNonNull(routingKey, "routingKey can't be null");
+    Objects.requireNonNull(options, "options can't be null");
+    publish(message, exchange, routingKey, options.toProperties());
+  }
+
+  private void publish(
+      Object message, String exchange, String routingKey, BasicProperties properties)
+      throws IOException {
     byte[] data = mapper.writeValueAsBytes(message);
     LOG.debug(
         "Sending message of type [{}] to exchange [{}] using routing key [{}]",
@@ -148,29 +211,60 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
       Channel channel = provideChannel();
 
       try {
-        if (persistent) {
-          channel.basicPublish(exchange, routingKey, MessageProperties.PERSISTENT_TEXT_PLAIN, data);
+        declareOnSend(channel, exchange);
+        AtomicReference<Return> returned = mandatory ? returns.get(channel) : null;
+        if (returned != null) {
+          returned.set(null);
+        }
+        if (mandatory) {
+          channel.basicPublish(exchange, routingKey, true, properties, data);
         } else {
-
-          BasicProperties properties = null;
-          if (customContentType != null) {
-            properties = new BasicProperties.Builder().contentType(customContentType).build();
-          } else {
-            properties = MessageProperties.TEXT_PLAIN;
-          }
           channel.basicPublish(exchange, routingKey, properties, data);
         }
+        awaitConfirm(channel);
+        // The broker sends basic.return before the confirm, so a return is known by now.
+        Return r = returned == null ? null : returned.getAndSet(null);
         // We're not releasing this in a finally block because we assume the channel is "bad" if an
         // exception occurred
         releaseChannel(channel);
+        if (r != null) {
+          throw new UnroutableMessageException(
+              exchange, routingKey, r.getReplyCode(), r.getReplyText());
+        }
         return;
+      } catch (UnroutableMessageException e) {
+        throw e;
       } catch (IOException e) {
+        // the channel is not reused after a failure
+        returns.remove(channel);
         if (attempt >= NUMBER_OF_RETRIES) {
           LOG.warn("Tried sending message but failed {} times, aborting", attempt);
           throw e;
         }
         LOG.debug("Failed sending message, retrying");
       }
+    }
+  }
+
+  private void declareOnSend(Channel channel, String exchange) throws IOException {
+    if (declareExchangeOnSend && !declaredExchanges.contains(exchange)) {
+      channel.exchangeDeclare(exchange, "topic", true);
+      declaredExchanges.add(exchange);
+    }
+  }
+
+  /** Waits for the broker confirm when confirms are enabled; a nack or timeout throws. */
+  private void awaitConfirm(Channel channel) throws IOException {
+    if (confirmTimeout == null) {
+      return;
+    }
+    try {
+      channel.waitForConfirmsOrDie(confirmTimeout.toMillis());
+    } catch (TimeoutException e) {
+      throw new IOException("No publisher confirm within " + confirmTimeout, e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new InterruptedIOException("Interrupted while waiting for a publisher confirm");
     }
   }
 
@@ -323,8 +417,19 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
   private Channel provideChannel() throws IOException {
     Channel channel = channelPool.poll();
     if (channel == null || !channel.isOpen()) { // none for reuse
+      if (channel != null) {
+        returns.remove(channel);
+      }
       LOG.debug("No pooled channels available, creating a new one");
       channel = connection.createChannel();
+      if (confirmTimeout != null) {
+        channel.confirmSelect();
+      }
+      if (mandatory) {
+        AtomicReference<Return> returned = new AtomicReference<>();
+        channel.addReturnListener(returned::set);
+        returns.put(channel, returned);
+      }
     }
     return channel;
   }
@@ -341,6 +446,7 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
       LOG.debug(
           "Channel returned to the pool. Available channels for reuse: {}", channelPool.size());
     } else {
+      returns.remove(channel);
       LOG.debug(
           "Discarding channel since it is closed. Available channels for reuse: {}",
           channelPool.size());
@@ -372,6 +478,89 @@ public class DefaultMessagePublisher implements MessagePublisher, Closeable {
       connection.close();
     } catch (IOException e) {
       LOG.error("Exception closing connection to AMQP broker", e);
+    }
+  }
+
+  /**
+   * Builder for publishers with non-default settings. Unset values give the same behaviour as the
+   * constructors: the {@link DefaultMessageRegistry}, a new {@link ObjectMapper}, registered
+   * exchanges declared at startup, no publisher confirms and no mandatory flag.
+   */
+  public static final class Builder {
+    private final ConnectionParameters connectionParameters;
+    private MessageRegistry registry;
+    private ObjectMapper mapper;
+    private boolean declareRegisteredExchanges = true;
+    private boolean declareExchangeOnSend;
+    private Duration confirmTimeout;
+    private boolean mandatory;
+
+    private Builder(ConnectionParameters connectionParameters) {
+      this.connectionParameters =
+          Objects.requireNonNull(connectionParameters, "connectionParameters can't be null");
+    }
+
+    public Builder registry(MessageRegistry registry) {
+      this.registry = Objects.requireNonNull(registry, "registry can't be null");
+      return this;
+    }
+
+    /** The mapper used to serialize messages. Postal disables {@code FAIL_ON_EMPTY_BEANS} on it. */
+    public Builder mapper(ObjectMapper mapper) {
+      this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
+      return this;
+    }
+
+    /**
+     * Whether to declare the exchanges of all registered (annotated) messages at startup. Default
+     * true, as the constructors do.
+     */
+    public Builder declareRegisteredExchanges(boolean declare) {
+      this.declareRegisteredExchanges = declare;
+      return this;
+    }
+
+    /**
+     * Whether to declare the target exchange (durable topic) the first time a message is sent to
+     * it. Default false.
+     */
+    public Builder declareExchangeOnSend(boolean declare) {
+      this.declareExchangeOnSend = declare;
+      return this;
+    }
+
+    /**
+     * Enables publisher confirms: every send waits up to {@code timeout} for the broker to confirm
+     * the message, and throws an {@link IOException} on a nack or timeout. Default off.
+     */
+    public Builder publisherConfirms(Duration timeout) {
+      Objects.requireNonNull(timeout, "timeout can't be null");
+      PreconditionUtils.checkArgument(!timeout.isNegative() && !timeout.isZero(), "timeout must be positive");
+      this.confirmTimeout = timeout;
+      return this;
+    }
+
+    /**
+     * Publishes with the mandatory flag, so a message no queue is bound for is returned instead of
+     * dropped. Requires {@link #publisherConfirms(Duration)}, which is what makes the return known
+     * before the send completes; a returned message then throws {@link
+     * UnroutableMessageException}. Default off.
+     */
+    public Builder mandatory(boolean mandatory) {
+      this.mandatory = mandatory;
+      return this;
+    }
+
+    public DefaultMessagePublisher build() throws IOException {
+      PreconditionUtils.checkArgument(
+          !mandatory || confirmTimeout != null, "mandatory requires publisherConfirms");
+      if (registry == null) {
+        registry = new DefaultMessageRegistry();
+      }
+      if (mapper == null) {
+        mapper = new ObjectMapper();
+      }
+      return new DefaultMessagePublisher(this);
     }
   }
 }

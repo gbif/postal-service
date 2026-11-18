@@ -16,6 +16,7 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.MessageRegistry;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
 
@@ -33,6 +34,7 @@ import com.rabbitmq.client.Consumer;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -97,6 +99,40 @@ public class MessageListenerTest {
     verify(channel).queueBind(queue, exchange, DEFAULT_ROUTINGKEY);
 
     verify(channel).basicConsume(eq(queue), eq(false), isA(Consumer.class));
+  }
+
+  @Test
+  public void testListenWithDeadLetter() throws IOException {
+    QueueBinding binding =
+        QueueBinding.builder("orchestrator.validation.commands", "orchestrator", "command.#")
+            .threads(2)
+            .deadLetter("orchestrator.dlx")
+            .queueArgument("x-queue-type", "classic")
+            .build();
+
+    listener.listen(binding, new TestMessageCallback());
+
+    verify(channel).exchangeDeclare("orchestrator", "topic", true);
+    verify(channel).exchangeDeclare("orchestrator.dlx", "topic", true);
+    verify(channel).queueDeclare("orchestrator.validation.commands.dlq", true, false, false, null);
+    verify(channel)
+        .queueBind(
+            "orchestrator.validation.commands.dlq",
+            "orchestrator.dlx",
+            "orchestrator.validation.commands");
+    verify(channel)
+        .queueDeclare(
+            "orchestrator.validation.commands",
+            true,
+            false,
+            false,
+            Map.of(
+                "x-dead-letter-exchange", "orchestrator.dlx",
+                "x-dead-letter-routing-key", "orchestrator.validation.commands",
+                "x-queue-type", "classic"));
+    verify(channel).queueBind("orchestrator.validation.commands", "orchestrator", "command.#");
+    verify(channel, times(2))
+        .basicConsume(eq("orchestrator.validation.commands"), eq(false), isA(Consumer.class));
   }
 
   private static class TestMessageCallback extends AbstractMessageCallback<TestMessage> {

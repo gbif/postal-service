@@ -15,6 +15,7 @@ package org.gbif.common.messaging.api.messages;
 
 import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
+import org.gbif.dp.analysis.api.AnalysisExecution;
 import org.gbif.dp.analysis.api.DatapackageAnalysisResult;
 import org.gbif.dp.service.api.DwcDpValidationFinished;
 
@@ -33,7 +34,7 @@ public class DwcDpValidationFinishedMessage extends DwcDpValidationFinished impl
     @JsonProperty("datasetUuid") UUID datasetUuid,
     @JsonProperty("attempt") int attempt,
     @JsonProperty("valid") Boolean valid,
-    @JsonProperty("validationReport") DatapackageAnalysisResult validationReport) {
+    @JsonProperty("validationReport") AnalysisExecution<DatapackageAnalysisResult> validationReport) {
     super(datasetUuid, attempt, valid, validationReport);
   }
 

@@ -16,6 +16,7 @@ package org.gbif.common.messaging;
 import org.gbif.common.messaging.api.Message;
 import org.gbif.common.messaging.api.MessageCallback;
 import org.gbif.common.messaging.api.MessageRegistry;
+import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 import org.gbif.utils.concurrent.NamedThreadFactory;
 
@@ -58,6 +59,15 @@ public class MessageListener implements AutoCloseable {
   // Map queue -> list of consumerTags so we can pause/resume per-queue
   private final Map<String, List<String>> queueToConsumerTags =
       Collections.synchronizedMap(new HashMap<>());
+
+  /**
+   * Starts a builder. Without any builder settings the result behaves like {@link
+   * #MessageListener(ConnectionParameters)}. Queue-level settings such as dead-lettering are given
+   * per queue with {@link #listen(QueueBinding, MessageCallback)}.
+   */
+  public static Builder builder(ConnectionParameters connectionParameters) {
+    return new Builder(connectionParameters);
+  }
 
   /**
    * Convenience constructor that uses a default {@link ObjectMapper} and the {@link
@@ -107,6 +117,7 @@ public class MessageListener implements AutoCloseable {
     this.prefetchCount = prefetchCount;
 
     this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    MessageUtils.configure(this.mapper);
 
     LOG.info("Connecting to AMQP broker {}", connectionParameters);
     connectionFactory = connectionParameters.getConnectionFactory();
@@ -191,6 +202,30 @@ public class MessageListener implements AutoCloseable {
     PreconditionUtils.checkArgument(
         numberOfThreads >= 1, "numberOfThreads needs to be greater than or equal to 1");
 
+    listen(QueueBinding.builder(queue, exchange, routingKey).threads(numberOfThreads).build(), callback);
+  }
+
+  /**
+   * Listens on a queue described by a {@link QueueBinding}. Declares the durable topic exchange, the
+   * durable queue with the binding's arguments, and the binding. When the binding has a dead-letter
+   * exchange it also declares that exchange (durable topic) and the dead-letter queue {@code
+   * <queue>.dlq}, bound with the queue name. Messages are acknowledged after the callback returns;
+   * a callback exception or an undeserializable message is rejected without requeue, so it goes to
+   * the dead-letter queue when one is configured.
+   *
+   * @param binding the queue, exchange, routing key, threads and queue arguments
+   * @param callback to execute
+   * @param <T> of the message
+   * @throws IOException if there was any communication exception
+   */
+  public <T> void listen(QueueBinding binding, MessageCallback<T> callback) throws IOException {
+    Objects.requireNonNull(binding, "binding can't be null");
+    Objects.requireNonNull(callback, "callback can't be empty");
+    String queue = binding.getQueue();
+    String exchange = binding.getExchange();
+    String routingKey = binding.getRoutingKey();
+    int numberOfThreads = binding.getThreads();
+
     Connection connection = null;
     Channel channel = null;
     // Create and track the executor before connecting so it is always cleaned up on failure
@@ -204,7 +239,13 @@ public class MessageListener implements AutoCloseable {
       connections.add(connection);
       channel = connection.createChannel();
       channel.exchangeDeclare(exchange, "topic", true);
-      channel.queueDeclare(queue, true, false, false, null);
+      if (binding.getDeadLetterExchange() != null) {
+        channel.exchangeDeclare(binding.getDeadLetterExchange(), "topic", true);
+        channel.queueDeclare(binding.getDeadLetterQueue(), true, false, false, null);
+        channel.queueBind(binding.getDeadLetterQueue(), binding.getDeadLetterExchange(), queue);
+      }
+      Map<String, Object> arguments = binding.getArguments();
+      channel.queueDeclare(queue, true, false, false, arguments.isEmpty() ? null : arguments);
       channel.queueBind(queue, exchange, routingKey);
       channel.close();
       connectionSucceeded = true;
@@ -324,6 +365,50 @@ public class MessageListener implements AutoCloseable {
         consumerTagToChannel.clear();
         queueToConsumerTags.clear();
       }
+    }
+  }
+
+  /**
+   * Builder for listeners. Unset values give the same behaviour as the constructors: the {@link
+   * DefaultMessageRegistry}, a new {@link ObjectMapper} and a prefetch count of 50.
+   */
+  public static final class Builder {
+    private final ConnectionParameters connectionParameters;
+    private MessageRegistry registry;
+    private ObjectMapper mapper;
+    private int prefetchCount = DEFAULT_PREFETCH_COUNT;
+
+    private Builder(ConnectionParameters connectionParameters) {
+      this.connectionParameters =
+          Objects.requireNonNull(connectionParameters, "connectionParameters can't be null");
+    }
+
+    public Builder registry(MessageRegistry registry) {
+      this.registry = Objects.requireNonNull(registry, "registry can't be null");
+      return this;
+    }
+
+    /**
+     * The mapper used to deserialize messages. Postal disables {@code FAIL_ON_UNKNOWN_PROPERTIES}
+     * on it.
+     */
+    public Builder mapper(ObjectMapper mapper) {
+      this.mapper = Objects.requireNonNull(mapper, "mapper can't be null");
+      return this;
+    }
+
+    /** Messages a consumer channel prefetches (the RabbitMQ QOS); at least 1. Default 50. */
+    public Builder prefetchCount(int prefetchCount) {
+      this.prefetchCount = prefetchCount;
+      return this;
+    }
+
+    public MessageListener build() throws IOException {
+      return new MessageListener(
+          connectionParameters,
+          registry == null ? new DefaultMessageRegistry() : registry,
+          mapper == null ? new ObjectMapper() : mapper,
+          prefetchCount);
     }
   }
 }
