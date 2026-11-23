@@ -19,11 +19,13 @@ import org.gbif.common.messaging.util.MessageUtils;
 import org.gbif.utils.PreconditionUtils;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_VALIDATE_ARCHIVE;
@@ -41,6 +43,14 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
   private Set<String> pipelineSteps;
   private Long executionId;
   private String fileFormat;
+
+  /**
+   * The flow-orchestrator's step header ({@code StepHeader} JSON). Present when the orchestrator
+   * dispatched the step: the worker then replies with a StepCompleted instead of reporting to the
+   * validator service and sending the next message. Optional, absent in legacy messages.
+   */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Map<String, Object> stepHeader;
 
   public PipelinesArchiveValidatorMessage() {}
 
@@ -122,6 +132,15 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
     return this;
   }
 
+  public Map<String, Object> getStepHeader() {
+    return stepHeader;
+  }
+
+  public PipelinesArchiveValidatorMessage setStepHeader(Map<String, Object> stepHeader) {
+    this.stepHeader = stepHeader;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -135,12 +154,13 @@ public class PipelinesArchiveValidatorMessage implements PipelineBasedMessage {
       && Objects.equals(datasetUuid, that.datasetUuid)
       && Objects.equals(pipelineSteps, that.pipelineSteps)
       && Objects.equals(fileFormat, that.fileFormat)
-      && Objects.equals(executionId, that.executionId);
+      && Objects.equals(executionId, that.executionId)
+      && Objects.equals(stepHeader, that.stepHeader);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(datasetUuid, attempt, pipelineSteps, fileFormat, executionId);
+    return Objects.hash(datasetUuid, attempt, pipelineSteps, fileFormat, executionId, stepHeader);
   }
 
   @Override

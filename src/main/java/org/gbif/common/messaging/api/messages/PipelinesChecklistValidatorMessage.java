@@ -17,9 +17,11 @@ import org.gbif.common.messaging.ExchangeType;
 import org.gbif.common.messaging.MessageBinding;
 import org.gbif.common.messaging.api.Message;
 
+import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -37,6 +39,14 @@ public class PipelinesChecklistValidatorMessage implements Message {
   private UUID validationKey;
   private String clBResponsePayload;
 
+  /**
+   * The flow-orchestrator's step header ({@code StepHeader} JSON) of the waiting ChecklistBank
+   * step. Present when the validation is orchestrated: the checklist worker then replies with a
+   * StepCompleted. Optional, absent in legacy messages.
+   */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Map<String, Object> stepHeader;
+
   public PipelinesChecklistValidatorMessage() {
   }
 
@@ -46,6 +56,11 @@ public class PipelinesChecklistValidatorMessage implements Message {
     @JsonProperty("clBResponsePayload") String clBResponsePayload) {
     this.validationKey = validationKey;
     this.clBResponsePayload = clBResponsePayload;
+  }
+
+  public PipelinesChecklistValidatorMessage setStepHeader(Map<String, Object> stepHeader) {
+    this.stepHeader = stepHeader;
+    return this;
   }
 
   @Override

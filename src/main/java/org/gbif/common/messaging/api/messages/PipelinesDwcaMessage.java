@@ -24,12 +24,14 @@ import org.gbif.utils.PreconditionUtils;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import static org.gbif.api.model.pipelines.StepType.VALIDATOR_DWCA_TO_VERBATIM;
@@ -54,6 +56,14 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
   private Platform platform;
   private Long executionId;
 
+  /**
+   * The flow-orchestrator's step header ({@code StepHeader} JSON). Present when the orchestrator
+   * dispatched the step: the worker then replies with a StepCompleted instead of reporting to the
+   * validator service and sending the next message. Optional, absent in legacy messages.
+   */
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private Map<String, Object> stepHeader;
+
   public PipelinesDwcaMessage() {}
 
   @JsonCreator
@@ -72,8 +82,10 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.source = Objects.requireNonNull(source, "source can't be null");
     PreconditionUtils.checkArgument(attempt >= 0, "attempt has to be greater than 0");
     this.attempt = attempt;
-    this.validationReport =
-        Objects.requireNonNull(validationReport, "validationReport can't be null");
+    // Null only in messages the flow-orchestrator dispatches (with a stepHeader): the validator
+    // gets no crawler report, the orchestrator has already decided what runs. Crawled archives
+    // always carry one.
+    this.validationReport = validationReport;
     this.pipelineSteps = pipelineSteps == null ? Collections.emptySet() : pipelineSteps;
     this.endpointType = endpointType;
     this.platform = platform != null ? platform : Platform.ALL;
@@ -136,7 +148,7 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     return platform;
   }
 
-  /** @return the validationReport for this archive */
+  /** @return the validationReport for this archive; null in orchestrator-dispatched messages */
   public DwcaValidationReport getValidationReport() {
     return validationReport;
   }
@@ -198,6 +210,15 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
     this.executionId = executionId;
   }
 
+  public Map<String, Object> getStepHeader() {
+    return stepHeader;
+  }
+
+  public PipelinesDwcaMessage setStepHeader(Map<String, Object> stepHeader) {
+    this.stepHeader = stepHeader;
+    return this;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -214,7 +235,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
         && Objects.equals(validationReport, that.validationReport)
         && Objects.equals(pipelineSteps, that.pipelineSteps)
         && Objects.equals(endpointType, that.endpointType)
-        && Objects.equals(executionId, that.executionId);
+        && Objects.equals(executionId, that.executionId)
+        && Objects.equals(stepHeader, that.stepHeader);
   }
 
   @Override
@@ -227,7 +249,8 @@ public class PipelinesDwcaMessage implements PipelineBasedMessage {
         validationReport,
         pipelineSteps,
         endpointType,
-        executionId);
+        executionId,
+        stepHeader);
   }
 
   @Override

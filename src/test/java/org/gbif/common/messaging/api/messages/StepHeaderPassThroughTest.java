@@ -14,7 +14,9 @@
 package org.gbif.common.messaging.api.messages;
 
 import org.gbif.api.vocabulary.DatasetType;
+import org.gbif.api.vocabulary.EndpointType;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -115,6 +117,56 @@ class StepHeaderPassThroughTest {
   }
 
   @Test
+  void archiveValidatorMessageCarriesHeader() throws Exception {
+    PipelinesArchiveValidatorMessage message =
+        new PipelinesArchiveValidatorMessage(
+            DATASET, 1, Set.of("VALIDATOR_VALIDATE_ARCHIVE"), null, "DWCA");
+    message.setStepHeader(HEADER);
+
+    PipelinesArchiveValidatorMessage read =
+        MAPPER.readValue(message.toString(), PipelinesArchiveValidatorMessage.class);
+
+    assertEquals(HEADER, read.getStepHeader());
+    assertEquals(message, read);
+  }
+
+  @Test
+  void dwcaMessageCarriesHeader() throws Exception {
+    PipelinesDwcaMessage message =
+        new PipelinesDwcaMessage(
+            DATASET,
+            DatasetType.OCCURRENCE,
+            URI.create("urn:gbif:validation:" + DATASET),
+            1,
+            null,
+            Set.of("VALIDATOR_DWCA_TO_VERBATIM"),
+            EndpointType.DWC_ARCHIVE,
+            null,
+            null);
+    message.setStepHeader(HEADER);
+
+    PipelinesDwcaMessage read = MAPPER.readValue(message.toString(), PipelinesDwcaMessage.class);
+
+    assertEquals(HEADER, read.getStepHeader());
+    assertEquals(message, read);
+    assertEquals(PipelinesDwcaMessage.VALIDATOR_ROUTING_KEY, read.getRoutingKey());
+  }
+
+  @Test
+  void checklistValidatorMessageCarriesHeader() throws Exception {
+    PipelinesChecklistValidatorMessage message =
+        new PipelinesChecklistValidatorMessage(DATASET, "{\"status\":\"finished\"}")
+            .setStepHeader(HEADER);
+
+    PipelinesChecklistValidatorMessage read =
+        MAPPER.readValue(
+            MAPPER.writeValueAsString(message), PipelinesChecklistValidatorMessage.class);
+
+    assertEquals(HEADER, read.getStepHeader());
+    assertEquals("{\"status\":\"finished\"}", read.getClBResponsePayload());
+  }
+
+  @Test
   void messagesWithoutHeaderSerializeAsBefore() throws Exception {
     DwcDpStageMessage stage =
         new DwcDpStageMessage(DATASET, 2, Set.of("VALIDATOR_DWCDP_STAGE"), null, true, false);
@@ -123,6 +175,14 @@ class StepHeaderPassThroughTest {
 
     assertFalse(stage.toString().contains("stepHeader"));
     assertFalse(verbatim.toString().contains("stepHeader"));
+    assertFalse(
+        MAPPER
+            .writeValueAsString(new PipelinesChecklistValidatorMessage(DATASET, "{}"))
+            .contains("stepHeader"));
+    assertFalse(
+        new PipelinesArchiveValidatorMessage(DATASET, 1, Set.of(), null, "DWCA")
+            .toString()
+            .contains("stepHeader"));
     assertNull(MAPPER.readValue(stage.toString(), DwcDpStageMessage.class).getStepHeader());
   }
 }
