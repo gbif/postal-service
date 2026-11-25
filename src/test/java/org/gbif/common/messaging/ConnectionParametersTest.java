@@ -13,10 +13,16 @@
  */
 package org.gbif.common.messaging;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 public class ConnectionParametersTest {
 
-  public void testToString() throws Exception {
-    ConnectionParameters cp = new ConnectionParameters("localhost", 8752, "user", "pass", "/dev");
-    System.out.print(cp);
+  @Test
+  public void testToStringHidesPassword() {
+    ConnectionParameters cp =
+        new ConnectionParameters("localhost", 8752, "user", "s3cret", "/dev");
+    assertEquals("user:***@localhost:8752 /dev", cp.toString());
   }
 }

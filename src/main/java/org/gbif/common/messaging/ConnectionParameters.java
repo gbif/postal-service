@@ -80,6 +80,7 @@ public class ConnectionParameters {
 
   @Override
   public String toString() {
-    return String.format("%s:%s@%s:%s %s", username, password, host, port, virtualHost);
+    // never the password: this is logged when connecting
+    return String.format("%s:***@%s:%s %s", username, host, port, virtualHost);
   }
 }
